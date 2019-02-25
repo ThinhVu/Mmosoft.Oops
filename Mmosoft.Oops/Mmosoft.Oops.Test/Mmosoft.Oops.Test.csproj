@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4FD74E8C-E6B2-445C-8FA9-2975B4E09098}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Mmosoft.Oops.Test</RootNamespace>
+    <AssemblyName>Mmosoft.Oops.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Mmosoft.OopsTest.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="frmBoxShadowDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBoxShadowDemo.Designer.cs">
+      <DependentUpon>frmBoxShadowDemo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmPortal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPortal.Designer.cs">
+      <DependentUpon>frmPortal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSvgPathDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSvgPathDemo.Designer.cs">
+      <DependentUpon>frmSvgPathDemo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NavBarDemo\frmMultiLevelSideBar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NavBarDemo\frmMultiLevelSideBar.Designer.cs">
+      <DependentUpon>frmMultiLevelSideBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NavBarDemo\frmSingLevelSideBarExample.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NavBarDemo\frmSingLevelSideBarExample.Designer.cs">
+      <DependentUpon>frmSingLevelSideBarExample.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTableDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTableDemo.Designer.cs">
+      <DependentUpon>frmTableDemo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmControlsDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmControlsDemo.Designer.cs">
+      <DependentUpon>frmControlsDemo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmLayerControlDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLayerControlDemo.Designer.cs">
+      <DependentUpon>frmLayerControlDemo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmBoxShadowDemo.resx">
+      <DependentUpon>frmBoxShadowDemo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPortal.resx">
+      <DependentUpon>frmPortal.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSvgPathDemo.resx">
+      <DependentUpon>frmSvgPathDemo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTableDemo.resx">
+      <DependentUpon>frmTableDemo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NavBarDemo\frmMultiLevelSideBar.resx">
+      <DependentUpon>frmMultiLevelSideBar.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NavBarDemo\frmSingLevelSideBarExample.resx">
+      <DependentUpon>frmSingLevelSideBarExample.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmControlsDemo.resx">
+      <DependentUpon>frmControlsDemo.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmLayerControlDemo.resx">
+      <DependentUpon>frmLayerControlDemo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mmosoft.Oops\Mmosoft.Oops.csproj">
+      <Project>{21702be6-05af-49cf-96f0-1139f9c44761}</Project>
+      <Name>Oops</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\walmart-282199.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loveyou.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Walmart_logo.svg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tiny_cloud.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\blue-sky.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\x-close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dcwibef-80ba728d-0d81-4fbd-833e-a9a28cb49d1a.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frame-001.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\header-cover-img.jpg" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
