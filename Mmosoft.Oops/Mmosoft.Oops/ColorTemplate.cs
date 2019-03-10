@@ -3,19 +3,24 @@
     public static class ButtonColor
     {
         // Default
-        public static string Bg = "#F";
-        public static string Border = "#A";
-        public static string Text = "#A";
+        public static string Bg = "255, 204, 204, 204";
+        public static string Border = "255, 204, 204, 204";
+        public static string Text = "255, 0, 0, 0";
 
         // Disabled
-        public static string BgDisabled = "#A";
-        public static string BorderDisabled = "#A";
-        public static string TextDisabled = "#F";
+        public static string BgDisabled = "255, 204, 204, 204";
+        public static string BorderDisabled = "255, 204, 204, 204";
+        public static string TextDisabled = "255, 145, 145, 145";
 
         // Hovered
-        public static string BgHovered = "#B";
-        public static string BorderHovered = "#8";
-        public static string TextHovered = "#F";
+        public static string BgHovered = "255, 204, 204, 204";
+        public static string BorderHovered = "255, 122, 122, 122";
+        public static string TextHovered = "255, 0, 0, 0";
+
+        // Focused
+        public static string BgFocused = "255, 153, 153, 153";
+        public static string BorderFocused = "255, 195, 195, 195";
+        public static string TextFocused = "255, 0, 0, 0";
     }
 
     public static class ToogleButtonColors

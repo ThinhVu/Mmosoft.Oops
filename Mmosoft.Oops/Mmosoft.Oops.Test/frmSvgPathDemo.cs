@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Mmosoft.Oops;
+using System.Drawing.Drawing2D;
 
 namespace Mmosoft.OopsTest
 {

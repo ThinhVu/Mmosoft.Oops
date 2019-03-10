@@ -1,4 +1,6 @@
 ﻿using Mmosoft.Oops;
+using Mmosoft.Oops.Test;
+using Mmosoft.OopsTest.SideBarDemo;
 using System;
 using System.Windows.Forms;
 
@@ -14,7 +16,7 @@ namespace Mmosoft.OopsTest
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmPortal());
+            Application.Run(new frmSingleLevelSideBar());
         }
     }
 }

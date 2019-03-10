@@ -64,13 +64,22 @@
     <Compile Include="Animation\State.cs" />
     <Compile Include="Animation\Step.cs" />
     <Compile Include="Animation\Animator.cs" />
-    <Compile Include="Controls\Buttons\BorderRadius.cs" />
     <Compile Include="ColorTemplate.cs" />
-    <Compile Include="Controls\Buttons\BorderRaidusButtonColors.cs" />
+    <Compile Include="Controls\Buttons\ButtonColors.cs" />
     <Compile Include="Controls\Buttons\ToogleButtonColors.cs" />
     <Compile Include="Controls\Card.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\MultiLevelNavBar\HitTestAction.cs" />
+    <Compile Include="Controls\MultiLevelNavBar\HitTestItem.cs" />
+    <Compile Include="Controls\MultiLevelNavBar\NavBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\MultiLevelNavBar\NavBar.NavBarColors.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\MultiLevelNavBar\NavBarItem.cs" />
+    <Compile Include="Controls\MultiLevelNavBar\NavBarItemWrapper.cs" />
     <Compile Include="Controls\Lines\HorizontalLine.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -78,13 +87,13 @@
     <Compile Include="Controls\Lines\VerticalLine.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\NavBar\HitTestAction.cs" />
-    <Compile Include="Controls\NavBar\HitTestItem.cs" />
-    <Compile Include="Controls\NavBar\NavBar.NavBarColors.cs">
+    <Compile Include="Controls\SingleLevelNavBar\HitTestAction.cs" />
+    <Compile Include="Controls\SingleLevelNavBar\HitTestItem.cs" />
+    <Compile Include="Controls\SingleLevelNavBar\NavBar.NavBarColors.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\NavBar\NavBarItem.cs" />
-    <Compile Include="Controls\NavBar\NavBarItemWrapper.cs" />
+    <Compile Include="Controls\SingleLevelNavBar\NavBarItem.cs" />
+    <Compile Include="Controls\SingleLevelNavBar\NavBarItemWrapper.cs" />
     <Compile Include="Controls\Notifications\NotifyType.cs" />
     <Compile Include="Controls\Notifications\SmallNofiticationColors.cs" />
     <Compile Include="Controls\ProgressBars\MarqueeProgressBar.cs">
@@ -110,7 +119,7 @@
     <Compile Include="Layers\BorderDrawer.cs" />
     <Compile Include="Layers\FillBackgroundRectDrawer.cs" />
     <Compile Include="Layers\BaseDrawer.cs" />
-    <Compile Include="Controls\Buttons\BorderRadiusButton.cs">
+    <Compile Include="Controls\Buttons\Button.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomColorTranslator.cs" />
@@ -127,7 +136,7 @@
     <Compile Include="Controls\RangeBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\NavBar\NavBar.cs">
+    <Compile Include="Controls\SingleLevelNavBar\NavBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Buttons\ToogleButton.cs">

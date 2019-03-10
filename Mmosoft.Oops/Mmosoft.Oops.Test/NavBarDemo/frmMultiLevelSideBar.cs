@@ -17,52 +17,52 @@ namespace Mmosoft.OopsTest.SideBarDemo
         {
             var home = new Mmosoft.Oops.NavBarItem()
             {
-                Text = "HOME",
+                Text = "Home",
                 Clicked = ItemClickAct("Home"),
             };
             var management = new Mmosoft.Oops.NavBarItem()
             {
-                Text = "MANAGEMENT",
+                Text = "Management",
                 Clicked = ItemClickAct("Management"),
                 Items = new List<Mmosoft.Oops.NavBarItem>()
                 {
                     new Mmosoft.Oops.NavBarItem()
                     {
-                        Text = "CUSTOMER MANAGEMENT",
+                        Text = "Customer management",
                         Clicked = ItemClickAct("Customer management"),
                         Items = new List<Mmosoft.Oops.NavBarItem>
                         {
-                            new Mmosoft.Oops.NavBarItem{ Text = "ADD CUSTOMER INFO", Clicked = ItemClickAct("Add customer info"), },
-                            new Mmosoft.Oops.NavBarItem{ Text = "EDIT CUSTOMER INFO", Clicked = ItemClickAct("Edit customer info"), },
-                            new Mmosoft.Oops.NavBarItem{ Text = "DELETE CUSTOMER INFO", Clicked = ItemClickAct("Delele customer info"), }
+                            new Mmosoft.Oops.NavBarItem{ Text = "Add customer info", Clicked = ItemClickAct("Add customer info"), },
+                            new Mmosoft.Oops.NavBarItem{ Text = "Edit customer info", Clicked = ItemClickAct("Edit customer info"), },
+                            new Mmosoft.Oops.NavBarItem{ Text = "Delele customer info", Clicked = ItemClickAct("Delele customer info"), }
                         }
                     },
                     new Mmosoft.Oops.NavBarItem()
                     {
-                        Text = "PRODUCT MANAGEMENT",
+                        Text = "Product management",
                         Clicked = ItemClickAct("Product management"),
                         Items = new List<Mmosoft.Oops.NavBarItem>
                         {
-                            new Mmosoft.Oops.NavBarItem{ Text = "ADD PRODUCT INFO", Clicked = ItemClickAct("Add product info") },
-                            new Mmosoft.Oops.NavBarItem{ Text = "EDIT PRODUCT INFO", Clicked = ItemClickAct("Edit product info") },
-                            new Mmosoft.Oops.NavBarItem{ Text = "DELETE PRODUCT INFO", Clicked = ItemClickAct("Delete product info") }
+                            new Mmosoft.Oops.NavBarItem{ Text = "Add product info", Clicked = ItemClickAct("Add product info") },
+                            new Mmosoft.Oops.NavBarItem{ Text = "Edit product info", Clicked = ItemClickAct("Edit product info") },
+                            new Mmosoft.Oops.NavBarItem{ Text = "Delete product info", Clicked = ItemClickAct("Delete product info") }
                         }
                     },
-                    new Mmosoft.Oops.NavBarItem() { Text = "TRANSACTION MANAGEMENT", Clicked = ItemClickAct("Transaction Management") },
+                    new Mmosoft.Oops.NavBarItem() { Text = "Transaction Management", Clicked = ItemClickAct("Transaction Management") },
                 }
             };
             var reporting = new Mmosoft.Oops.NavBarItem()
             {
-                Text = "REPORT",
+                Text = "Report",
                 Clicked = ItemClickAct("Report"),
                 Items = new List<Mmosoft.Oops.NavBarItem>()
                 {
-                    new Mmosoft.Oops.NavBarItem() { Text = "DAILY REPORT", Clicked = ItemClickAct("Daily report") },
-                    new Mmosoft.Oops.NavBarItem() { Text = "MONTHLY REPORT", Clicked = ItemClickAct("Monthly report") },
-                    new Mmosoft.Oops.NavBarItem() { Text = "YEARLY REPORT", Clicked = ItemClickAct("Yearly report") }
+                    new Mmosoft.Oops.NavBarItem() { Text = "Daily report", Clicked = ItemClickAct("Daily report") },
+                    new Mmosoft.Oops.NavBarItem() { Text = "Monthly report", Clicked = ItemClickAct("Monthly report") },
+                    new Mmosoft.Oops.NavBarItem() { Text = "Yearly report", Clicked = ItemClickAct("Yearly report") }
                 }
             };
-            var about = new Mmosoft.Oops.NavBarItem() { Text = "ABOUT", Clicked = ItemClickAct("About") };
+            var about = new Mmosoft.Oops.NavBarItem() { Text = "About", Clicked = ItemClickAct("About") };
 
             // side bar            
             sideBar1.IdentWidth = 20;
@@ -84,12 +84,19 @@ namespace Mmosoft.OopsTest.SideBarDemo
         private Point location;
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
+            this.LocationChanged -= frmMultiLevelSideBar_LocationChanged;
             down = true;
             location = e.Location;
         }
         private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
             down = false;
+            if (_shonw)
+            {
+                sideBar1.CaptureBackgroundImage();
+                sideBar1.Invalidate();
+            }
+            this.LocationChanged += frmMultiLevelSideBar_LocationChanged;
         }
         private void panel1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -97,7 +104,7 @@ namespace Mmosoft.OopsTest.SideBarDemo
             {
                 this.Left += e.Location.X - location.X;
                 this.Top += e.Location.Y - location.Y;
-            }            
+            }
         }
         private void panel1_MouseLeave(object sender, EventArgs e)
         {
@@ -107,7 +114,7 @@ namespace Mmosoft.OopsTest.SideBarDemo
         {
             this.Cursor = Cursors.Hand;
         }
-        
+
         // max - normal switch
         private void panel1_DoubleClick(object sender, EventArgs e)
         {
@@ -115,6 +122,34 @@ namespace Mmosoft.OopsTest.SideBarDemo
                 this.WindowState = FormWindowState.Normal;
             else
                 this.WindowState = FormWindowState.Maximized;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void frmMultiLevelSideBar_LocationChanged(object sender, EventArgs e)
+        {
+            this.LocationChanged -= frmMultiLevelSideBar_LocationChanged;
+
+            if (_shonw)
+            {
+                sideBar1.CaptureBackgroundImage();
+                sideBar1.Invalidate();
+            }
+
+            this.LocationChanged += frmMultiLevelSideBar_LocationChanged;
+        }
+
+        bool _shonw = false;
+        private void frmMultiLevelSideBar_Shown(object sender, EventArgs e)
+        {
+            _shonw = true;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

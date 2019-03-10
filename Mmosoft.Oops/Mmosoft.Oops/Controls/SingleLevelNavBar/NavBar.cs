@@ -1,21 +1,27 @@
-﻿using System;
+﻿using IP.Core.Filters;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Mmosoft.Oops
+namespace Mmosoft.Oops.SingleLevelNavBar
 {
+    // TODO: Resource (pen, brush) management
     [Serializable]
     public partial class NavBar : Control
     {
+        IP.ImageProcessor _imageProcessor;
+
         // Item data
-        private List<NavBarItemWrapper> items { get; set; }
+        private List<NavBarItemWrapper> items { get; set; }     
 
         // UI Configuration
         public bool MultiLevel = false;
         public int ItemHeight = 40;
         public int IdentWidth = 20;
-        public int TextPadding = 10;
+        public int IconPadding = 12;
+        public int IconSize = 16;
+        public int TextPadding = 40;
         public int DropDownSize = 6;
 
         // UI remember
@@ -28,6 +34,9 @@ namespace Mmosoft.Oops
 
         public NavBar()
         {
+            _imageProcessor = new IP.ImageProcessor();
+            _imageProcessor.Filters.Add(new BlurFilter());
+
             DoubleBuffered = true;
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 
@@ -37,11 +46,29 @@ namespace Mmosoft.Oops
             outsidePoint = new Point(-1, -1);
         }
 
-        // Mouse stuff
-        private bool ItemHasChild(NavBarItemWrapper item)
+        //
+        public void MakeAcrylicBackground()
         {
-            return item.Items != null && item.Items.Count > 0;
+            var left = this.Parent.Left;
+            var point = PointToScreen(Point.Empty);
+
+            this.Parent.Left = int.MinValue;
+
+            if (this.BackgroundImage == null)
+            {
+                this.BackgroundImage = new Bitmap(this.Width, this.Height);
+            }
+
+            using (Graphics g = Graphics.FromImage(this.BackgroundImage))
+            {
+                g.CopyFromScreen(point, Point.Empty, this.Size);                
+            }
+
+            this.Parent.Left = left;
+
+            Invalidate();
         }
+
         private HitTestItem HitTest(List<NavBarItemWrapper> items, Point hit)
         {
             HitTestItem hitTest = null;
@@ -53,15 +80,8 @@ namespace Mmosoft.Oops
                     hitTest = new HitTestItem
                     {
                         Item = item,
-                        Action = ItemHasChild(item) ? HitTestAction.DropDownClicked : HitTestAction.ItemClicked
+                        Action = HitTestAction.ItemClicked
                     };
-                }
-                else // check child
-                {
-                    if (ItemHasChild(item))
-                    {
-                        hitTest = HitTest(item.Items, hit);
-                    }
                 }
 
                 // if hitTest found, return
@@ -84,14 +104,7 @@ namespace Mmosoft.Oops
                 else
                 {
                     item.IsHovered = false;
-                }
-                // hovered item not found, find in child item
-                if (item.Items != null && item.Items.Count > 0)
-                {
-                    var itemHo = DisplayHoverIfNeeded(item.Items, hit);
-                    if (itemHo != null)
-                        foundItem = itemHo;
-                }
+                }                
             }
             return foundItem;
         }
@@ -159,16 +172,23 @@ namespace Mmosoft.Oops
         {
             base.OnPaint(e);
 
-            var g = e.Graphics;
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-
-            g.FillRectangle(BrushCreator.CreateSolidBrush(NavBarColors.SideBarColors.Bg), ClientRectangle);
+            var g = e.Graphics;           
+            if (this.BackgroundImage != null)
+            {
+                var processedBackgroundImage = (Bitmap)this.BackgroundImage.Clone();
+                _imageProcessor.Process(processedBackgroundImage);
+                g.DrawImage(processedBackgroundImage, Point.Empty);
+                g.FillRectangle(BrushCreator.CreateSolidBrush("200, 200, 200, 200"), this.ClientRectangle);            
+            }
 
             if (!DesignMode)
             {
                 foreach (var item in this.items)
                     DrawItem(item, g);
+            }
+            else
+            {
+                g.FillRectangle(new SolidBrush(this.BackColor), this.ClientRectangle);
             }
         }
         private void DrawItem(NavBarItemWrapper item, Graphics g)
@@ -202,43 +222,27 @@ namespace Mmosoft.Oops
                 itemBorder = NavBarColors.SideBarItemColors.Border;
             }
 
-            // bg, border, text
-            g.FillRectangle(BrushCreator.CreateSolidBrush(itemBg), item.Boundary);
-            // TODO: draw with 1 or 2 pixel error (setting # border color to see)
-            g.DrawRectangle(PenCreator.Create(itemBorder, 1f), 
-                new Rectangle(item.Boundary.X, item.Boundary.Y, item.Boundary.Width, item.Boundary.Height));
-            g.DrawString(item.Text, this.Font, BrushCreator.CreateSolidBrush(itemText), item.TextPosition);
-
-            // arrow & child
-            if (this.MultiLevel)
+            if (item.IsHovered)
             {
-                // draw arrow and child item if needed
-                if (item.Items != null)
-                {
-                    if (item.IsExpanded)
-                    {                        
-                        g.DrawImage(SvgPath8x8Mgr.Get("M0,0H8L4,8z", 1, BrushCreator.CreateSolidBrush(itemArrow)), item.DropDownButtonBoundary);
-                        foreach (var childItem in item.Items)
-                        {
-                            DrawItem(childItem, g);
-                        }
-                    }
-                    else
-                    {
-                        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-                        g.DrawImage(SvgPath8x8Mgr.Get("M0,8H8L4,0z", 1, BrushCreator.CreateSolidBrush(itemArrow)), item.DropDownButtonBoundary);                        
-                    }
-                }
+                g.FillRectangle(BrushCreator.CreateSolidBrush("128, 128, 128, 128"), item.Boundary);
+                g.DrawRectangle(PenCreator.Create("128, 255, 255, 255"), new Rectangle(-1, item.Boundary.Y, this.Width, item.Boundary.Height));
             }
-            else if (item.IsClicked)
-            {
-                Rectangle leftArrowRect = new Rectangle();
-                leftArrowRect.Height = item.Boundary.Height;
-                leftArrowRect.Width = item.Boundary.Height / 2;
-                leftArrowRect.X = item.Boundary.X + item.Boundary.Width - leftArrowRect.Width + 1;
-                leftArrowRect.Y = item.Boundary.Y;
-                g.DrawImage(SvgPath8x8Mgr.Get(SvgPathBx8Constants.ArrowLeft, 10, BrushCreator.CreateSolidBrush(itemArrow)), leftArrowRect);
-            }                                 
+
+            if (item.IsClicked)
+            {               
+                g.FillRectangle(BrushCreator.CreateSolidBrush("255, 0, 0, 255"), new Rectangle(0, item.Boundary.Y + 1, 3, item.Boundary.Height - 1));
+            }
+
+            if (item.Icon != null)
+                g.DrawImage(item.Icon, item.IconBoundary);
+           
+            g.DrawString(item.Text, this.Font, BrushCreator.CreateSolidBrush("255, 0, 0, 0"), item.TextPosition);
+
+            Rectangle leftArrowRect = new Rectangle();
+            leftArrowRect.Height = item.Boundary.Height;
+            leftArrowRect.Width = item.Boundary.Height / 2;
+            leftArrowRect.X = item.Boundary.X + item.Boundary.Width - leftArrowRect.Width + 1;
+            leftArrowRect.Y = item.Boundary.Y;                                 
         }
 
         public void Initialize(params NavBarItem[] sidebarItems)
@@ -263,32 +267,9 @@ namespace Mmosoft.Oops
         {
             item.Boundary = new Rectangle(x, y, this.Width - x - 1, this.ItemHeight);
             item.DropDownButtonBoundary = new Rectangle(this.Width - 20, y + (this.ItemHeight - DropDownSize) / 2, DropDownSize, DropDownSize);
+            item.IconBoundary = new Rectangle(x + IconPadding, y + IconPadding, IconSize, IconSize);
             item.TextPosition = new Point(x + TextPadding, y + (this.ItemHeight - TextRenderer.MeasureText(item.Text, this.Font).Height) / 2);
             y += this.ItemHeight;
-
-            if (ItemHasChild(item))
-            {
-                this.MultiLevel = true;
-                if (item.IsExpanded)
-                {
-                    x += this.IdentWidth; // iden
-                    foreach (var childItem in item.Items)
-                    {
-                        CalculatePosition(childItem, ref x, ref y);
-                    }
-                    x -= this.IdentWidth;
-                }
-                else
-                {
-                    // Reset position -- prevent hit test
-                    foreach (var childItem in item.Items)
-                    {
-                        childItem.Boundary = outSideBoundary;
-                        childItem.DropDownButtonBoundary = outSideBoundary;
-                        childItem.TextPosition = outsidePoint;
-                    }
-                }
-            }
         }
     }    
 }

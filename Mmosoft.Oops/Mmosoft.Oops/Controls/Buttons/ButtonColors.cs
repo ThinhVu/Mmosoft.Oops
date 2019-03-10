@@ -5,7 +5,7 @@ using C = Mmosoft.Oops.Controls.ColorTemplate.ButtonColor;
 namespace Mmosoft.Oops.Controls.Buttons
 {
     [System.Serializable]
-    public class BorderRaidusButtonColors
+    public class ButtonColors
     {
         public Color Bg;
         public Color Border;
@@ -19,19 +19,26 @@ namespace Mmosoft.Oops.Controls.Buttons
         public Color BorderHovered;
         public Color TextHovered;
 
-        public BorderRaidusButtonColors()
+        public Color BgFocused;
+        public Color BorderFocused;
+        public Color TextFocused;
+
+        public ButtonColors()
         {            
             Bg = CustomColorTranslator.Get(C.Bg);
             Border = CustomColorTranslator.Get(C.Border);
             Text = CustomColorTranslator.Get(C.Text);
 
             BgDisabled = CustomColorTranslator.Get(C.BgDisabled);
-            BorderDisabled = CustomColorTranslator.Get(C.BorderDisabled);
             TextDisabled = CustomColorTranslator.Get(C.TextDisabled);
 
             BgHovered = CustomColorTranslator.Get(C.BgHovered);
             BorderHovered = CustomColorTranslator.Get(C.BorderHovered);
             TextHovered = CustomColorTranslator.Get(C.TextHovered);
+
+            BgFocused = CustomColorTranslator.Get(C.BgFocused);
+            BorderFocused = CustomColorTranslator.Get(C.BorderFocused);
+            TextFocused = CustomColorTranslator.Get(C.TextFocused);
         }
     }
 }

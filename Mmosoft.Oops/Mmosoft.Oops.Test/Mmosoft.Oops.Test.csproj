@@ -56,29 +56,23 @@
     <Compile Include="frmBoxShadowDemo.Designer.cs">
       <DependentUpon>frmBoxShadowDemo.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmPortal.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmPortal.Designer.cs">
-      <DependentUpon>frmPortal.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmSvgPathDemo.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmSvgPathDemo.Designer.cs">
       <DependentUpon>frmSvgPathDemo.cs</DependentUpon>
     </Compile>
+    <Compile Include="NavBarDemo\frmSingleLevelSideBar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NavBarDemo\frmSingleLevelSideBar.Designer.cs">
+      <DependentUpon>frmSingleLevelSideBar.cs</DependentUpon>
+    </Compile>
     <Compile Include="NavBarDemo\frmMultiLevelSideBar.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="NavBarDemo\frmMultiLevelSideBar.Designer.cs">
       <DependentUpon>frmMultiLevelSideBar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NavBarDemo\frmSingLevelSideBarExample.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NavBarDemo\frmSingLevelSideBarExample.Designer.cs">
-      <DependentUpon>frmSingLevelSideBarExample.cs</DependentUpon>
     </Compile>
     <Compile Include="frmTableDemo.cs">
       <SubType>Form</SubType>
@@ -100,12 +94,14 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestStuff.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestStuff.Designer.cs">
+      <DependentUpon>TestStuff.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="frmBoxShadowDemo.resx">
       <DependentUpon>frmBoxShadowDemo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmPortal.resx">
-      <DependentUpon>frmPortal.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSvgPathDemo.resx">
       <DependentUpon>frmSvgPathDemo.cs</DependentUpon>
@@ -113,12 +109,13 @@
     <EmbeddedResource Include="frmTableDemo.resx">
       <DependentUpon>frmTableDemo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NavBarDemo\frmSingleLevelSideBar.resx">
+      <DependentUpon>frmSingleLevelSideBar.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="NavBarDemo\frmMultiLevelSideBar.resx">
       <DependentUpon>frmMultiLevelSideBar.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NavBarDemo\frmSingLevelSideBarExample.resx">
-      <DependentUpon>frmSingLevelSideBarExample.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmControlsDemo.resx">
       <DependentUpon>frmControlsDemo.cs</DependentUpon>
