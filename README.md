@@ -1,9 +1,11 @@
-# oops
-## A C# Windows Form custom control set for modern app.
+# Mmosoft.Oops
+## Introduction
+Mmosoft.Oops is a C# Windows Form Fluent Design control set for modern Windows desktop application.
 
-# Acrylic Single Level Navigation Bar
+## Samples
+### Acrylic Single Level Navigation Bar
 https://youtu.be/FtA7xLGBOb8
 
-# Demo controls
+### Demo controls
 http://www.youtube.com/watch?v=d7XojEaHELM
 
