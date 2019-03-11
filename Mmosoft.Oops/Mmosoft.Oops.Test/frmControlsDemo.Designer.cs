@@ -34,7 +34,6 @@
             this.toogle1 = new Mmosoft.Oops.ToogleButton();
             this.panel6 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
-            this.marqueeProgressBar1 = new Mmosoft.Oops.Controls.MarqueeProgressBar();
             this.trackBar1 = new Mmosoft.Oops.TrackBar();
             this.progressBar1 = new Mmosoft.Oops.ProgressBar();
             this.label12 = new System.Windows.Forms.Label();
@@ -82,7 +81,6 @@
             this.panel6.BackColor = System.Drawing.Color.Transparent;
             this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel6.Controls.Add(this.label2);
-            this.panel6.Controls.Add(this.marqueeProgressBar1);
             this.panel6.Controls.Add(this.trackBar1);
             this.panel6.Controls.Add(this.progressBar1);
             this.panel6.Controls.Add(this.label12);
@@ -102,15 +100,6 @@
             this.label2.Size = new System.Drawing.Size(93, 13);
             this.label2.TabIndex = 36;
             this.label2.Text = "Marquee Progress";
-            // 
-            // marqueeProgressBar1
-            // 
-            this.marqueeProgressBar1.BackColor = System.Drawing.Color.Transparent;
-            this.marqueeProgressBar1.Location = new System.Drawing.Point(18, 25);
-            this.marqueeProgressBar1.Name = "marqueeProgressBar1";
-            this.marqueeProgressBar1.Size = new System.Drawing.Size(214, 6);
-            this.marqueeProgressBar1.TabIndex = 35;
-            this.marqueeProgressBar1.Text = "marqueeProgressBar1";
             // 
             // trackBar1
             // 
@@ -220,7 +209,6 @@
         private Mmosoft.Oops.ToogleButton toogle1;
         private Mmosoft.Oops.TrackBar trackBar1;
         private Mmosoft.Oops.ProgressBar progressBar1;
-        private Mmosoft.Oops.Controls.MarqueeProgressBar marqueeProgressBar1;
         private System.Windows.Forms.Label label2;
     }
 }

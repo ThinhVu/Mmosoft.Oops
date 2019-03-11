@@ -70,16 +70,16 @@
     <Compile Include="Controls\Card.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\MultiLevelNavBar\HitTestAction.cs" />
-    <Compile Include="Controls\MultiLevelNavBar\HitTestItem.cs" />
-    <Compile Include="Controls\MultiLevelNavBar\NavBar.cs">
+    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\HitTestAction.cs" />
+    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\HitTestItem.cs" />
+    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\NavBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\MultiLevelNavBar\NavBar.NavBarColors.cs">
+    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\NavBar.NavBarColors.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\MultiLevelNavBar\NavBarItem.cs" />
-    <Compile Include="Controls\MultiLevelNavBar\NavBarItemWrapper.cs" />
+    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\NavBarItem.cs" />
+    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\NavBarItemWrapper.cs" />
     <Compile Include="Controls\Lines\HorizontalLine.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -87,17 +87,10 @@
     <Compile Include="Controls\Lines\VerticalLine.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\SingleLevelNavBar\HitTestItem.cs" />
-    <Compile Include="Controls\SingleLevelNavBar\NavBar.NavBarColors.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\SingleLevelNavBar\NavBarItem.cs" />
-    <Compile Include="Controls\SingleLevelNavBar\NavBarItemWrapper.cs" />
+    <Compile Include="Controls\NavigationBar\SingleLevelNavBar\NavBarItem.cs" />
+    <Compile Include="Controls\NavigationBar\SingleLevelNavBar\NavBarItemWrapper.cs" />
     <Compile Include="Controls\Notifications\NotifyType.cs" />
     <Compile Include="Controls\Notifications\SmallNofiticationColors.cs" />
-    <Compile Include="Controls\ProgressBars\MarqueeProgressBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\Notifications\SmallNotification.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -121,7 +114,7 @@
     <Compile Include="Controls\Buttons\Button.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomColorTranslator.cs" />
+    <Compile Include="ExColorTranslator.cs" />
     <Compile Include="BrushCreator.cs" />
     <Compile Include="Layers\SketchDrawer.cs" />
     <Compile Include="PenCreator.cs" />
@@ -135,7 +128,7 @@
     <Compile Include="Controls\RangeBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\SingleLevelNavBar\SingleLevelNavBar.cs">
+    <Compile Include="Controls\NavigationBar\SingleLevelNavBar\SingleLevelNavBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Buttons\ToogleButton.cs">

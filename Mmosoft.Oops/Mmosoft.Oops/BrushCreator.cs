@@ -6,7 +6,7 @@ namespace Mmosoft.Oops
     {       
         public static SolidBrush CreateSolidBrush(string color = "#0")
         {
-            return new SolidBrush(CustomColorTranslator.Get(color));
+            return new SolidBrush(ExColorTranslator.Get(color));
         }
 
         public static SolidBrush CreateSolidBrush(Color color)

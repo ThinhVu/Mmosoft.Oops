@@ -144,12 +144,12 @@ namespace Mmosoft.Oops
             }
             
             // draw progress color
-            pen.Color = CustomColorTranslator.Get(barBgColor);
+            pen.Color = ExColorTranslator.Get(barBgColor);
             g.DrawLine(pen, startPoint, endPoint);
             // draw progress value
             if (value > 0)
             {
-                pen.Color = CustomColorTranslator.Get(progressColor);
+                pen.Color = ExColorTranslator.Get(progressColor);
                 g.DrawLine(pen, startPoint, valuePoint);
             }                
         }

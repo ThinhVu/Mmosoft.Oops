@@ -221,9 +221,9 @@ namespace Mmosoft.Oops
                 dotColor = Colors.Dot;
             }
 
-            trackBgPen.Color = CustomColorTranslator.Get(barColor);
-            trackValuePen.Color = CustomColorTranslator.Get(trackValueColor);
-            dotBrush.Color = CustomColorTranslator.Get(dotColor);
+            trackBgPen.Color = ExColorTranslator.Get(barColor);
+            trackValuePen.Color = ExColorTranslator.Get(trackValueColor);
+            dotBrush.Color = ExColorTranslator.Get(dotColor);
 
             // track bar
             g.DrawLine(

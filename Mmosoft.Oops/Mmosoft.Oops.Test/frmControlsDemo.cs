@@ -27,7 +27,6 @@ namespace Mmosoft.OopsTest
         {
             ConfigBar();
             anim.Start();
-            marqueeProgressBar1.Start();
         }
 
         private void ConfigBar()
@@ -38,7 +37,7 @@ namespace Mmosoft.OopsTest
         private void toogle1_Click(object sender, EventArgs e)
         {
             if (toogle1.Checked)
-                this.BackColor = CustomColorTranslator.Get("70, 70, 70");
+                this.BackColor = ExColorTranslator.Get("70, 70, 70");
             else
                 this.BackColor = Color.White;
         }

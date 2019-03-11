@@ -5,7 +5,7 @@ using System.Drawing;
 namespace Mmosoft.Oops.SingleLevelNavBar
 {
     [Serializable]
-    public class NavBarItemWrapper
+    internal class NavBarItemWrapper
     {
         /// <summary>
         /// Absolute boundary of current item from original point (0, 0)

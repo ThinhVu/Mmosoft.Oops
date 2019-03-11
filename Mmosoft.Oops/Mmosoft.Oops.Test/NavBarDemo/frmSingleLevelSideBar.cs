@@ -84,30 +84,27 @@ namespace Mmosoft.OopsTest.SideBarDemo
         }
 
         // form movement
-        private bool down;
-        private Point location;
+        private bool mouseIsDown; // mouse down state
+        private Point mouseDownLocation; // where mouse down
+        private Point mouseLocation; // last mouse down + hold position
         private void pnHeader_MouseDown(object sender, MouseEventArgs e)
-        {
-            this.LocationChanged -= frmSingleLevelSideBar_LocationChanged;
-            down = true;
-            location = e.Location;
+        {            
+            mouseIsDown = true;
+            mouseLocation = e.Location;
+            mouseDownLocation = PointToScreen(e.Location);
         }
         private void pnHeader_MouseUp(object sender, MouseEventArgs e)
         {
-            down = false;
-            if (_formShown)
-            {
+            mouseIsDown = false;
+            if (mouseDownLocation != PointToScreen(e.Location))
                 navBar.MakeAcrylicBackground();
-                navBar.Invalidate();
-            }
-            this.LocationChanged += frmSingleLevelSideBar_LocationChanged;
         }
         private void pnHeader_MouseMove(object sender, MouseEventArgs e)
         {
-            if (down)
+            if (mouseIsDown)
             {
-                this.Left += e.Location.X - location.X;
-                this.Top += e.Location.Y - location.Y;
+                this.Left += e.Location.X - mouseLocation.X;
+                this.Top += e.Location.Y - mouseLocation.Y;
             }
         }
         private void pnHeader_MouseLeave(object sender, EventArgs e)
@@ -118,25 +115,7 @@ namespace Mmosoft.OopsTest.SideBarDemo
         {
             this.Cursor = Cursors.Hand;
         }
-        private void frmSingleLevelSideBar_LocationChanged(object sender, EventArgs e)
-        {
-            this.LocationChanged -= frmSingleLevelSideBar_LocationChanged;
-
-            if (_formShown)
-            {
-                navBar.MakeAcrylicBackground();
-            }
-
-            this.LocationChanged += frmSingleLevelSideBar_LocationChanged;
-        }
         // max - normal size switch
-        private void pnHeader_DoubleClick(object sender, EventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Maximized)
-                this.WindowState = FormWindowState.Normal;
-            else
-                this.WindowState = FormWindowState.Maximized;
-        }        
         private void frmSingleLevelSideBar_Shown(object sender, EventArgs e)
         {
             _formShown = true;

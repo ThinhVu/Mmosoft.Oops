@@ -25,20 +25,20 @@ namespace Mmosoft.Oops.Controls.Buttons
 
         public ButtonColors()
         {            
-            Bg = CustomColorTranslator.Get(C.Bg);
-            Border = CustomColorTranslator.Get(C.Border);
-            Text = CustomColorTranslator.Get(C.Text);
+            Bg = ExColorTranslator.Get(C.Bg);
+            Border = ExColorTranslator.Get(C.Border);
+            Text = ExColorTranslator.Get(C.Text);
 
-            BgDisabled = CustomColorTranslator.Get(C.BgDisabled);
-            TextDisabled = CustomColorTranslator.Get(C.TextDisabled);
+            BgDisabled = ExColorTranslator.Get(C.BgDisabled);
+            TextDisabled = ExColorTranslator.Get(C.TextDisabled);
 
-            BgHovered = CustomColorTranslator.Get(C.BgHovered);
-            BorderHovered = CustomColorTranslator.Get(C.BorderHovered);
-            TextHovered = CustomColorTranslator.Get(C.TextHovered);
+            BgHovered = ExColorTranslator.Get(C.BgHovered);
+            BorderHovered = ExColorTranslator.Get(C.BorderHovered);
+            TextHovered = ExColorTranslator.Get(C.TextHovered);
 
-            BgFocused = CustomColorTranslator.Get(C.BgFocused);
-            BorderFocused = CustomColorTranslator.Get(C.BorderFocused);
-            TextFocused = CustomColorTranslator.Get(C.TextFocused);
+            BgFocused = ExColorTranslator.Get(C.BgFocused);
+            BorderFocused = ExColorTranslator.Get(C.BorderFocused);
+            TextFocused = ExColorTranslator.Get(C.TextFocused);
         }
     }
 }

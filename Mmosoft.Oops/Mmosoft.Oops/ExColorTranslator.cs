@@ -10,7 +10,7 @@ namespace Mmosoft.Oops
     // There is a pre-built class named ColorTranslator which also support html color format
     // The purpose of creating this class is provide more html color format in wider range 
     // from 1 -> 8 character and also rgb format
-    public static class CustomColorTranslator
+    public static class ExColorTranslator
     {
         private static Dictionary<string, Color> _cache;
 
@@ -27,7 +27,7 @@ namespace Mmosoft.Oops
         private static Regex decRgb = new Regex(@"^(\d{1,3}),\s+(\d{1,3}),\s+(\d{1,3})$");
 
 
-        static CustomColorTranslator()
+        static ExColorTranslator()
         {
             _cache = new Dictionary<string, Color>();
         }

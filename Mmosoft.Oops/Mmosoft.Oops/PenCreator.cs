@@ -11,7 +11,7 @@ namespace Mmosoft.Oops
         /// <returns></returns>
         public static Pen Create(string color = "#0", float lineWeight = 1f)
         {
-            return new Pen(CustomColorTranslator.Get(color));
+            return new Pen(ExColorTranslator.Get(color));
         }
 
         public static Pen Create(Color color, float lineWeight = 1f)

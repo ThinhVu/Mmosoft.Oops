@@ -143,7 +143,7 @@ namespace Mmosoft.Oops
             g.FillEllipse(bgBrush, new Rectangle(maxWidth - maxHeight, 0, maxHeight, maxHeight));
 
             // border
-            _borderPen.Color = CustomColorTranslator.Get(borderColor);
+            _borderPen.Color = ExColorTranslator.Get(borderColor);
             g.DrawArc(_borderPen, new Rectangle(0, 0, maxHeight, maxHeight), 90, 180);
             g.DrawLine(_borderPen, maxHeight / 2, 0, maxWidth - maxHeight / 2, 0);
             g.DrawLine(_borderPen, maxHeight / 2, maxHeight, maxWidth - maxHeight / 2, maxHeight);
