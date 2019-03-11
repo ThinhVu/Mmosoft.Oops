@@ -1,6 +1,6 @@
 ﻿namespace Mmosoft.Oops.SingleLevelNavBar
 {
-    public partial class NavBar
+    public partial class SingleLevelNavBar
     {
         // #5c8d89 - #74b49b - #a7d7c5 - #f4f9f4
         public static class NavBarColors

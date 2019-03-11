@@ -40,7 +40,7 @@
             this.btnBoxShadow = new Mmosoft.Oops.Controls.Buttons.Button();
             this.button3 = new Mmosoft.Oops.Controls.Buttons.Button();
             this.button2 = new Mmosoft.Oops.Controls.Buttons.Button();
-            this.navBar = new Mmosoft.Oops.SingleLevelNavBar.NavBar();
+            this.navBar = new Mmosoft.Oops.SingleLevelNavBar.SingleLevelNavBar();
             this.pnHeader.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -221,7 +221,7 @@
         }
 
         #endregion
-        private Mmosoft.Oops.SingleLevelNavBar.NavBar navBar;
+        private Mmosoft.Oops.SingleLevelNavBar.SingleLevelNavBar navBar;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel pnHeader;
         private System.Windows.Forms.Button button4;

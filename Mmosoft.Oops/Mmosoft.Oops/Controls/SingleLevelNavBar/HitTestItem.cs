@@ -6,6 +6,5 @@ namespace Mmosoft.Oops.SingleLevelNavBar
     public class HitTestItem
     {        
         public NavBarItemWrapper Item { get; set; }
-        public HitTestAction Action { get; set; }
     }
 }

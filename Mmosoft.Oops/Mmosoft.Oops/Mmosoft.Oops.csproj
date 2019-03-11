@@ -87,7 +87,6 @@
     <Compile Include="Controls\Lines\VerticalLine.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\SingleLevelNavBar\HitTestAction.cs" />
     <Compile Include="Controls\SingleLevelNavBar\HitTestItem.cs" />
     <Compile Include="Controls\SingleLevelNavBar\NavBar.NavBarColors.cs">
       <SubType>Component</SubType>
@@ -136,7 +135,7 @@
     <Compile Include="Controls\RangeBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\SingleLevelNavBar\NavBar.cs">
+    <Compile Include="Controls\SingleLevelNavBar\SingleLevelNavBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Buttons\ToogleButton.cs">
