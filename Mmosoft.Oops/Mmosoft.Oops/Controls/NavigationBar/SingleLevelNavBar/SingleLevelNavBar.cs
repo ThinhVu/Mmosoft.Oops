@@ -78,7 +78,7 @@ namespace Mmosoft.Oops.SingleLevelNavBar
         
         // mouse stuff
         protected override void OnMouseClick(MouseEventArgs e)
-        {            
+        {
             foreach (var item in _navBarItems)
             {
                 if (item.Boundary.Contains(e.Location))
@@ -96,7 +96,7 @@ namespace Mmosoft.Oops.SingleLevelNavBar
             Invalidate();
         }        
         protected override void OnMouseMove(MouseEventArgs e)
-        {
+        {            
             _mouseLocation = e.Location;
             Cursor = IsMouseHoverOverNavBarItem(e.Location)? Cursors.Hand : Cursors.Default;
             foreach (var item in this._navBarItems)
@@ -157,10 +157,8 @@ namespace Mmosoft.Oops.SingleLevelNavBar
                 g.FillRectangle(_clickedItemBrush, new Rectangle(0, item.Boundary.Y + 1, 3/*px*/, item.Boundary.Height - 1));
             }
 
-            if (item.Icon != null)
-                g.DrawImage(item.Icon, item.IconBoundary);
 
-            g.DrawString(item.Text, Font, _itemTextBrush, item.TextPosition);
+
 
             // Draw reveal highlight
             if (item.IsHovered)
@@ -190,8 +188,12 @@ namespace Mmosoft.Oops.SingleLevelNavBar
                     ExColorTranslator.Get("100, 255, 255, 255"),
                     ExColorTranslator.Get("0, 200, 200, 200"), 0f);
                 g.FillRectangle(_leftRevealHighlightBrush, leftRevealHighlightRect);
-                g.FillRectangle(_rightRevealHighlightBrush, rightRevealHighlightRect);
+                g.FillRectangle(_rightRevealHighlightBrush, rightRevealHighlightRect);                
             }
+
+            if (item.Icon != null)
+                g.DrawImage(item.Icon, item.IconBoundary);
+            g.DrawString(item.Text, Font, _itemTextBrush, item.TextPosition);
         }
         protected override void OnPaint(PaintEventArgs e)
         {            
@@ -215,6 +217,8 @@ namespace Mmosoft.Oops.SingleLevelNavBar
                     g.FillRectangle(_navBarbackgroundBrush, ClientRectangle);
                 }
 
+
+                // paint item
                 foreach (var item in _navBarItems)
                     PaintItem(item, g);
             }

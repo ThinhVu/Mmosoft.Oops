@@ -66,6 +66,9 @@
     <Compile Include="Animation\Animator.cs" />
     <Compile Include="ColorTemplate.cs" />
     <Compile Include="Controls\Buttons\ButtonColors.cs" />
+    <Compile Include="Controls\Buttons\FlatButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Buttons\ToogleButtonColors.cs" />
     <Compile Include="Controls\Card.cs">
       <SubType>Component</SubType>
@@ -160,6 +163,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controls\TitleBar\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

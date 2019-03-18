@@ -15,6 +15,7 @@ namespace Mmosoft.OopsTest.SideBarDemo
         {
             InitializeComponent();
             SetupNavBar();
+            btnCollapse.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.ArrowThickLeft, 2, Brushes.Black);
         }
         
         // navigation configuration
@@ -78,6 +79,15 @@ namespace Mmosoft.OopsTest.SideBarDemo
             
             navBar.Initialize(home, bg, colors, lockScreen, themes, fonts, start, taskbar);
         }
+        private void OnNavBarCollappsedHandler()
+        {
+            pnHeader.Left = navBar.Right;
+            panel2.Left = navBar.Right;
+
+            pnHeader.Width = this.Width - pnHeader.Left;
+            panel2.Width = this.Width - panel2.Left;
+        }
+
         private EventHandler ItemClickHandler(string msg)
         {
             return (s, e) => label1.Text = msg;
@@ -154,6 +164,25 @@ namespace Mmosoft.OopsTest.SideBarDemo
         private void button5_Click(object sender, EventArgs e)
         {
             new SideBarDemo.frmMultiLevelSideBar().ShowDialog();
+        }
+
+        private bool collapse;
+        private void btnCollapse_Click(object sender, EventArgs e)
+        {
+            collapse = !collapse;
+            if (collapse)
+            {
+                navBar.Width = 40;
+                btnCollapse.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.ArrowThickRight, 2, Brushes.Black);
+            }
+            else
+            {
+                navBar.Width = 170;
+                btnCollapse.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.ArrowThickLeft, 2, Brushes.Black);
+            }
+
+            panel2.Left = navBar.Right;
+            panel2.Width = this.Width - panel2.Left - 1;
         }
     }
 }

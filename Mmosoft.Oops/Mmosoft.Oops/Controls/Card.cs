@@ -9,13 +9,8 @@ namespace Mmosoft.Oops.Controls
 {
     [Designer(typeof(ParentControlDesigner))]
     public class Card : Control
-    {
-        Animation.Animator mouseEnterAnim;
-        Animation.Animator mouseLeaveAnim;
-
-        private int _contentPadding;    
-        private int _shadowPadding;
-
+    {        
+        private int _contentPadding;
         protected Rectangle ContentRectangle
         {
             get 
@@ -28,7 +23,10 @@ namespace Mmosoft.Oops.Controls
             }
         }
 
-        private SolidBrush _shadowBrush;
+        private LinearGradientBrush _topBrush;
+        private LinearGradientBrush _bottomBrush;
+        private LinearGradientBrush _leftBrush;
+        private LinearGradientBrush _rightBrush;
 
         private Image image;
         [Browsable(true)]
@@ -44,54 +42,10 @@ namespace Mmosoft.Oops.Controls
             SetStyle(System.Windows.Forms.ControlStyles.SupportsTransparentBackColor, true);
 
             _contentPadding = 5;
-            _shadowPadding = 5;
 
             this.Width = 100;
-            this.Height = 150;
-
-            _shadowBrush = BrushCreator.CreateSolidBrush("#4F000000");
-            InitMouseEnterAnimation();
-            InitMouseLeaveAnimation();            
-        }
-
-        private void InitMouseEnterAnimation()
-        {
-            mouseEnterAnim = new Animation.Animator()
-            {
-                OnStopped = () => _shadowPadding = 0
-            };
-            mouseEnterAnim.Add(new Animation.Step
-            {
-                TotalStep = 5,
-                Interval = 20,
-                AnimAction = (i) => { _shadowPadding -= 1; Invalidate(); }
-            });
-        }
-        private void InitMouseLeaveAnimation()
-        {
-            mouseLeaveAnim = new Animation.Animator()
-            {
-                OnStopped = () => _shadowPadding = 5
-            };
-            mouseLeaveAnim.Add(new Animation.Step
-            {
-                TotalStep = 5,
-                Interval = 20,
-                AnimAction = (i) => { _shadowPadding += 1; Invalidate(); }
-            });
-        }
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {         
-            mouseLeaveAnim.Stop();
-            mouseEnterAnim.Start();
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            mouseEnterAnim.Stop();
-            mouseLeaveAnim.Start();
-        }
+            this.Height = 150;            
+        }        
 
         protected override void OnMouseEnter(EventArgs e)
         {            
@@ -107,16 +61,24 @@ namespace Mmosoft.Oops.Controls
         protected override void OnPaint(PaintEventArgs e)
         {            
             var g = e.Graphics;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
+           // g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            var shadowRect = new RectangleF(
-                _contentPadding + _shadowPadding,
-                _contentPadding + _shadowPadding,
-                this.ContentRectangle.Width,
-                this.ContentRectangle.Height);
+            Rectangle topRect = new Rectangle(8, 0, this.Width - 16, 8);
+            Rectangle rightRect = new Rectangle(this.Width - 8, 8, 8, this.Height - 16);
+            Rectangle bottomRect = new Rectangle(8, this.Height - 8, this.Width - 16, 8);
+            Rectangle leftRect = new Rectangle(-1, 8, 8, this.Height - 16);
+            
 
-            g.FillRectangle(_shadowBrush, shadowRect);
+            _topBrush = new LinearGradientBrush(topRect, Color.FromArgb(128, Color.Black), Color.White, -90f);
+            _bottomBrush = new LinearGradientBrush(bottomRect, Color.FromArgb(128, Color.Black), Color.White, 90f);
+            _leftBrush = new LinearGradientBrush(leftRect, Color.FromArgb(128, Color.Black), Color.White, 180f);
+            _rightBrush = new LinearGradientBrush(rightRect, Color.FromArgb(128, Color.Black), Color.White, 0f);
 
+            g.FillRectangle(_topBrush, topRect);
+            g.FillRectangle(_bottomBrush, bottomRect);
+            g.FillRectangle(_leftBrush, leftRect);
+            g.FillRectangle(_rightBrush, rightRect);
+           
             if (this.Image != null)
             {
                 g.DrawImage(this.Image, ContentRectangle);
@@ -130,7 +92,7 @@ namespace Mmosoft.Oops.Controls
             base.Dispose(disposing);
             if (disposing)
             {
-                _shadowBrush.Dispose();
+                _topBrush.Dispose();
             }
         }
     }
