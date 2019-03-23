@@ -117,14 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="girl2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\loveyou.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Walmart_logo_svg" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Walmart_logo.svg.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="girl1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\dcwibef-80ba728d-0d81-4fbd-833e-a9a28cb49d1a.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
 </root>

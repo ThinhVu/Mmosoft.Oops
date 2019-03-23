@@ -19,11 +19,11 @@ namespace Mmosoft.Oops.Controls
             tbDuration.MinValue = 1;
             
             var sm = System.Drawing.Drawing2D.SmoothingMode.Default;
-            fbShuffle.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Random, 2, Brushes.Black, sm);
-            fbBack.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.MediaStepBackward, 2, Brushes.Black, sm);
-            fbPlayPause.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.MediaPlay, 2, Brushes.Black, sm);
-            fbNext.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.MediaStepForward, 2, Brushes.Black, sm);
-            fbLoop.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Loop, 2, Brushes.Black, sm);
+            fbShuffle.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Random, 4, Brushes.Black, sm);
+            fbBack.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.MediaStepBackward, 4, Brushes.Black, sm);
+            fbPlayPause.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.MediaPlay, 4, Brushes.Black, sm);
+            fbNext.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.MediaStepForward, 4, Brushes.Black, sm);
+            fbLoop.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Loop, 4, Brushes.Black, sm);
         }
     }
 }

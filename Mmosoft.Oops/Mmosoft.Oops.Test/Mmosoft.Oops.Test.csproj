@@ -49,18 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="frmBoxShadowDemo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmBoxShadowDemo.Designer.cs">
-      <DependentUpon>frmBoxShadowDemo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmSvgPathDemo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmSvgPathDemo.Designer.cs">
-      <DependentUpon>frmSvgPathDemo.cs</DependentUpon>
-    </Compile>
     <Compile Include="NavBarDemo\frmSingleLevelSideBar.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,18 +81,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestStuff.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TestStuff.Designer.cs">
-      <DependentUpon>TestStuff.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="frmBoxShadowDemo.resx">
-      <DependentUpon>frmBoxShadowDemo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmSvgPathDemo.resx">
-      <DependentUpon>frmSvgPathDemo.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmTableDemo.resx">
       <DependentUpon>frmTableDemo.cs</DependentUpon>
     </EmbeddedResource>
@@ -153,34 +129,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\walmart-282199.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\loveyou.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Walmart_logo.svg.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\tiny_cloud.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\blue-sky.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\x-close.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\dcwibef-80ba728d-0d81-4fbd-833e-a9a28cb49d1a.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\2.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\frame-001.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\header-cover-img.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

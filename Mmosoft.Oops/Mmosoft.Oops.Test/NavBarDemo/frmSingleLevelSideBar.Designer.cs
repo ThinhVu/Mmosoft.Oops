@@ -91,7 +91,6 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.navBar.BackColor = System.Drawing.Color.Gainsboro;
             this.navBar.ClickedItem = System.Drawing.Color.Blue;
-            this.navBar.EnableAcrylicStyle = false;
             this.navBar.Location = new System.Drawing.Point(1, 1);
             this.navBar.Name = "navBar";
             this.navBar.Size = new System.Drawing.Size(234, 553);

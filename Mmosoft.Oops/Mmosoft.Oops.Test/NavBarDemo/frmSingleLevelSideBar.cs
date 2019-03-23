@@ -19,7 +19,6 @@ namespace Mmosoft.OopsTest.SideBarDemo
 
         private void frmSingleLevelSideBar_Shown(object sender, EventArgs e)
         {
-            navBar.MakeAcrylicBackground();
             SetupImageGrid();
         }
         private void SetupTitleBar()
@@ -27,7 +26,6 @@ namespace Mmosoft.OopsTest.SideBarDemo
             titleBar1.MinimizeEnable = true;
             titleBar1.MaximizeEnable = true;
             titleBar1.Text = "Demo sample";
-            titleBar1.OnMouseDragCompleted += (s, e) => navBar.MakeAcrylicBackground();
             titleBar1.OnMouseDragging += (s, e) =>
             {
                 this.Left += e.OffsetX;
@@ -58,56 +56,56 @@ namespace Mmosoft.OopsTest.SideBarDemo
             var home = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
             {
                 Text = "Home",
-                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Home, 2, Brushes.Black),
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Home, 4, Brushes.Black),
                 Clicked = itemClick("Home"),
             };
 
             var bg = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
             {
                 Text = "Background",
-                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Monitor, 2, Brushes.Black),
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Monitor, 4, Brushes.Black),
                 Clicked = itemClick("Background"),
             };
 
             var colors = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
             {
                 Text = "Colors",
-                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Brush, 2, Brushes.Black),
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Brush, 4, Brushes.Black),
                 Clicked = itemClick("Colors"),
             };
 
             var lockScreen = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
             {
                 Text = "Lock screen",
-                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.LockLocked, 2, Brushes.Black),
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.LockLocked, 4, Brushes.Black),
                 Clicked = itemClick("Lock screen"),
             };
 
             var themes = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
             {
                 Text = "Themes",
-                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Contrast, 2, Brushes.Black),
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Contrast, 4, Brushes.Black),
                 Clicked = itemClick("Themes"),
             };
 
             var fonts = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
             {
                 Text = "Fonts",
-                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Text, 2, Brushes.Black),
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Text, 4, Brushes.Black),
                 Clicked = itemClick("Fonts"),
             };
 
             var start = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
             {
                 Text = "Start",
-                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Box, 2, Brushes.Black),
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Box, 4, Brushes.Black),
                 Clicked = itemClick("Start"),
             };
 
             var taskbar = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
             {
                 Text = "Taskbar",
-                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.List, 2, Brushes.Black),
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.List, 4, Brushes.Black),
                 Clicked = itemClick("Taskbar"),
             };            
             navBar.Initialize(home, bg, colors, lockScreen, themes, fonts, start, taskbar);
@@ -118,7 +116,7 @@ namespace Mmosoft.OopsTest.SideBarDemo
             // navBar.EnableAcrylicStyle = true;
         }                
         private void SetupImageGrid()
-        {            
+        {
             // setup layout
             imageGrid1.Column = 3;
             imageGrid1.ImagePadding = 2;

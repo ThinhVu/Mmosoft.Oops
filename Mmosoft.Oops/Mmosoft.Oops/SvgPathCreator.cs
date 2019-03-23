@@ -30,7 +30,7 @@ namespace Mmosoft.Oops
             public const string Minimize = "M1,6v1h6v-1z";
             public const string Normal = "M1,2h6v5h-6v-4h0.5v3.5h5v-3.5h-5.5z";
             public const string Maximized = "M0,2h3v1h-2.5v3h4v-1h0.5v1.5h-5zM3,0.5h5v1h-4.5v3h4v-3h0.5v3.5h-5z";
-            public const string Close = SvgPathBx8Constants.X;
+            public const string Close = "M1.5 1L1 1.5L3.5 4L1 6.5L1.5 7L4 4.5L6.5 7L7 6.5L4.5 4L7 1.5L6.5 1L4 3.5z";
         }
 
         // 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mmosoft.Oops;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -11,6 +12,7 @@ namespace Mmosoft.OopsTest.SideBarDemo
         {
             InitializeComponent();
             ConfigSideBar();
+            SetupTitleBar();
         }
 
         private void ConfigSideBar()
@@ -18,12 +20,14 @@ namespace Mmosoft.OopsTest.SideBarDemo
             var home = new Mmosoft.Oops.NavBarItem()
             {
                 Text = "Home",
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Home, 4, Brushes.Black),
                 Clicked = ItemClickAct("Home"),
             };
             var management = new Mmosoft.Oops.NavBarItem()
             {
                 Text = "Management",
                 Clicked = ItemClickAct("Management"),
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Monitor, 4, Brushes.Black),
                 Items = new List<Mmosoft.Oops.NavBarItem>()
                 {
                     new Mmosoft.Oops.NavBarItem()
@@ -54,6 +58,7 @@ namespace Mmosoft.OopsTest.SideBarDemo
             var reporting = new Mmosoft.Oops.NavBarItem()
             {
                 Text = "Report",
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Brush, 4, Brushes.Black),
                 Clicked = ItemClickAct("Report"),
                 Items = new List<Mmosoft.Oops.NavBarItem>()
                 {
@@ -62,10 +67,14 @@ namespace Mmosoft.OopsTest.SideBarDemo
                     new Mmosoft.Oops.NavBarItem() { Text = "Yearly report", Clicked = ItemClickAct("Yearly report") }
                 }
             };
-            var about = new Mmosoft.Oops.NavBarItem() { Text = "About", Clicked = ItemClickAct("About") };
+            var about = new Mmosoft.Oops.NavBarItem() 
+            { 
+                Text = "About",
+                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.LockLocked, 4, Brushes.Black),
+                Clicked = ItemClickAct("About") 
+            };
 
-            // side bar            
-            sideBar1.IdentWidth = 20;
+            sideBar1.EnableHighlightReveal = true;
             sideBar1.Initialize(home, management, reporting, about);
         }
 
@@ -74,82 +83,26 @@ namespace Mmosoft.OopsTest.SideBarDemo
             return (s, e) => label1.Text = msg;
         }
 
-        private void animateControlSimpleImpl1_Click(object sender, EventArgs e)
+        private void SetupTitleBar()
         {
-            this.Close();
-        }
-
-        // form movement
-        private bool down;
-        private Point location;
-        private void panel1_MouseDown(object sender, MouseEventArgs e)
-        {
-            this.LocationChanged -= frmMultiLevelSideBar_LocationChanged;
-            down = true;
-            location = e.Location;
-        }
-        private void panel1_MouseUp(object sender, MouseEventArgs e)
-        {
-            down = false;
-            if (_shonw)
+            titleBar1.MinimizeEnable = true;
+            titleBar1.MaximizeEnable = true;
+            titleBar1.Text = "Demo sample";
+            titleBar1.OnMouseDragging += (s, e) =>
             {
-                sideBar1.CaptureBackgroundImage();
-                sideBar1.Invalidate();
-            }
-            this.LocationChanged += frmMultiLevelSideBar_LocationChanged;
-        }
-        private void panel1_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (down)
+                this.Left += e.OffsetX;
+                this.Top += e.OffsetY;
+            };
+            titleBar1.OnMinimizeClicked += (s, e) => this.WindowState = FormWindowState.Minimized;
+            titleBar1.OnMaximizeClicked += (s, e) =>
             {
-                this.Left += e.Location.X - location.X;
-                this.Top += e.Location.Y - location.Y;
-            }
-        }
-        private void panel1_MouseLeave(object sender, EventArgs e)
-        {
-            this.Cursor = Cursors.Default;
-        }
-        private void panel1_MouseEnter(object sender, EventArgs e)
-        {
-            this.Cursor = Cursors.Hand;
-        }
+                if (this.WindowState == FormWindowState.Normal)
+                    this.WindowState = FormWindowState.Maximized;
+                else if (this.WindowState == FormWindowState.Maximized)
+                    this.WindowState = FormWindowState.Normal;
 
-        // max - normal switch
-        private void panel1_DoubleClick(object sender, EventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Maximized)
-                this.WindowState = FormWindowState.Normal;
-            else
-                this.WindowState = FormWindowState.Maximized;
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void frmMultiLevelSideBar_LocationChanged(object sender, EventArgs e)
-        {
-            this.LocationChanged -= frmMultiLevelSideBar_LocationChanged;
-
-            if (_shonw)
-            {
-                sideBar1.CaptureBackgroundImage();
-                sideBar1.Invalidate();
-            }
-
-            this.LocationChanged += frmMultiLevelSideBar_LocationChanged;
-        }
-
-        bool _shonw = false;
-        private void frmMultiLevelSideBar_Shown(object sender, EventArgs e)
-        {
-            _shonw = true;
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            this.Close();
+            };
+            titleBar1.OnCloseClicked += (s, e) => this.Close();
         }
     }
 }

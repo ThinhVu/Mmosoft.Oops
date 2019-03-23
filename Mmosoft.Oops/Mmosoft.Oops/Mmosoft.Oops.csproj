@@ -71,14 +71,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Buttons\ToogleButtonColors.cs" />
-    <Compile Include="Controls\Card.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\ImageGrid\ImageGrid.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ImageGrid\ImageGridItemClickedEventArgs.cs" />
-    <Compile Include="Controls\ImageGrid\ImageGridItemClickedEventHandler.cs" />
     <Compile Include="Controls\ImageGrid\ImageWrapper.cs" />
     <Compile Include="Controls\MediaController.cs">
       <SubType>UserControl</SubType>
@@ -88,10 +84,7 @@
     </Compile>
     <Compile Include="Controls\NavigationBar\MultiLevelNavBar\HitTestAction.cs" />
     <Compile Include="Controls\NavigationBar\MultiLevelNavBar\HitTestItem.cs" />
-    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\NavBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\NavBar.NavBarColors.cs">
+    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\MultiLevelNavBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\NavigationBar\MultiLevelNavBar\NavBarItem.cs" />

@@ -15,6 +15,12 @@ namespace Mmosoft.Oops
         /// Absolute boundary of current item drop down icon from original point (0, 0);
         /// </summary>
         public Rectangle DropDownButtonBoundary { get; set; }
+
+        /// <summary>
+        /// Absolute boundary of current items icon from original point (0, 0)
+        /// </summary>
+        public Rectangle IconBoundary { get; set; }
+
         /// <summary>
         /// Position of text content
         /// </summary>
@@ -38,6 +44,10 @@ namespace Mmosoft.Oops
         /// </summary>
         public bool IsClicked;
         /// <summary>
+        /// 
+        /// </summary>
+        public Bitmap Icon { get; set; }
+        /// <summary>
         /// Side bar items
         /// </summary>
         public List<NavBarItemWrapper> Items { get; set; }
@@ -54,6 +64,7 @@ namespace Mmosoft.Oops
         {
             this.Text = item.Text;
             this.Clicked = item.Clicked;
+            this.Icon = item.Icon;
             if (item.Items != null)
             {
                 this.Items = new List<NavBarItemWrapper>();

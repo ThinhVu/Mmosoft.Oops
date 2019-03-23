@@ -49,23 +49,7 @@ namespace Mmosoft.Oops.Controls
             foreach (var img in imgs)
                 _imgWrappers.Add(new ImageWrapper(img));         
             ReDraw();
-        }
-
-        private void GetMinHeightAndColumnIndex(int[] num, out int value, out int index)
-        {
-            value = int.MaxValue;
-            index = -1;
-            
-            for (int i = num.Length - 1; i >= 0; i--)
-            {
-                if (value >= num[i])
-                {
-                    value = num[i];
-                    index = i;
-                }
-            }
-        }
-
+        }        
         public void ReDraw()
         {
             if (_imgWrappers == null || _imgWrappers.Count == 0)
@@ -99,19 +83,16 @@ namespace Mmosoft.Oops.Controls
 
             Invalidate();
         }
-
         protected override void OnSizeChanged(EventArgs e)
         {
             _virtualHeight = 0;
             ReDraw();
         }
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
             var hitPoint = e.Location.ChangePosition(0, _offsetY);  
             this.Cursor = GetHotItem(hitPoint) == null ? Cursors.Default : Cursors.Hand;
         }
-
         protected override void OnMouseClick(MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
@@ -128,19 +109,6 @@ namespace Mmosoft.Oops.Controls
                         });
             }            
         }
-
-        private ImageWrapper GetHotItem(Point location)
-        {
-            foreach (var i in _imgWrappers)
-            {
-                if (i.Boundary.Contains(location))
-                {
-                    return i;
-                }
-            }
-            return null;
-        }
-
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -154,19 +122,52 @@ namespace Mmosoft.Oops.Controls
                 _offsetY = _virtualHeight - this.Height;
             Invalidate();
         }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
-            if (_imgWrappers != null)
+
+            if (DesignMode)
             {
-                foreach (ImageWrapper i in GetImageInViewport())
+                g.DrawRectangle(Pens.Black, this.ClientRectangle.ChangeSizeRelative(-1, -1));
+                g.DrawString(this.Name + " control doesn't provide design time support", this.Font, Brushes.Black, new Point(0, 0));
+            }
+            else
+            {
+                if (_imgWrappers != null)
                 {
-                    g.DrawImage(i.Image, i.Boundary);
+                    foreach (ImageWrapper i in GetImageInViewport())
+                    {
+                        g.DrawImage(i.Image, i.Boundary);
+                    }
                 }
             }
         }
 
+        private void GetMinHeightAndColumnIndex(int[] num, out int value, out int index)
+        {
+            value = int.MaxValue;
+            index = -1;
+
+            for (int i = num.Length - 1; i >= 0; i--)
+            {
+                if (value >= num[i])
+                {
+                    value = num[i];
+                    index = i;
+                }
+            }
+        }
+        private ImageWrapper GetHotItem(Point location)
+        {
+            foreach (var i in _imgWrappers)
+            {
+                if (i.Boundary.Contains(location))
+                {
+                    return i;
+                }
+            }
+            return null;
+        }
         private IEnumerable<ImageWrapper> GetImageInViewport()
         {
             Rectangle r;
