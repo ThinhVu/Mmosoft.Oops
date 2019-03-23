@@ -78,6 +78,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ImageGrid\ImageWrapper.cs" />
+    <Compile Include="Controls\MediaController.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MediaController.Designer.cs">
+      <DependentUpon>MediaController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\NavigationBar\MultiLevelNavBar\HitTestAction.cs" />
     <Compile Include="Controls\NavigationBar\MultiLevelNavBar\HitTestItem.cs" />
     <Compile Include="Controls\NavigationBar\MultiLevelNavBar\NavBar.cs">
@@ -151,6 +157,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SvgPathCreator.cs" />
+    <EmbeddedResource Include="Controls\MediaController.resx">
+      <DependentUpon>MediaController.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

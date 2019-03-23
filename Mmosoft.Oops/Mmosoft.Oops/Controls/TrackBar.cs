@@ -63,7 +63,7 @@ namespace Mmosoft.Oops
             get { return maxValue; }
             set
             {
-                var v = value < 0 ? 0 : value;
+                var v = value <= 0 ? 1 : value;
                 if (maxValue != v)
                 {
                     maxValue = v;
@@ -98,6 +98,10 @@ namespace Mmosoft.Oops
 
         public TrackBar() : base()
         {
+            maxValue = 100;
+            minValue = 0;
+            value = 0;
+
             DoubleBuffered = true;
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 
