@@ -2,7 +2,7 @@
 
 namespace Mmosoft.Oops.Controls.TitleBar
 {
-    public class TitleBarControlButton
+    class TitleBarControlButton
     {
         public bool IsMouseHover { get; set; }
         public Rectangle Boundary { get; set; }

@@ -1,15 +1,16 @@
 ﻿using Mmosoft.Oops;
+using Mmosoft.Oops.Controls;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-namespace Mmosoft.OopsTest.SideBarDemo
+namespace Mmosoft.OopsTest
 {
-    public partial class frmSingleLevelSideBar : Form
+    public partial class frmNavigationBarDemo : Form
     {        
-        public frmSingleLevelSideBar()
+        public frmNavigationBarDemo()
         {
             InitializeComponent();
             SetupNavBar();
@@ -53,62 +54,63 @@ namespace Mmosoft.OopsTest.SideBarDemo
 
             #region Setup menu item
             Func<string, EventHandler> itemClick = (msg) => (s, e) =>label1.Text = msg;
-            var home = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
+            var home = new NavBarItem()
             {
                 Text = "Home",
                 Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Home, 4, Brushes.Black),
                 Clicked = itemClick("Home"),
             };
 
-            var bg = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
+            var bg = new NavBarItem()
             {
                 Text = "Background",
                 Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Monitor, 4, Brushes.Black),
                 Clicked = itemClick("Background"),
+                Items = new List<NavBarItem>
+                {
+                    new NavBarItem()
+                    {
+                        Text = "Colors",
+                        Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Brush, 4, Brushes.Black),
+                        Clicked = itemClick("Colors"),
+                    },
+                    new NavBarItem()
+                    {
+                        Text = "Lock screen",
+                        Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.LockLocked, 4, Brushes.Black),
+                        Clicked = itemClick("Lock screen"),
+                    },
+                    new NavBarItem()
+                    {
+                        Text = "Themes",
+                        Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Contrast, 4, Brushes.Black),
+                        Clicked = itemClick("Themes"),
+                    }
+                }
             };
-
-            var colors = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
-            {
-                Text = "Colors",
-                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Brush, 4, Brushes.Black),
-                Clicked = itemClick("Colors"),
-            };
-
-            var lockScreen = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
-            {
-                Text = "Lock screen",
-                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.LockLocked, 4, Brushes.Black),
-                Clicked = itemClick("Lock screen"),
-            };
-
-            var themes = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
-            {
-                Text = "Themes",
-                Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Contrast, 4, Brushes.Black),
-                Clicked = itemClick("Themes"),
-            };
-
-            var fonts = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
+                        
+            var fonts = new NavBarItem()
             {
                 Text = "Fonts",
                 Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Text, 4, Brushes.Black),
                 Clicked = itemClick("Fonts"),
             };
 
-            var start = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
+            var start = new NavBarItem()
             {
                 Text = "Start",
                 Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Box, 4, Brushes.Black),
                 Clicked = itemClick("Start"),
             };
 
-            var taskbar = new Mmosoft.Oops.SingleLevelNavBar.NavBarItem()
+            var taskbar = new NavBarItem()
             {
                 Text = "Taskbar",
                 Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.List, 4, Brushes.Black),
                 Clicked = itemClick("Taskbar"),
-            };            
-            navBar.Initialize(home, bg, colors, lockScreen, themes, fonts, start, taskbar);
+            };
+           
+            navBar.Initialize(home, bg, fonts, start, taskbar);
             #endregion
 
             // nav effect

@@ -2,7 +2,7 @@
 
 namespace Mmosoft.Oops.Controls.Table
 {
-    public class TableDataRow
+    class TableDataRow
     {
         public int Index { get; set; }
         public List<object> RowData { get; private set; }

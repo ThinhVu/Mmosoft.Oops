@@ -2,7 +2,7 @@
 
 namespace Mmosoft.Oops.Controls.Table
 {
-    public class Cell
+    class Cell
     {
         public Rectangle CellBoundary { get; set; }
         public Rectangle TextBoundary { get; set; }

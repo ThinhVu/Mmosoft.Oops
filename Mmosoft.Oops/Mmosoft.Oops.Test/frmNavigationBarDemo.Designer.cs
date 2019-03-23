@@ -1,6 +1,6 @@
-﻿namespace Mmosoft.OopsTest.SideBarDemo
+﻿namespace Mmosoft.OopsTest
 {
-    partial class frmSingleLevelSideBar
+    partial class frmNavigationBarDemo
     {
         /// <summary>
         /// Required designer variable.
@@ -32,7 +32,7 @@
             this.pnContent = new System.Windows.Forms.Panel();
             this.mediaController1 = new Mmosoft.Oops.Controls.MediaController();
             this.imageGrid1 = new Mmosoft.Oops.Controls.ImageGrid();
-            this.navBar = new Mmosoft.Oops.SingleLevelNavBar.SingleLevelNavBar();
+            this.navBar = new Mmosoft.Oops.Controls.NavigationBar();
             this.titleBar1 = new Mmosoft.Oops.Controls.TitleBar.TitleBar();
             this.btnCollapse = new Mmosoft.Oops.Controls.Buttons.FlatButton();
             this.pnContent.SuspendLayout();
@@ -90,7 +90,6 @@
             this.navBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.navBar.BackColor = System.Drawing.Color.Gainsboro;
-            this.navBar.ClickedItem = System.Drawing.Color.Blue;
             this.navBar.Location = new System.Drawing.Point(1, 1);
             this.navBar.Name = "navBar";
             this.navBar.Size = new System.Drawing.Size(234, 553);
@@ -144,7 +143,7 @@
         private System.Windows.Forms.Panel pnContent;
         private Oops.Controls.Buttons.FlatButton btnCollapse;
         private Oops.Controls.TitleBar.TitleBar titleBar1;
-        private Oops.SingleLevelNavBar.SingleLevelNavBar navBar;
+        private Oops.Controls.NavigationBar navBar;
         private Oops.Controls.ImageGrid imageGrid1;
         private Oops.Controls.MediaController mediaController1;
     }

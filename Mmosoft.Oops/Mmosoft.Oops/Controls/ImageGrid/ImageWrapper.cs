@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Mmosoft.Oops.Controls
 {
-    public class ImageWrapper
+    class ImageWrapper
     {
         public Image Image { get; set; }
         public Rectangle Boundary { get; set; }

@@ -74,7 +74,6 @@
     <Compile Include="Controls\ImageGrid\ImageGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ImageGrid\ImageGridItemClickedEventArgs.cs" />
     <Compile Include="Controls\ImageGrid\ImageWrapper.cs" />
     <Compile Include="Controls\MediaController.cs">
       <SubType>UserControl</SubType>
@@ -82,13 +81,13 @@
     <Compile Include="Controls\MediaController.Designer.cs">
       <DependentUpon>MediaController.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\HitTestAction.cs" />
-    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\HitTestItem.cs" />
-    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\MultiLevelNavBar.cs">
+    <Compile Include="Controls\NavigationBar\HitTestAction.cs" />
+    <Compile Include="Controls\NavigationBar\HitTestItem.cs" />
+    <Compile Include="Controls\NavigationBar\NavigationBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\NavBarItem.cs" />
-    <Compile Include="Controls\NavigationBar\MultiLevelNavBar\NavBarItemWrapper.cs" />
+    <Compile Include="Controls\NavigationBar\NavBarItem.cs" />
+    <Compile Include="Controls\NavigationBar\NavBarItemWrapper.cs" />
     <Compile Include="Controls\Lines\HorizontalLine.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -96,8 +95,6 @@
     <Compile Include="Controls\Lines\VerticalLine.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\NavigationBar\SingleLevelNavBar\NavBarItem.cs" />
-    <Compile Include="Controls\NavigationBar\SingleLevelNavBar\NavBarItemWrapper.cs" />
     <Compile Include="Controls\Notifications\NotifyType.cs" />
     <Compile Include="Controls\Notifications\SmallNofiticationColors.cs" />
     <Compile Include="Controls\Notifications\SmallNotification.cs">
@@ -112,7 +109,6 @@
     <Compile Include="Controls\Table\PropertyDataReader.cs" />
     <Compile Include="Controls\Table\TableColors.cs" />
     <Compile Include="Controls\Table\TableDataRow.cs" />
-    <Compile Include="Controls\TitleBar\MouseDraggingEventArgs.cs" />
     <Compile Include="Controls\TitleBar\TitleBar.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -141,9 +137,6 @@
     <Compile Include="PointHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\RangeBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\NavigationBar\SingleLevelNavBar\SingleLevelNavBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Buttons\ToogleButton.cs">

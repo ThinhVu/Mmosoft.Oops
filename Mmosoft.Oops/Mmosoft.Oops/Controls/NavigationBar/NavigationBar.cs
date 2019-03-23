@@ -5,10 +5,10 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace Mmosoft.Oops
+namespace Mmosoft.Oops.Controls
 {
     [Serializable]
-    public partial class MultiLevelNavBar : Control
+    public partial class NavigationBar : Control
     {
         private bool _enableHighlightReveal;
         [Browsable(true)]
@@ -25,7 +25,7 @@ namespace Mmosoft.Oops
         private const int ITEM_HEIGHT = 40;
         private const int ITEM_ICON_SIZE = 16;
         private const int ITEM_ICON_PADDING = 12;
-        private const int IDEN_WIDTH = 3;
+        private const int IDEN_WIDTH = 20;
         private const int DROP_DOWN_PADDING = 17;
         private const int DROP_DOWN_SIZE = 6;
 
@@ -45,7 +45,7 @@ namespace Mmosoft.Oops
         private LinearGradientBrush _navLeftRevealHighlightBrush;
         private LinearGradientBrush _navRightRevealHighlightBrush;
 
-        public MultiLevelNavBar()
+        public NavigationBar()
         {
             _enableHighlightReveal = false;
 
@@ -274,16 +274,13 @@ namespace Mmosoft.Oops
             {
                 if (item.IsExpanded)
                 {
-                    g.DrawImage(SvgPath8x8Mgr.Get("M0,0H8L4,8z", 1, Brushes.White), item.DropDownButtonBoundary);
+                    g.DrawImage(SvgPath8x8Mgr.Get("M0,0H8L4,8z", 1, Brushes.Black), item.DropDownButtonBoundary);
                     foreach (var childItem in item.Items)
-                    {
                         PaintItem(childItem, g);
-                    }
                 }
                 else
                 {
-                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-                    g.DrawImage(SvgPath8x8Mgr.Get("M0,8H8L4,0z", 1, Brushes.White), item.DropDownButtonBoundary);
+                    g.DrawImage(SvgPath8x8Mgr.Get("M0,8H8L4,0z", 1, Brushes.Black), item.DropDownButtonBoundary);
                 }
             }                              
         }        

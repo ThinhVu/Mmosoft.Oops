@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace Mmosoft.Oops
+namespace Mmosoft.Oops.Controls
 {
     [Serializable]
-    public enum HitTestAction
+    enum HitTestAction
     {
         ItemClicked,
         DropDownClicked

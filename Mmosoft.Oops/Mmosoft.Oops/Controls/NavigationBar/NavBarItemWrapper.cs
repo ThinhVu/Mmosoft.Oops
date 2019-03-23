@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Mmosoft.Oops
+namespace Mmosoft.Oops.Controls
 {
     [Serializable]
-    public class NavBarItemWrapper
+    class NavBarItemWrapper
     {        
         /// <summary>
         /// Absolute boundary of current item from original point (0, 0)

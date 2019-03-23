@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace Mmosoft.Oops
+namespace Mmosoft.Oops.Controls
 {
     [Serializable]
-    public class HitTestItem
+    class HitTestItem
     {        
         public NavBarItemWrapper Item { get; set; }
         public HitTestAction Action { get; set; }
