@@ -1,6 +1,7 @@
 ﻿using IP.Core.Filters;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -10,6 +11,24 @@ namespace Mmosoft.Oops.SingleLevelNavBar
     [Serializable]
     public partial class SingleLevelNavBar : Control
     {
+        private bool enalbeAcrylicStyle;
+        [Browsable(true)]
+        [Description("Enable/disable Acrylic visual style")]
+        public bool EnableAcrylicStyle
+        {
+            get { return enalbeAcrylicStyle; }
+            set { enalbeAcrylicStyle = value; MakeAcrylicBackground(); }
+        }
+
+        private Color _clickedItem;        
+        [Browsable(true)]
+        [Description("Left side border color of clicked navigation bar item")]
+        public Color ClickedItem
+        {
+            get { return _clickedItem; }
+            set { _clickedItem = value; _navClickedItemBrush.Color = value; Invalidate(); }
+        }
+
         // 
         private IP.ImageProcessor _imageProcessor;
 
@@ -17,19 +36,22 @@ namespace Mmosoft.Oops.SingleLevelNavBar
         private List<NavBarItemWrapper> _navBarItems;
 
         // UI Configuration
-        private int _itemHeight = 40;
-        private int _iconPadding = 12;
-        private int _iconSize = 16;       
+        private const int ITEM_HEIGHT = 40;
+        private const int ITEM_ICON_SIZE = 16;
+        private const int ITEM_ICON_PADDING = 12;
+        
+        // dragging stuff
         private Point _mouseLocation;
 
         // Resource
-        private SolidBrush _navBarbackgroundBrush;
-        private SolidBrush _itemBackgroundBrush;
-        private SolidBrush _clickedItemBrush;
-        private SolidBrush _itemTextBrush;
-        private LinearGradientBrush _leftRevealHighlightBrush;
-        private LinearGradientBrush _rightRevealHighlightBrush;
-        private Pen _itemBorderPen;
+        private SolidBrush _navBackgroundBrush;
+        private SolidBrush _navItemBackgroundBrush;
+        private SolidBrush _navClickedItemBrush;
+        private SolidBrush _navItemTextBrush;        
+        private Pen _navItemBorderPen;
+        // reveal effect
+        private LinearGradientBrush _navLeftRevealHighlightBrush;
+        private LinearGradientBrush _navRightRevealHighlightBrush;
 
         //
         public SingleLevelNavBar()
@@ -39,43 +61,67 @@ namespace Mmosoft.Oops.SingleLevelNavBar
             //
             _navBarItems = new List<NavBarItemWrapper>();
             //
-            _navBarbackgroundBrush = BrushCreator.CreateSolidBrush();
-            _itemBackgroundBrush = BrushCreator.CreateSolidBrush();
-            _clickedItemBrush = BrushCreator.CreateSolidBrush();
-            _itemTextBrush = BrushCreator.CreateSolidBrush("255, 0, 0, 0");
-            _itemBorderPen = PenCreator.Create();            
+            _navBackgroundBrush = BrushCreator.CreateSolidBrush();
+            _navItemBackgroundBrush = BrushCreator.CreateSolidBrush();
+            _navClickedItemBrush = BrushCreator.CreateSolidBrush();
+            _navItemTextBrush = BrushCreator.CreateSolidBrush("255, 0, 0, 0");
+            _navItemBorderPen = PenCreator.Create();            
             //
             DoubleBuffered = true;
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
         }
 
+        /// <summary>
+        /// Initial nav bar item wrapper collection
+        /// </summary>
+        /// <param name="sidebarItems"></param>
         public void Initialize(params NavBarItem[] sidebarItems)
         {
             this._navBarItems = new List<NavBarItemWrapper>();
             foreach (var item in sidebarItems)
-            {
                 this._navBarItems.Add(new NavBarItemWrapper(item));
-            }
+
             UpdatePosition();
-        }        
+        }
         public void MakeAcrylicBackground()
         {
-            if (this.Parent == null) return;
-
-            var left = this.Parent.Left;
-            var absPosOfNavbarWithScreen = PointToScreen(Point.Empty);
-            var hostForm = FindForm();
-            hostForm.Left = int.MinValue;
-            BackgroundImage = new Bitmap(this.Width, this.Height);
-            using (var graphic = Graphics.FromImage(this.BackgroundImage))
+            if (EnableAcrylicStyle)
             {
-                graphic.CopyFromScreen(absPosOfNavbarWithScreen, Point.Empty, this.Size);
-                _imageProcessor.Process((Bitmap)this.BackgroundImage);
+                // no visual
+                if (this.Parent == null) return;
+
+                // to make an acrylic background
+                // what we do is:
+                // 1. find the form which host this nav bar
+                // 2. move it some where off the screen
+                // 3. capture screen picture at nav bar rect
+                // 4. move the form to its old position
+                // 5. apply blur effect to captured image
+                var hostForm = FindForm();
+                if (hostForm.WindowState == FormWindowState.Minimized)
+                    return;
+
+                var left = hostForm.Left;
+                hostForm.Left = int.MinValue;
+                
+                BackgroundImage = new Bitmap(this.Width, this.Height);
+                using (var g = Graphics.FromImage(this.BackgroundImage))
+                {
+                    g.CopyFromScreen(PointToScreen(Point.Empty), Point.Empty, this.Size);
+                    _imageProcessor.Process((Bitmap)this.BackgroundImage);
+                }
+                
+                hostForm.Left = left;
+                Invalidate();
             }
-            hostForm.Left = left;
-            Invalidate();
         }
-        
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);            
+            MakeAcrylicBackground();
+        }
+
         // mouse stuff
         protected override void OnMouseClick(MouseEventArgs e)
         {
@@ -94,11 +140,13 @@ namespace Mmosoft.Oops.SingleLevelNavBar
             }
                 
             Invalidate();
-        }        
+        }
         protected override void OnMouseMove(MouseEventArgs e)
         {            
             _mouseLocation = e.Location;
-            Cursor = IsMouseHoverOverNavBarItem(e.Location)? Cursors.Hand : Cursors.Default;
+            
+            Cursor = IsMouseHoverOverNavBarItem(e.Location) ? Cursors.Hand : Cursors.Default;
+
             foreach (var item in this._navBarItems)
                 item.IsHovered = item.Boundary.Contains(e.Location);
 
@@ -106,10 +154,13 @@ namespace Mmosoft.Oops.SingleLevelNavBar
         }        
         protected override void OnMouseLeave(EventArgs e)
         {
-            _mouseLocation = new Point(-1000, -1000);
+            _mouseLocation = new Point(int.MinValue, int.MinValue);
+            
             Cursor = Cursors.Default;
+            
             foreach (var item in this._navBarItems)
                 item.IsHovered = false;            
+            
             Invalidate();
         }
         private bool IsMouseHoverOverNavBarItem(Point location)
@@ -129,36 +180,31 @@ namespace Mmosoft.Oops.SingleLevelNavBar
             int y = 0;
             foreach (var item in this._navBarItems)
             {
-                UpdatePosition(item, ref x, ref y);
+                UpdateItemPosition(item, ref x, ref y);
             }
         }
-        private void UpdatePosition(NavBarItemWrapper item, ref int x, ref int y)
+        private void UpdateItemPosition(NavBarItemWrapper item, ref int x, ref int y)
         {
-            item.Boundary = new Rectangle(x, y, Width - x - 1, _itemHeight);
-            item.IconBoundary = new Rectangle(x + _iconPadding, y + _iconPadding, _iconSize, _iconSize);
-            item.TextPosition = new Point(x + _iconPadding * 2 + _iconSize, y + (_itemHeight - TextRenderer.MeasureText(item.Text, Font).Height) / 2);
-            y += _itemHeight;
+            item.Boundary = new Rectangle(x, y, Width - x - 1, ITEM_HEIGHT);
+            item.IconBoundary = new Rectangle(x + ITEM_ICON_PADDING, y + ITEM_ICON_PADDING, ITEM_ICON_SIZE, ITEM_ICON_SIZE);
+            item.TextPosition = new Point(x + ITEM_ICON_PADDING * 2 + ITEM_ICON_SIZE, y + (ITEM_HEIGHT - TextRenderer.MeasureText(item.Text, Font).Height) / 2);
+            y += ITEM_HEIGHT;
         }
         private void PaintItem(NavBarItemWrapper item, Graphics g)
         {
             if (item.IsHovered)
             {
-                _itemBackgroundBrush.Color = ExColorTranslator.Get("128, 128, 128, 128");
-                _itemBorderPen.Color = ExColorTranslator.Get("128, 93, 93, 93");
+                _navItemBackgroundBrush.Color = ExColorTranslator.Get("128, 128, 128, 128");
+                _navItemBorderPen.Color = ExColorTranslator.Get("128, 93, 93, 93");
                 
-                g.FillRectangle(_itemBackgroundBrush, item.Boundary);
-                g.DrawRectangle(_itemBorderPen, new Rectangle(-1, item.Boundary.Y, this.Width, item.Boundary.Height));
+                g.FillRectangle(_navItemBackgroundBrush, item.Boundary);
+                g.DrawRectangle(_navItemBorderPen, new Rectangle(-1, item.Boundary.Y, this.Width, item.Boundary.Height));
             }
 
             if (item.IsClicked)
-            {
-                if (_clickedItemBrush.Color != this.BackColor)
-                    _clickedItemBrush.Color = this.BackColor;
-                g.FillRectangle(_clickedItemBrush, new Rectangle(0, item.Boundary.Y + 1, 3/*px*/, item.Boundary.Height - 1));
+            {                
+                g.FillRectangle(_navClickedItemBrush, new Rectangle(0, item.Boundary.Y + 1, 3/*px*/, item.Boundary.Height - 1));
             }
-
-
-
 
             // Draw reveal highlight
             if (item.IsHovered)
@@ -167,33 +213,35 @@ namespace Mmosoft.Oops.SingleLevelNavBar
                 // TODO:
                 // Brush created everytime so render performance will be decreased
                 // Replace with Translate matrix stuff
-                if (_leftRevealHighlightBrush != null)
+                if (_navLeftRevealHighlightBrush != null)
                 {
-                    _leftRevealHighlightBrush.Dispose();
-                    _leftRevealHighlightBrush = null;
+                    _navLeftRevealHighlightBrush.Dispose();
+                    _navLeftRevealHighlightBrush = null;
                 }
-                if (_rightRevealHighlightBrush != null)
+
+                if (_navRightRevealHighlightBrush != null)
                 {
-                    _rightRevealHighlightBrush.Dispose();
-                    _rightRevealHighlightBrush = null;
+                    _navRightRevealHighlightBrush.Dispose();
+                    _navRightRevealHighlightBrush = null;
                 }
+
                 Rectangle leftRevealHighlightRect = new Rectangle(_mouseLocation.X - halfRebelSize, item.Boundary.Y, halfRebelSize, item.Boundary.Height + 1);
                 Rectangle rightRevealHighlightRect = new Rectangle(_mouseLocation.X, item.Boundary.Y, halfRebelSize, item.Boundary.Height + 1);
-                _leftRevealHighlightBrush = new LinearGradientBrush(
+                _navLeftRevealHighlightBrush = new LinearGradientBrush(
                     leftRevealHighlightRect,
                     ExColorTranslator.Get("0, 200, 200, 200"),
                     ExColorTranslator.Get("100, 255, 255, 255"), 0f);
-                _rightRevealHighlightBrush = new LinearGradientBrush(
+                _navRightRevealHighlightBrush = new LinearGradientBrush(
                     rightRevealHighlightRect,
                     ExColorTranslator.Get("100, 255, 255, 255"),
                     ExColorTranslator.Get("0, 200, 200, 200"), 0f);
-                g.FillRectangle(_leftRevealHighlightBrush, leftRevealHighlightRect);
-                g.FillRectangle(_rightRevealHighlightBrush, rightRevealHighlightRect);                
+                g.FillRectangle(_navLeftRevealHighlightBrush, leftRevealHighlightRect);
+                g.FillRectangle(_navRightRevealHighlightBrush, rightRevealHighlightRect);                
             }
 
             if (item.Icon != null)
                 g.DrawImage(item.Icon, item.IconBoundary);
-            g.DrawString(item.Text, Font, _itemTextBrush, item.TextPosition);
+            g.DrawString(item.Text, Font, _navItemTextBrush, item.TextPosition);
         }
         protected override void OnPaint(PaintEventArgs e)
         {            
@@ -205,24 +253,23 @@ namespace Mmosoft.Oops.SingleLevelNavBar
             }
             else
             {
-                if (BackgroundImage != null)
+                if (EnableAcrylicStyle && BackgroundImage != null)
                 {
                     g.DrawImage(BackgroundImage, Point.Empty);
-                    _navBarbackgroundBrush.Color = ExColorTranslator.Get("200, 200, 200, 200");
-                    g.FillRectangle(_navBarbackgroundBrush, ClientRectangle);
+                    _navBackgroundBrush.Color = ExColorTranslator.Get("200, 200, 200, 200");
+                    g.FillRectangle(_navBackgroundBrush, ClientRectangle);
                 }
                 else
                 {
-                    _navBarbackgroundBrush.Color = BackColor;
-                    g.FillRectangle(_navBarbackgroundBrush, ClientRectangle);
+                    _navBackgroundBrush.Color = BackColor;
+                    g.FillRectangle(_navBackgroundBrush, ClientRectangle);
                 }
-
 
                 // paint item
                 foreach (var item in _navBarItems)
                     PaintItem(item, g);
             }
-        }        
+        }
 
         // Dispose
         protected override void Dispose(bool disposing)
@@ -230,13 +277,17 @@ namespace Mmosoft.Oops.SingleLevelNavBar
             base.Dispose(disposing);
             if (disposing)
             {
-                _navBarbackgroundBrush.Dispose();
-                _itemBackgroundBrush.Dispose();
-                _clickedItemBrush.Dispose();
-                _itemTextBrush.Dispose();
-                _leftRevealHighlightBrush.Dispose();
-                _rightRevealHighlightBrush.Dispose();
-                _itemBorderPen.Dispose();
+                _navBackgroundBrush.Dispose();
+                _navItemBackgroundBrush.Dispose();
+                _navClickedItemBrush.Dispose();
+                _navItemTextBrush.Dispose();
+
+                if (_navLeftRevealHighlightBrush != null)
+                    _navLeftRevealHighlightBrush.Dispose();
+                if (_navRightRevealHighlightBrush != null)
+                    _navRightRevealHighlightBrush.Dispose();
+
+                _navItemBorderPen.Dispose();
             }
         }
     }    

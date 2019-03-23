@@ -2,22 +2,29 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Mmosoft.OopsTest.SideBarDemo
 {
     public partial class frmSingleLevelSideBar : Form
-    {
-        // form show hide control
-        private bool _formShown = false;
-        
+    {        
         public frmSingleLevelSideBar()
         {
             InitializeComponent();
             SetupNavBar();
+            SetupTitleBar();
             btnCollapse.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.ArrowThickLeft, 2, Brushes.Black);
         }
-        
+
+        private void frmSingleLevelSideBar_Shown(object sender, EventArgs e)
+        {
+            navBar.MakeAcrylicBackground();
+            SetupImageGrid();
+        }
+
+        private bool collapse;
+
         // navigation configuration
         private void SetupNavBar()
         {
@@ -75,114 +82,56 @@ namespace Mmosoft.OopsTest.SideBarDemo
                 Text = "Taskbar",
                 Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.List, 2, Brushes.Black),
                 Clicked = ItemClickHandler("Taskbar"),
-            };
-            
+            };            
+
+            navBar.Top = 1;
+            navBar.Left = 1;
+            navBar.Width = 171;
+            navBar.Height = 553;
+            navBar.EnableAcrylicStyle = false;
             navBar.Initialize(home, bg, colors, lockScreen, themes, fonts, start, taskbar);
         }
         private void OnNavBarCollappsedHandler()
-        {
-            pnHeader.Left = navBar.Right;
-            panel2.Left = navBar.Right;
-
-            pnHeader.Width = this.Width - pnHeader.Left;
+        {            
             panel2.Width = this.Width - panel2.Left;
         }
-
         private EventHandler ItemClickHandler(string msg)
         {
             return (s, e) => label1.Text = msg;
         }
-
-        // form movement
-        private bool mouseIsDown; // mouse down state
-        private Point mouseDownLocation; // where mouse down
-        private Point mouseLocation; // last mouse down + hold position
-        private void pnHeader_MouseDown(object sender, MouseEventArgs e)
-        {            
-            mouseIsDown = true;
-            mouseLocation = e.Location;
-            mouseDownLocation = PointToScreen(e.Location);
-        }
-        private void pnHeader_MouseUp(object sender, MouseEventArgs e)
+        
+        private void SetupTitleBar()
         {
-            mouseIsDown = false;
-            if (mouseDownLocation != PointToScreen(e.Location))
-                navBar.MakeAcrylicBackground();
-        }
-        private void pnHeader_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (mouseIsDown)
+            titleBar1.MinimizeEnable = true;
+            titleBar1.MaximizeEnable = false;
+            titleBar1.Text = "Demo sample";
+            titleBar1.OnMouseDragCompleted += (s, e) => navBar.MakeAcrylicBackground();
+            titleBar1.OnMouseDragging += (s, e) => 
             {
-                this.Left += e.Location.X - mouseLocation.X;
-                this.Top += e.Location.Y - mouseLocation.Y;
-            }
-        }
-        private void pnHeader_MouseLeave(object sender, EventArgs e)
-        {
-            this.Cursor = Cursors.Default;
-        }
-        private void pnHeader_MouseEnter(object sender, EventArgs e)
-        {
-            this.Cursor = Cursors.Hand;
-        }
-        // max - normal size switch
-        private void frmSingleLevelSideBar_Shown(object sender, EventArgs e)
-        {
-            _formShown = true;
-            navBar.MakeAcrylicBackground();
-        }
-
-        // another demo
-        private void button4_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-        private void button2_Click(object sender, EventArgs e)
-        {
-            new frmLayerControlDemo().ShowDialog();
-        }
-        private void btnBoxShadow_Click(object sender, EventArgs e)
-        {
-            new frmBoxShadowDemo().ShowDialog();
-        }
-        private void button3_Click(object sender, EventArgs e)
-        {
-            new frmControlsDemo().ShowDialog();
-        }
-        private void navBarSingle_Click(object sender, EventArgs e)
-        {
-            new SideBarDemo.frmSingleLevelSideBar().ShowDialog();
-        }
-        private void btnTable_Click(object sender, EventArgs e)
-        {
-            new frmTableDemo().ShowDialog();
-        }
-        private void btnSvgPath_Click(object sender, EventArgs e)
-        {
-            new frmSvgPathDemo().ShowDialog();
-        }
-        private void button5_Click(object sender, EventArgs e)
-        {
-            new SideBarDemo.frmMultiLevelSideBar().ShowDialog();
-        }
-
-        private bool collapse;
-        private void btnCollapse_Click(object sender, EventArgs e)
-        {
-            collapse = !collapse;
-            if (collapse)
+                this.Left += e.OffsetX;
+                this.Top += e.OffsetY;
+            };
+            titleBar1.OnMinimizeClicked += (s, e) => this.WindowState = FormWindowState.Minimized;
+            titleBar1.OnMaximizeClicked += (s, e) =>
             {
-                navBar.Width = 40;
-                btnCollapse.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.ArrowThickRight, 2, Brushes.Black);
-            }
-            else
-            {
-                navBar.Width = 170;
-                btnCollapse.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.ArrowThickLeft, 2, Brushes.Black);
-            }
+                if (this.WindowState == FormWindowState.Normal)
+                    this.WindowState = FormWindowState.Maximized;
+                else if (this.WindowState == FormWindowState.Maximized)
+                    this.WindowState = FormWindowState.Normal;
 
-            panel2.Left = navBar.Right;
-            panel2.Width = this.Width - panel2.Left - 1;
+            };
+            titleBar1.OnCloseClicked += (s, e) => this.Close();
+        }
+
+        private void SetupImageGrid()
+        {
+            var imgPath = @"D:\Image\cgi";
+            var images = new List<Image>();
+            foreach (var item in Directory.EnumerateFiles(imgPath))
+                images.Add(new Bitmap(item));
+            imageGrid1.Column = 3;
+            imageGrid1.ImagePadding = 2;
+            imageGrid1.Load(images);
         }
     }
 }

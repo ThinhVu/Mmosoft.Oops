@@ -45,7 +45,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Mmosoft.ImageProcessing\IP.Shared.dll</HintPath>
     </Reference>
-    <Reference Include="SVGPath">
+    <Reference Include="SVGPath, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Mmosoft.SVGPath\Net40\SVGPath.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -73,6 +74,10 @@
     <Compile Include="Controls\Card.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ImageGrid\ImageGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ImageGrid\ImageWrapper.cs" />
     <Compile Include="Controls\NavigationBar\MultiLevelNavBar\HitTestAction.cs" />
     <Compile Include="Controls\NavigationBar\MultiLevelNavBar\HitTestItem.cs" />
     <Compile Include="Controls\NavigationBar\MultiLevelNavBar\NavBar.cs">
@@ -106,6 +111,11 @@
     <Compile Include="Controls\Table\PropertyDataReader.cs" />
     <Compile Include="Controls\Table\TableColors.cs" />
     <Compile Include="Controls\Table\TableDataRow.cs" />
+    <Compile Include="Controls\TitleBar\MouseDraggingEventArgs.cs" />
+    <Compile Include="Controls\TitleBar\TitleBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TitleBar\TitleBarControlButton.cs" />
     <Compile Include="Layers\LayerControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -164,8 +174,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\TitleBar\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -2,12 +2,13 @@
 using SVGPath.CmdDrawer;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace Mmosoft.Oops
 {
     public static class SvgPath8x8Mgr
     {
-        public static Bitmap Get(string path, int scaleRatio, Brush brush)
+        public static Bitmap Get(string path, int scaleRatio, Brush brush, SmoothingMode mode = SmoothingMode.HighQuality)
         {
             int svgPathSize = 8;
             int width = svgPathSize * scaleRatio + 1;
@@ -17,12 +18,22 @@ namespace Mmosoft.Oops
             CmdValidator.ValidateCmds(cmds);
             cmds = CmdConverter.ExtractToSingleAndAbsolutePositionCmds(cmds);
             cmds = CmdScaler.Scale(cmds, scaleRatio);            
-            return CmdDrawer.Draw(cmds, width, height, brush);            
+            return CmdDrawer.Draw(cmds, width, height, brush, mode);            
         }
     }    
 
     public static class SvgPathBx8Constants
     {
+        // Control buttons
+        public static class ControlButtons
+        {
+            public const string Minimize = "M1,6v1h6v-1z";
+            public const string Normal = "M1,2h6v5h-6v-4h0.5v3.5h5v-3.5h-5.5z";
+            public const string Maximized = "M0,2h3v1h-2.5v3h4v-1h0.5v1.5h-5zM3,0.5h5v1h-4.5v3h4v-3h0.5v3.5h-5z";
+            public const string Close = SvgPathBx8Constants.X;
+        }
+
+        // 
         public const string AccountLogin = "M3 0v1h4v5h-4v1h5v-7h-5zm1 2v1h-4v1h4v1l2-1.5-2-1.5z";
         public const string AccountLogout = "M3 0v1h4v5h-4v1h5v-7h-5zm-1 2l-2 1.5 2 1.5v-1h4v-1h-4v-1z";
         public const string ActionRedo = "M3.5 0c-1.93 0-3.5 1.57-3.5 3.5 0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v.5h-1l2 2 2-2h-1v-.5c0-1.93-1.57-3.5-3.5-3.5z";
