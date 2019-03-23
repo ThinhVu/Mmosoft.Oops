@@ -11,13 +11,22 @@ namespace Mmosoft.Oops.SingleLevelNavBar
     [Serializable]
     public partial class SingleLevelNavBar : Control
     {
-        private bool enalbeAcrylicStyle;
+        private bool _enableAcrylicStyle;
         [Browsable(true)]
         [Description("Enable/disable Acrylic visual style")]
         public bool EnableAcrylicStyle
         {
-            get { return enalbeAcrylicStyle; }
-            set { enalbeAcrylicStyle = value; MakeAcrylicBackground(); }
+            get { return _enableAcrylicStyle; }
+            set { _enableAcrylicStyle = value; MakeAcrylicBackground(); }
+        }
+
+        private bool _enableHighlightReveal;
+        [Browsable(true)]
+        [Description("Enable/disable highlight reveal effect")]
+        public bool EnableHighlightReveal
+        {
+            get { return _enableHighlightReveal; }
+            set { _enableHighlightReveal = value; }
         }
 
         private Color _clickedItem;        
@@ -56,6 +65,9 @@ namespace Mmosoft.Oops.SingleLevelNavBar
         //
         public SingleLevelNavBar()
         {
+            _enableAcrylicStyle = false;
+            _enableHighlightReveal = false;
+
             _imageProcessor = new IP.ImageProcessor();
             _imageProcessor.Filters.Add(new BlurFilter());
             //
@@ -100,6 +112,8 @@ namespace Mmosoft.Oops.SingleLevelNavBar
                 var hostForm = FindForm();
                 if (hostForm.WindowState == FormWindowState.Minimized)
                     return;
+                // get position before moving host form to the most left
+                var position = PointToScreen(Point.Empty);
 
                 var left = hostForm.Left;
                 hostForm.Left = int.MinValue;
@@ -107,7 +121,7 @@ namespace Mmosoft.Oops.SingleLevelNavBar
                 BackgroundImage = new Bitmap(this.Width, this.Height);
                 using (var g = Graphics.FromImage(this.BackgroundImage))
                 {
-                    g.CopyFromScreen(PointToScreen(Point.Empty), Point.Empty, this.Size);
+                    g.CopyFromScreen(position, Point.Empty, this.Size);
                     _imageProcessor.Process((Bitmap)this.BackgroundImage);
                 }
                 
@@ -209,34 +223,37 @@ namespace Mmosoft.Oops.SingleLevelNavBar
             // Draw reveal highlight
             if (item.IsHovered)
             {
-                int halfRebelSize = 100;
-                // TODO:
-                // Brush created everytime so render performance will be decreased
-                // Replace with Translate matrix stuff
-                if (_navLeftRevealHighlightBrush != null)
+                if (_enableHighlightReveal)
                 {
-                    _navLeftRevealHighlightBrush.Dispose();
-                    _navLeftRevealHighlightBrush = null;
-                }
+                    int halfRebelSize = 100;
+                    // TODO:
+                    // Brush created everytime so render performance will be decreased
+                    // Replace with Translate matrix stuff
+                    if (_navLeftRevealHighlightBrush != null)
+                    {
+                        _navLeftRevealHighlightBrush.Dispose();
+                        _navLeftRevealHighlightBrush = null;
+                    }
 
-                if (_navRightRevealHighlightBrush != null)
-                {
-                    _navRightRevealHighlightBrush.Dispose();
-                    _navRightRevealHighlightBrush = null;
-                }
+                    if (_navRightRevealHighlightBrush != null)
+                    {
+                        _navRightRevealHighlightBrush.Dispose();
+                        _navRightRevealHighlightBrush = null;
+                    }
 
-                Rectangle leftRevealHighlightRect = new Rectangle(_mouseLocation.X - halfRebelSize, item.Boundary.Y, halfRebelSize, item.Boundary.Height + 1);
-                Rectangle rightRevealHighlightRect = new Rectangle(_mouseLocation.X, item.Boundary.Y, halfRebelSize, item.Boundary.Height + 1);
-                _navLeftRevealHighlightBrush = new LinearGradientBrush(
-                    leftRevealHighlightRect,
-                    ExColorTranslator.Get("0, 200, 200, 200"),
-                    ExColorTranslator.Get("100, 255, 255, 255"), 0f);
-                _navRightRevealHighlightBrush = new LinearGradientBrush(
-                    rightRevealHighlightRect,
-                    ExColorTranslator.Get("100, 255, 255, 255"),
-                    ExColorTranslator.Get("0, 200, 200, 200"), 0f);
-                g.FillRectangle(_navLeftRevealHighlightBrush, leftRevealHighlightRect);
-                g.FillRectangle(_navRightRevealHighlightBrush, rightRevealHighlightRect);                
+                    Rectangle leftRevealHighlightRect = new Rectangle(_mouseLocation.X - halfRebelSize, item.Boundary.Y, halfRebelSize, item.Boundary.Height + 1);
+                    Rectangle rightRevealHighlightRect = new Rectangle(_mouseLocation.X, item.Boundary.Y, halfRebelSize, item.Boundary.Height + 1);
+                    _navLeftRevealHighlightBrush = new LinearGradientBrush(
+                        leftRevealHighlightRect,
+                        ExColorTranslator.Get("0, 200, 200, 200"),
+                        ExColorTranslator.Get("100, 255, 255, 255"), 0f);
+                    _navRightRevealHighlightBrush = new LinearGradientBrush(
+                        rightRevealHighlightRect,
+                        ExColorTranslator.Get("100, 255, 255, 255"),
+                        ExColorTranslator.Get("0, 200, 200, 200"), 0f);
+                    g.FillRectangle(_navLeftRevealHighlightBrush, leftRevealHighlightRect);
+                    g.FillRectangle(_navRightRevealHighlightBrush, rightRevealHighlightRect);
+                }                
             }
 
             if (item.Icon != null)
@@ -253,9 +270,9 @@ namespace Mmosoft.Oops.SingleLevelNavBar
             }
             else
             {
-                if (EnableAcrylicStyle && BackgroundImage != null)
+                if (BackgroundImage != null)
                 {
-                    g.DrawImage(BackgroundImage, Point.Empty);
+                    g.DrawImage(BackgroundImage, this.ClientRectangle);
                     _navBackgroundBrush.Color = ExColorTranslator.Get("200, 200, 200, 200");
                     g.FillRectangle(_navBackgroundBrush, ClientRectangle);
                 }

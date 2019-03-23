@@ -77,6 +77,8 @@
     <Compile Include="Controls\ImageGrid\ImageGrid.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ImageGrid\ImageGridItemClickedEventArgs.cs" />
+    <Compile Include="Controls\ImageGrid\ImageGridItemClickedEventHandler.cs" />
     <Compile Include="Controls\ImageGrid\ImageWrapper.cs" />
     <Compile Include="Controls\MediaController.cs">
       <SubType>UserControl</SubType>
@@ -143,6 +145,7 @@
     <Compile Include="Controls\ProgressBars\ProgressDots.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PointHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\RangeBar.cs">
       <SubType>Component</SubType>
@@ -156,6 +159,7 @@
     <Compile Include="Controls\TrackBar.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="RectangleHelper.cs" />
     <Compile Include="SvgPathCreator.cs" />
     <EmbeddedResource Include="Controls\MediaController.resx">
       <DependentUpon>MediaController.cs</DependentUpon>

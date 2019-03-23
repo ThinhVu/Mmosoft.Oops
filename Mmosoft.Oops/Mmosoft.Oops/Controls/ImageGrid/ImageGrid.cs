@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,8 @@ namespace Mmosoft.Oops.Controls
             get { return _column; }
             set { _column = value; ReDraw(); }
         }
+
+        public event ImageGridItemClickedEventHandler OnItemClicked;
 
         public ImageGrid()
         {            
@@ -97,6 +100,47 @@ namespace Mmosoft.Oops.Controls
             Invalidate();
         }
 
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            _virtualHeight = 0;
+            ReDraw();
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            var hitPoint = e.Location.ChangePosition(0, _offsetY);  
+            this.Cursor = GetHotItem(hitPoint) == null ? Cursors.Default : Cursors.Hand;
+        }
+
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                var hitPoint = e.Location.ChangePosition(0, _offsetY);
+                var hotItem = GetHotItem(hitPoint);
+                if (hotItem != null && OnItemClicked != null)
+                    OnItemClicked(
+                        this,
+                        new ImageGridItemClickedEventArgs()
+                        {
+                            Image = hotItem.Image,
+                            Index = _imgWrappers.IndexOf(hotItem)
+                        });
+            }            
+        }
+
+        private ImageWrapper GetHotItem(Point location)
+        {
+            foreach (var i in _imgWrappers)
+            {
+                if (i.Boundary.Contains(location))
+                {
+                    return i;
+                }
+            }
+            return null;
+        }
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -114,18 +158,23 @@ namespace Mmosoft.Oops.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
-
             if (_imgWrappers != null)
             {
-                foreach (ImageWrapper imgW in _imgWrappers)
+                foreach (ImageWrapper i in GetImageInViewport())
                 {
-                    g.DrawImage(imgW.Image,
-                        new Rectangle(
-                            imgW.Boundary.X,
-                            imgW.Boundary.Y - _offsetY,
-                            imgW.Boundary.Width,
-                            imgW.Boundary.Height));
+                    g.DrawImage(i.Image, i.Boundary);
                 }
+            }
+        }
+
+        private IEnumerable<ImageWrapper> GetImageInViewport()
+        {
+            Rectangle r;
+            foreach (var iw in _imgWrappers)
+            {
+                r = iw.Boundary.MoveY( - _offsetY);
+                if (r.IntersectsWith(this.ClientRectangle))
+                    yield return new ImageWrapper(iw.Image) { Boundary = r };
             }
         }
     }
