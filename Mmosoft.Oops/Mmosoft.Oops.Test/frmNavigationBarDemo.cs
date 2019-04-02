@@ -124,14 +124,14 @@ namespace Mmosoft.OopsTest
             imageGrid1.ImagePadding = 2;
 
             #region Load images
-            var imgPath = @"D:\Image\cgi";
+            var imgPath = @"..\..\assests\images";
             var images = new List<Image>();
             foreach (var item in Directory.EnumerateFiles(imgPath))
                 images.Add(new Bitmap(item));
 
             imageGrid1.Load(images);
             #endregion
-            
+
             imageGrid1.OnItemClicked += (s, e) => { navBar.BackgroundImage = e.Image; /*Do stuff*/ };
         }
     }
