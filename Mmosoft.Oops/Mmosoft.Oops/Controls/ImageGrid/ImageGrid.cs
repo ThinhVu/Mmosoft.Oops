@@ -39,6 +39,7 @@ namespace Mmosoft.Oops.Controls
         {            
             _column = 3;
             _imgPadding = 5;
+            _imgWrappers = new List<ImageWrapper>();
             //
             DoubleBuffered = true;
         }
