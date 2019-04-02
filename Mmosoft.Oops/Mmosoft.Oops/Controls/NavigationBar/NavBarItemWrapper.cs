@@ -21,6 +21,8 @@ namespace Mmosoft.Oops.Controls
         /// </summary>
         public Rectangle IconBoundary { get; set; }
 
+        public int IdentPixel { get; set; }
+
         /// <summary>
         /// Position of text content
         /// </summary>

@@ -22,11 +22,9 @@ namespace Mmosoft.Oops.Controls
         private List<NavBarItemWrapper> _navBarItems { get; set; }
 
         // UI Configuration
-        private const int ITEM_HEIGHT = 40;
+        private const int ITEM_HEIGHT = 30;
         private const int ITEM_ICON_SIZE = 16;
-        private const int ITEM_ICON_PADDING = 12;
         private const int IDEN_WIDTH = 20;
-        private const int DROP_DOWN_PADDING = 17;
         private const int DROP_DOWN_SIZE = 6;
 
         // UI remember
@@ -34,6 +32,7 @@ namespace Mmosoft.Oops.Controls
 
         // dragging stuff
         private Point _mouseLocation;
+        private bool _isMouseIn;
 
         // Resource
         private SolidBrush _navBackgroundBrush;
@@ -111,7 +110,8 @@ namespace Mmosoft.Oops.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             _mouseLocation = e.Location;
-            
+            _isMouseIn = true;
+
             Cursor = HitTest(this._navBarItems, e.Location) != null ? Cursors.Hand : Cursors.Default;
             UpdateHoverState(this._navBarItems, e.Location);
             
@@ -121,6 +121,7 @@ namespace Mmosoft.Oops.Controls
         protected override void OnMouseLeave(EventArgs e)
         {
             _mouseLocation = new Point(int.MinValue, int.MinValue);
+            _isMouseIn = false;
 
             Cursor = Cursors.Default;
 
@@ -195,7 +196,7 @@ namespace Mmosoft.Oops.Controls
                     hitTest = new HitTestItem
                     {
                         Item = item,
-                        Action = ItemHasChild(item) ? HitTestAction.DropDownClicked : HitTestAction.ItemClicked
+                        Action = item.DropDownButtonBoundary.Contains(hit) /* ItemHasChild(item) &&  */ ? HitTestAction.DropDownClicked : HitTestAction.ItemClicked
                     };
                 }
                 else // check child
@@ -274,13 +275,17 @@ namespace Mmosoft.Oops.Controls
             {
                 if (item.IsExpanded)
                 {
-                    g.DrawImage(SvgPath8x8Mgr.Get("M0,0H8L4,8z", 1, Brushes.Black), item.DropDownButtonBoundary);
+                    // Draw dropdown arrow only mouse enter nav bar
+                    if (_isMouseIn)
+                        g.DrawImage(SvgPath8x8Mgr.Get("M0,0H8L4,8z", 1, Brushes.Black), item.DropDownButtonBoundary);
                     foreach (var childItem in item.Items)
                         PaintItem(childItem, g);
                 }
                 else
                 {
-                    g.DrawImage(SvgPath8x8Mgr.Get("M0,8H8L4,0z", 1, Brushes.Black), item.DropDownButtonBoundary);
+                    // Draw dropdown arrow only mouse enter nav bar
+                    if (_isMouseIn)
+                        g.DrawImage(SvgPath8x8Mgr.Get("M0,8H8L4,0z", 1, Brushes.Black), item.DropDownButtonBoundary);
                 }
             }                              
         }        
@@ -293,24 +298,25 @@ namespace Mmosoft.Oops.Controls
                 UpdatePosition(item, ref x, ref y);
             }
         }
-        private void UpdatePosition(NavBarItemWrapper item, ref int x, ref int y)
+        private void UpdatePosition(NavBarItemWrapper item, ref int x, ref int y, int ident = 0)
         {
+            int itemIconPadding = (ITEM_HEIGHT - ITEM_ICON_SIZE) / 2;
+            int dropdownPadding = (ITEM_HEIGHT - DROP_DOWN_SIZE) / 2;
+            item.IdentPixel = ident;
             item.Boundary = new Rectangle(x, y, Width - x - 1, ITEM_HEIGHT);
-            item.DropDownButtonBoundary = new Rectangle(item.Boundary.Right - DROP_DOWN_PADDING - DROP_DOWN_SIZE, item.Boundary.Top + DROP_DOWN_PADDING, DROP_DOWN_SIZE, DROP_DOWN_SIZE);
-            item.IconBoundary = new Rectangle(x + ITEM_ICON_PADDING, y + ITEM_ICON_PADDING, ITEM_ICON_SIZE, ITEM_ICON_SIZE);
-            item.TextPosition = new Point(x + ITEM_ICON_PADDING * 2 + ITEM_ICON_SIZE, y + (ITEM_HEIGHT - TextRenderer.MeasureText(item.Text, Font).Height) / 2);
+            item.DropDownButtonBoundary = new Rectangle(item.Boundary.Right - dropdownPadding - DROP_DOWN_SIZE, item.Boundary.Top + dropdownPadding, DROP_DOWN_SIZE, DROP_DOWN_SIZE);
+            item.IconBoundary = new Rectangle(x + itemIconPadding + ident, y + itemIconPadding, ITEM_ICON_SIZE, ITEM_ICON_SIZE);
+            item.TextPosition = new Point(x + itemIconPadding * 2 + ITEM_ICON_SIZE + ident, y + (ITEM_HEIGHT - TextRenderer.MeasureText(item.Text, Font).Height) / 2);
             y += ITEM_HEIGHT;
 
             if (ItemHasChild(item))
-            {                
+            {
                 if (item.IsExpanded)
                 {
-                    x += IDEN_WIDTH;
                     foreach (var childItem in item.Items)
                     {
-                        UpdatePosition(childItem, ref x, ref y);
+                        UpdatePosition(childItem, ref x, ref y, ident + IDEN_WIDTH);
                     }
-                    x -= IDEN_WIDTH;
                 }
                 else
                 {
