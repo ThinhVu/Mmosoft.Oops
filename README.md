@@ -1,3 +1,8 @@
+<a href="https://scan.coverity.com/projects/thinhvu-mmosoft-oops">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/18301/badge.svg"/>
+</a>
+
 # Mmosoft.Oops
 ## Introduction
 Mmosoft.Oops is a C# Windows Form Fluent Design control set for modern Windows desktop application.
