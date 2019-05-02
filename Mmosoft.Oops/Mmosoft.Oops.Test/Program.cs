@@ -15,7 +15,7 @@ namespace Mmosoft.OopsTest
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmNavigationBarDemo());
+            Application.Run(new frmControlsDemo());
         }
     }
 }
