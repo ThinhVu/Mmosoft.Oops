@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Mmosoft.Oops.Controls
@@ -35,6 +32,31 @@ namespace Mmosoft.Oops.Controls
 
         public event ImageGridItemClickedEventHandler OnItemClicked;
 
+        private int _selectedIndex;
+        public int SelectedIndex
+        {
+            get
+            {
+                return _selectedIndex;
+            }
+            set
+            {
+                if (0 <= value && value < _imgWrappers.Count)
+                {
+                    _selectedIndex = value;
+                    // perform click
+                    if (OnItemClicked != null)
+                    {                        
+                        OnItemClicked(this, new ImageGridItemClickedEventArgs()
+                        {
+                            Index = value,
+                            Image = _imgWrappers[value].Image
+                        });
+                    }                    
+                }
+            }
+        }
+
         public ImageGrid()
         {            
             _column = 3;
@@ -46,6 +68,8 @@ namespace Mmosoft.Oops.Controls
 
         public void Load(List<Image> imgs)
         {
+            _virtualHeight = 0;
+            _offsetY = 0;
             _imgWrappers = new List<ImageWrapper>();
             foreach (var img in imgs)
                 _imgWrappers.Add(new ImageWrapper(img));         
