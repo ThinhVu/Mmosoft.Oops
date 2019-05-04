@@ -75,7 +75,7 @@ namespace Mmosoft.Oops
                     }
                     else
                     {
-                        g.FillEllipse(BrushCreator.CreateSolidBrush("#0"), dotRects[i]);
+                        g.FillEllipse(BrushCreator.CreateSolidBrush("#1"), dotRects[i]);
                     }                    
                 }
             }

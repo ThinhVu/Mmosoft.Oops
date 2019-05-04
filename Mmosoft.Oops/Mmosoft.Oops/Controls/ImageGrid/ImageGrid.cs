@@ -86,16 +86,19 @@ namespace Mmosoft.Oops.Controls
         }
         protected override void OnSizeChanged(EventArgs e)
         {
+            base.OnSizeChanged(e);
             _virtualHeight = 0;
             ReDraw();
         }
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            base.OnMouseMove(e);
             var hitPoint = e.Location.ChangePosition(0, _offsetY);  
             this.Cursor = GetHotItem(hitPoint) == null ? Cursors.Default : Cursors.Hand;
         }
         protected override void OnMouseClick(MouseEventArgs e)
         {
+            base.OnMouseClick(e);
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
                 var hitPoint = e.Location.ChangePosition(0, _offsetY);
@@ -125,6 +128,7 @@ namespace Mmosoft.Oops.Controls
         }
         protected override void OnPaint(PaintEventArgs e)
         {
+            base.OnPaint(e);
             var g = e.Graphics;
 
             if (DesignMode)
