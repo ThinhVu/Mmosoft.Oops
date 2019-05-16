@@ -82,6 +82,7 @@ namespace Mmosoft.Oops.Controls.TitleBar
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
+            base.OnMouseClick(e);
             var loc = e.Location;
 
             if (_minimizeButton.Contains(loc) && OnMinimizeClicked != null)
@@ -108,12 +109,13 @@ namespace Mmosoft.Oops.Controls.TitleBar
         }
 
         protected override void OnSizeChanged(EventArgs e)
-        {            
+        {
+            base.OnSizeChanged(e);
             _closeButton.Boundary = new Rectangle(this.Width - 1 - _controlButtonSize, 0, _controlButtonSize, _controlButtonSize);
             _closeButton.ImageBoundary = new Rectangle(_closeButton.Boundary.Left + _controlImagePadding, _controlImagePadding, _controlImageSize, _controlImageSize);
 
             if (MaximizeEnable)
-            {                
+            {
                 _maximizeButton.Boundary = new Rectangle(_closeButton.Boundary.Left - _controlButtonSize, 0, _controlButtonSize, _controlButtonSize);
                 _maximizeButton.ImageBoundary = new Rectangle(_maximizeButton.Boundary.Left + _controlImagePadding, _controlImagePadding, _controlImageSize, _controlImageSize);
             }
@@ -145,11 +147,13 @@ namespace Mmosoft.Oops.Controls.TitleBar
 
         protected override void OnMouseEnter(EventArgs e)
         {
+            base.OnMouseEnter(e);
             this.Cursor = Cursors.Hand;
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
+            base.OnMouseLeave(e);
             this.Cursor = Cursors.Default;
             _minimizeButton.IsMouseHover = false;
             _maximizeButton.IsMouseHover = false;
@@ -159,6 +163,7 @@ namespace Mmosoft.Oops.Controls.TitleBar
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            base.OnMouseDown(e);
             if (   _minimizeButton.Contains(e.Location)
                 || _maximizeButton.Contains(e.Location)
                 || _closeButton.Contains(e.Location))
@@ -175,6 +180,7 @@ namespace Mmosoft.Oops.Controls.TitleBar
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            base.OnMouseUp(e);
             if (mouseIsDown)
             {
                 if (PointToScreen(e.Location) != mouseDownLocation)
@@ -198,6 +204,7 @@ namespace Mmosoft.Oops.Controls.TitleBar
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            base.OnMouseMove(e);
             var loc = e.Location;
             RedrawIfButtonHoverStateChange(_minimizeButton, loc);
             RedrawIfButtonHoverStateChange(_maximizeButton, loc);
@@ -221,7 +228,8 @@ namespace Mmosoft.Oops.Controls.TitleBar
         }
 
         protected override void OnPaint(PaintEventArgs e)
-        {            
+        {
+            base.OnPaint(e);
             var g = e.Graphics;
 
             // Draw control button

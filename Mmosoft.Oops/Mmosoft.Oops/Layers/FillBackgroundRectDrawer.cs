@@ -22,7 +22,7 @@ namespace Mmosoft.Oops.Layers
                         ? BrushCreator.CreateSolidBrush("#0")
                         : targetCtrl.Focused
                             ? BrushCreator.CreateSolidBrush("#0")
-                            : BrushCreator.CreateSolidBrush("#0")
+                            : BrushCreator.CreateSolidBrush("#F")
             );
 
             g.FillRectangle(br, r);

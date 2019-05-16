@@ -71,6 +71,7 @@ namespace Mmosoft.Oops.Controls
                 
         protected override void OnMouseClick(MouseEventArgs e)
         {
+            base.OnMouseClick(e);
             var hitTest = HitTest(this._navBarItems, e.Location);
             if (hitTest != null)
             {
@@ -109,6 +110,7 @@ namespace Mmosoft.Oops.Controls
         }
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            base.OnMouseMove(e);
             _mouseLocation = e.Location;
             _isMouseIn = true;
 
@@ -120,6 +122,7 @@ namespace Mmosoft.Oops.Controls
 
         protected override void OnMouseLeave(EventArgs e)
         {
+            base.OnMouseLeave(e);
             _mouseLocation = new Point(int.MinValue, int.MinValue);
             _isMouseIn = false;
 
@@ -156,6 +159,7 @@ namespace Mmosoft.Oops.Controls
         }
         protected override void OnPaint(PaintEventArgs e)
         {
+            base.OnPaint(e);
             var g = e.Graphics;
 
             if (DesignMode)

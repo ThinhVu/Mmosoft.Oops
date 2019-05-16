@@ -100,8 +100,10 @@ namespace Mmosoft.OopsTest
 
         private void btnLayered_Click(object sender, EventArgs e)
         {
-            frmControlsDemo fc = new frmControlsDemo();
-            fc.ShowDialog();
+            using (var fc = new frmControlsDemo())
+            {
+                fc.ShowDialog();
+            }
         }
 
         private void togRotate_Click(object sender, EventArgs e)
