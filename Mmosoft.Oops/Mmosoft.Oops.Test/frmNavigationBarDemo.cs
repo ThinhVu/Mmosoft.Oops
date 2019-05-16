@@ -21,6 +21,7 @@ namespace Mmosoft.OopsTest
         private void frmSingleLevelSideBar_Shown(object sender, EventArgs e)
         {
             SetupImageGrid();
+            imageGrid1.AutoScrollToSelectedImage = true;
         }
         private void SetupTitleBar()
         {
@@ -120,7 +121,7 @@ namespace Mmosoft.OopsTest
         private void SetupImageGrid()
         {
             // setup layout
-            imageGrid1.Column = 3;
+            imageGrid1.Column = 5;
             imageGrid1.ImagePadding = 2;
 
             #region Load images

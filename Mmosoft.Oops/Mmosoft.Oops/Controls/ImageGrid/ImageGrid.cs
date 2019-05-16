@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
+using Mmosoft.Oops.Animation;
 
 namespace Mmosoft.Oops.Controls
 {
     public class ImageGrid : Control
-    {        
+    {
         private List<ImageWrapper> _imgWrappers;
+        private Animation.Animator _scrollAnimator;
         private int _virtualHeight;
         private int _offsetY;
+        private bool _painting;
 
         private int _imgPadding;
         [Browsable(true)]
@@ -28,11 +32,11 @@ namespace Mmosoft.Oops.Controls
         {
             get { return _column; }
             set { _column = value; ReDraw(); }
-        }
-
-        public event ImageGridItemClickedEventHandler OnItemClicked;
-
+        }        
+       
         private int _selectedIndex;
+        [Browsable(true)]
+        [Description("Get or set index of selected image")]
         public int SelectedIndex
         {
             get
@@ -52,27 +56,58 @@ namespace Mmosoft.Oops.Controls
                             Index = value,
                             Image = _imgWrappers[value].Image
                         });
-                    }                    
+                    }
+
+                    if (_autoScrollToSelectedImage)
+                        ScrollToSelectedImage();
                 }
             }
         }
 
+        [Browsable(true)]
+        [Description("Get total image number")]
+        public int Count 
+        { 
+            get 
+            { 
+                return _imgWrappers.Count; 
+            } 
+        }
+
+        private bool _autoScrollToSelectedImage;
+        [Browsable(true)]
+        [Description("Enabled/disabled auto scroll to selected image.")]
+        public bool AutoScrollToSelectedImage
+        {
+            get
+            {
+                return _autoScrollToSelectedImage;
+            }
+            set
+            {
+                _autoScrollToSelectedImage = value;
+            }
+        }
+
+        // events
+        public event ImageGridItemClickedEventHandler OnItemClicked;
+
+
+        // methods
         public ImageGrid()
         {            
             _column = 3;
             _imgPadding = 5;
             _imgWrappers = new List<ImageWrapper>();
             //
-            DoubleBuffered = true;
+            DoubleBuffered = true;            
         }
 
         public void Load(List<Image> imgs)
         {
             _virtualHeight = 0;
             _offsetY = 0;
-            _imgWrappers = new List<ImageWrapper>();
-            foreach (var img in imgs)
-                _imgWrappers.Add(new ImageWrapper(img));         
+            _imgWrappers = imgs.Select(img => new ImageWrapper(img)).ToList();            
             ReDraw();
         }        
         public void ReDraw()
@@ -116,22 +151,14 @@ namespace Mmosoft.Oops.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             var hitPoint = e.Location.ChangePosition(0, _offsetY);  
-            this.Cursor = GetHotItem(hitPoint) == null ? Cursors.Default : Cursors.Hand;
+            this.Cursor = GetHotItemIndex(hitPoint) < 0 ? Cursors.Default : Cursors.Hand;
         }
         protected override void OnMouseClick(MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
                 var hitPoint = e.Location.ChangePosition(0, _offsetY);
-                var hotItem = GetHotItem(hitPoint);
-                if (hotItem != null && OnItemClicked != null)
-                    OnItemClicked(
-                        this,
-                        new ImageGridItemClickedEventArgs()
-                        {
-                            Image = hotItem.Image,
-                            Index = _imgWrappers.IndexOf(hotItem)
-                        });
+                this.SelectedIndex = GetHotItemIndex(hitPoint);                
             }            
         }
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -149,8 +176,10 @@ namespace Mmosoft.Oops.Controls
         }
         protected override void OnPaint(PaintEventArgs e)
         {
+            if (_painting)
+                return;
+            _painting = true;
             var g = e.Graphics;
-
             if (DesignMode)
             {
                 g.DrawRectangle(Pens.Black, this.ClientRectangle.ChangeSizeRelative(-1, -1));
@@ -166,8 +195,62 @@ namespace Mmosoft.Oops.Controls
                     }
                 }
             }
+            _painting = false;
         }
 
+        public void ScrollToSelectedImage()
+        {
+            this.ScrollToSelectedImage(_imgWrappers[SelectedIndex].Boundary);
+        }
+
+        private void ScrollToSelectedImage(Rectangle boundary)
+        {
+            int movePixel = 5;
+
+            if (_scrollAnimator != null)
+                _scrollAnimator.Stop();
+
+            // img height less than viewport height
+            if (boundary.Height < this.Height)
+            {
+                // image above the viewport or intesect with below part of an image
+                // then we need to decrease offset to show the image
+                if (   _offsetY > boundary.Bottom
+                    || (_offsetY < boundary.Bottom && _offsetY > boundary.Top))
+                {
+                    _scrollAnimator = new Animation.Animator();
+                    _scrollAnimator.Add(new Step
+                    {
+                        TotalStep = (_offsetY - boundary.Top) / movePixel,
+                        Interval = 24,
+                        AnimAction = (i) =>
+                        {
+                            _offsetY -= movePixel;
+                            Invalidate();
+                        }
+                    });
+
+                    _scrollAnimator.Start();
+                }
+                // entire or part of an image below the viewport                
+                else if (_offsetY + this.Height < boundary.Bottom)
+                {
+                    _scrollAnimator = new Animation.Animator();
+                    _scrollAnimator.Add(new Step
+                    {
+                        TotalStep = (boundary.Bottom - _offsetY - this.Height) / movePixel,
+                        Interval = 24,
+                        AnimAction = (i) =>
+                        {
+                            _offsetY += movePixel;
+                            Invalidate();
+                        }
+                    });
+
+                    _scrollAnimator.Start();
+                }
+            }
+        }
         private void GetMinHeightAndColumnIndex(int[] num, out int value, out int index)
         {
             value = int.MaxValue;
@@ -182,16 +265,15 @@ namespace Mmosoft.Oops.Controls
                 }
             }
         }
-        private ImageWrapper GetHotItem(Point location)
+        private int GetHotItemIndex(Point location)
         {
-            foreach (var i in _imgWrappers)
+            for (int i = 0; i < _imgWrappers.Count; i++)
             {
-                if (i.Boundary.Contains(location))
-                {
+                if (_imgWrappers[i].Boundary.Contains(location))
                     return i;
-                }
             }
-            return null;
+
+            return -1;            
         }
         private IEnumerable<ImageWrapper> GetImageInViewport()
         {

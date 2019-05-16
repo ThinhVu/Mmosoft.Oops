@@ -48,13 +48,15 @@ namespace Mmosoft.Oops.Animation
                 {
                     currentStep++;
 
-                    if (currentStep <= maximumStep)
+                    if (currentStep < maximumStep)
                     {
                         if (detail.AnimAction != null)
                             detail.AnimAction.Invoke(currentStep);
                     }
                     else
                     {
+                        if (detail.AnimAction != null)
+                            detail.AnimAction.Invoke(currentStep);
                         // reset current step to re-run current timer
                         currentStep = 0;
                         timer.Stop();
