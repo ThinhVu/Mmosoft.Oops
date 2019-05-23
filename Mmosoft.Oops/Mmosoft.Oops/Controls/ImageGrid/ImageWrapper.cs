@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using System.Drawing;
 
 namespace Mmosoft.Oops.Controls
 {
     class ImageWrapper
     {
+        /// <summary>
+        /// Contain image object
+        /// </summary>
         public Image Image { get; set; }
+
+        /// <summary>
+        /// Contain image boundary
+        /// </summary>
         public Rectangle Boundary { get; set; }
 
         public ImageWrapper(Image img)

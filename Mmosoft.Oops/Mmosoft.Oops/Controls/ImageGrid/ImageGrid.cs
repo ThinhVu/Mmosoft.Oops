@@ -11,30 +11,29 @@ namespace Mmosoft.Oops.Controls
     public class ImageGrid : Control
     {
         private List<ImageWrapper> _imgWrappers;
-        private Animation.Animator _scrollAnimator;
         private int _virtualHeight;
         private int _offsetY;
-        private bool _painting;
-
-        private int _imgPadding;
+        // private data member <which has corresponding public property>
+        private int _gutter;
+        private int _column;
+        private int _selectedIndex;
+        
         [Browsable(true)]
         [Description("Pixel between each image")]
-        public int ImagePadding
+        public int Gutter
         {
-            get { return _imgPadding; }
-            set { _imgPadding = value; }
+            get { return _gutter; }
+            set { _gutter = value; }
         }
-
-        private int _column;
+        
         [Browsable(true)]
         [Description("Number of column will be displayed in image grid")]
         public int Column
         {
             get { return _column; }
             set { _column = value; ReDraw(); }
-        }        
-       
-        private int _selectedIndex;
+        }
+               
         [Browsable(true)]
         [Description("Get or set index of selected image")]
         public int SelectedIndex
@@ -50,16 +49,13 @@ namespace Mmosoft.Oops.Controls
                     _selectedIndex = value;
                     // perform click
                     if (OnItemClicked != null)
-                    {                        
+                    {
                         OnItemClicked(this, new ImageGridItemClickedEventArgs()
                         {
                             Index = value,
                             Image = _imgWrappers[value].Image
                         });
                     }
-
-                    if (_autoScrollToSelectedImage)
-                        ScrollToSelectedImage();
                 }
             }
         }
@@ -71,98 +67,88 @@ namespace Mmosoft.Oops.Controls
             get 
             { 
                 return _imgWrappers.Count; 
-            } 
-        }
-
-        private bool _autoScrollToSelectedImage;
-        [Browsable(true)]
-        [Description("Enabled/disabled auto scroll to selected image.")]
-        public bool AutoScrollToSelectedImage
-        {
-            get
-            {
-                return _autoScrollToSelectedImage;
-            }
-            set
-            {
-                _autoScrollToSelectedImage = value;
             }
         }
 
         // events
         public event ImageGridItemClickedEventHandler OnItemClicked;
 
-
         // methods
         public ImageGrid()
-        {            
+        {
             _column = 3;
-            _imgPadding = 5;
+            _gutter = 5;
             _imgWrappers = new List<ImageWrapper>();
             //
-            DoubleBuffered = true;            
+            DoubleBuffered = true;
         }
 
-        public void Load(List<Image> imgs)
+        //
+        public void Clear()
         {
-            _virtualHeight = 0;
+            foreach (var imageWrapper in _imgWrappers)
+                imageWrapper.Image.Dispose();
+            _imgWrappers = new List<ImageWrapper>();
             _offsetY = 0;
-            _imgWrappers = imgs.Select(img => new ImageWrapper(img)).ToList();            
             ReDraw();
-        }        
+        }
+        public void Add(Image image)
+        {
+            _imgWrappers.Add(new ImageWrapper(image));
+            ReDraw();
+        }
         public void ReDraw()
         {
+            _virtualHeight = 0;
             if (_imgWrappers == null || _imgWrappers.Count == 0)
                 return;
 
-            int imgWidth = (int)((this.Width - 1 - (Column + 1) * _imgPadding * 1f) / _column);
-            var columnsHeight = new int[Column];
-            for (int i = 0; i < columnsHeight.Length; i++)
-            {
-                columnsHeight[i] = _imgPadding;
-            }
-            
-            int x, y, colId;
+            var availableWidth = (int)((this.Width - 1 - (_column + 1) * _gutter * 1f) / _column);
+            var columnTops = new int[_column];
+            for (int i = 0; i < columnTops.Length; i++)
+                columnTops[i] = _gutter;
+
+            int left, top, colId;
             for (int i = 0; i < _imgWrappers.Count; i++)
-            {               
-                GetMinHeightAndColumnIndex(columnsHeight, out y, out colId);
-                x = _imgPadding * (1 + colId) + imgWidth * colId;
+            {
+                GetMinHeightAndColumnIndex(columnTops, out top, out colId);
+                left = _gutter * (1 + colId) + availableWidth * colId;
 
                 ImageWrapper iw = _imgWrappers[i];
-                int actualImgWidth = iw.Image.Width;
-                int actualImgHeight = iw.Image.Height;
-                float hwRatio = 1f * actualImgHeight / actualImgWidth;
-                int height = (int)(imgWidth * hwRatio);
-                iw.Boundary = new Rectangle(x, y, imgWidth, height);
-                // next image in the same column
-                columnsHeight[colId] += height + _imgPadding;
+                int actualImageWidth = iw.Image.Width;
+                int actualImageHeight = iw.Image.Height;
+                int availableHeight = (int)((availableWidth * 1f / actualImageWidth) * actualImageHeight);
+                iw.Boundary = new Rectangle(left, top - _offsetY, availableWidth, availableHeight);
 
-                if (_virtualHeight < columnsHeight[colId])
-                    _virtualHeight = columnsHeight[colId];
+                // next image in the same column will be drawned at "columnTops[colId] + availableHeight + MGutter" position
+                columnTops[colId] += availableHeight + _gutter;
+
+                // increase virtual height
+                if (_virtualHeight < columnTops[colId])
+                    _virtualHeight = columnTops[colId];
             }
 
             Invalidate();
         }
+
+        //
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            _virtualHeight = 0;
             ReDraw();
         }
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            var hitPoint = e.Location.ChangePosition(0, _offsetY);  
-            this.Cursor = GetHotItemIndex(hitPoint) < 0 ? Cursors.Default : Cursors.Hand;
+            this.Cursor = GetHotItemIndex(e.Location) < 0 ? Cursors.Default : Cursors.Hand;
         }
         protected override void OnMouseClick(MouseEventArgs e)
         {
             base.OnMouseClick(e);
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                var hitPoint = e.Location.ChangePosition(0, _offsetY);
-                this.SelectedIndex = GetHotItemIndex(hitPoint);                
-            }            
+                this.SelectedIndex = GetHotItemIndex(e.Location);
+            }
         }
         protected override void OnMouseWheel(MouseEventArgs e)
         {
@@ -175,91 +161,35 @@ namespace Mmosoft.Oops.Controls
             // 
             if (_offsetY > _virtualHeight - this.Height)
                 _offsetY = _virtualHeight - this.Height;
-            Invalidate();
+
+            ReDraw();
         }
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
-            if (_painting)
-                return;
-            _painting = true;
             var g = e.Graphics;
+            SolidBrush br = new SolidBrush(this.BackColor);
+            g.FillRectangle(br, this.ClientRectangle);
             if (DesignMode)
             {
-                g.DrawRectangle(Pens.Black, this.ClientRectangle.ChangeSizeRelative(-1, -1));
                 g.DrawString(this.Name + " control doesn't provide design time support", this.Font, Brushes.Black, new Point(0, 0));
             }
             else
             {
-                if (_imgWrappers != null)
+                foreach (ImageWrapper i in ImagesInView())
                 {
-                    foreach (ImageWrapper i in GetImageInViewport())
-                    {
-                        g.DrawImage(i.Image, i.Boundary);
-                    }
+                    g.DrawImage(i.Image, i.Boundary);
                 }
             }
-            _painting = false;
+
+            br.Dispose();
         }
-
-        public void ScrollToSelectedImage()
-        {
-            this.ScrollToSelectedImage(_imgWrappers[SelectedIndex].Boundary);
-        }
-
-        private void ScrollToSelectedImage(Rectangle boundary)
-        {
-            int movePixel = 5;
-
-            if (_scrollAnimator != null)
-                _scrollAnimator.Stop();
-
-            // img height less than viewport height
-            if (boundary.Height < this.Height)
-            {
-                // image above the viewport or intesect with below part of an image
-                // then we need to decrease offset to show the image
-                if (   _offsetY > boundary.Bottom
-                    || (_offsetY < boundary.Bottom && _offsetY > boundary.Top))
-                {
-                    _scrollAnimator = new Animation.Animator();
-                    _scrollAnimator.Add(new Step
-                    {
-                        TotalStep = (_offsetY - boundary.Top) / movePixel,
-                        Interval = 24,
-                        AnimAction = (i) =>
-                        {
-                            _offsetY -= movePixel;
-                            Invalidate();
-                        }
-                    });
-
-                    _scrollAnimator.Start();
-                }
-                // entire or part of an image below the viewport                
-                else if (_offsetY + this.Height < boundary.Bottom)
-                {
-                    _scrollAnimator = new Animation.Animator();
-                    _scrollAnimator.Add(new Step
-                    {
-                        TotalStep = (boundary.Bottom - _offsetY - this.Height) / movePixel,
-                        Interval = 24,
-                        AnimAction = (i) =>
-                        {
-                            _offsetY += movePixel;
-                            Invalidate();
-                        }
-                    });
-
-                    _scrollAnimator.Start();
-                }
-            }
-        }
+        
         private void GetMinHeightAndColumnIndex(int[] num, out int value, out int index)
         {
             value = int.MaxValue;
             index = -1;
-
+            // looping from right to left
+            // so left side will have higher priority
             for (int i = num.Length - 1; i >= 0; i--)
             {
                 if (value >= num[i])
@@ -276,26 +206,15 @@ namespace Mmosoft.Oops.Controls
                 if (_imgWrappers[i].Boundary.Contains(location))
                     return i;
             }
-
-            return -1;            
+            return -1;
         }
-        private IEnumerable<ImageWrapper> GetImageInViewport()
+        private IEnumerable<ImageWrapper> ImagesInView()
         {
-            Rectangle r;
             foreach (var iw in _imgWrappers)
             {
-                r = iw.Boundary.MoveY( - _offsetY);
-                if (r.IntersectsWith(this.ClientRectangle))
-                    yield return new ImageWrapper(iw.Image) { Boundary = r };
+                if (iw.Boundary.IntersectsWith(this.ClientRectangle))
+                    yield return iw;
             }
         }
-    }
-
-    public delegate void ImageGridItemClickedEventHandler(object sender, ImageGridItemClickedEventArgs e);
-
-    public class ImageGridItemClickedEventArgs : EventArgs
-    {
-        public Image Image { get; set; }
-        public int Index { get; set; }
     }
 }

@@ -122,18 +122,22 @@ namespace Mmosoft.OopsTest
         {
             // setup layout
             imageGrid1.Column = 5;
-            imageGrid1.ImagePadding = 2;
+            imageGrid1.Gutter = 2;
 
             #region Load images
             var imgPath = @"..\..\assests\images";
             var images = new List<Image>();
             foreach (var item in Directory.EnumerateFiles(imgPath))
-                images.Add(new Bitmap(item));
-
-            imageGrid1.Load(images);
+                imageGrid1.Add(new Bitmap(item));
+            
             #endregion
 
             imageGrid1.OnItemClicked += (s, e) => { navBar.BackgroundImage = e.Image; /*Do stuff*/ };
+        }
+
+        private void mediaController1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

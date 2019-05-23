@@ -74,6 +74,8 @@
     <Compile Include="Controls\ImageGrid\ImageGrid.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ImageGrid\ImageGridItemClickedEventArgs.cs" />
+    <Compile Include="Controls\ImageGrid\ImageGridItemClickedEventHandler.cs" />
     <Compile Include="Controls\ImageGrid\ImageWrapper.cs" />
     <Compile Include="Controls\MediaController.cs">
       <SubType>UserControl</SubType>

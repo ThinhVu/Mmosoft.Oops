@@ -71,16 +71,19 @@
             this.mediaController1.Name = "mediaController1";
             this.mediaController1.Size = new System.Drawing.Size(298, 73);
             this.mediaController1.TabIndex = 5;
+            this.mediaController1.Load += new System.EventHandler(this.mediaController1_Load);
             // 
             // imageGrid1
             // 
             this.imageGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.imageGrid1.AutoScrollToSelectedImage = false;
             this.imageGrid1.Column = 3;
-            this.imageGrid1.ImagePadding = 5;
+            this.imageGrid1.Gutter = 5;
             this.imageGrid1.Location = new System.Drawing.Point(13, 41);
             this.imageGrid1.Name = "imageGrid1";
+            this.imageGrid1.SelectedIndex = 0;
             this.imageGrid1.Size = new System.Drawing.Size(849, 377);
             this.imageGrid1.TabIndex = 4;
             this.imageGrid1.Text = "imageGrid1";
@@ -90,6 +93,7 @@
             this.navBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.navBar.BackColor = System.Drawing.Color.Gainsboro;
+            this.navBar.EnableHighlightReveal = false;
             this.navBar.Location = new System.Drawing.Point(1, 1);
             this.navBar.Name = "navBar";
             this.navBar.Size = new System.Drawing.Size(234, 553);
@@ -120,7 +124,7 @@
             this.btnCollapse.TabIndex = 8;
             this.btnCollapse.Text = "flatButton1";
             // 
-            // frmSingleLevelSideBar
+            // frmNavigationBarDemo
             // 
             this.BackColor = System.Drawing.Color.Blue;
             this.ClientSize = new System.Drawing.Size(1109, 555);
@@ -130,7 +134,7 @@
             this.Controls.Add(this.pnContent);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Location = new System.Drawing.Point(40, 0);
-            this.Name = "frmSingleLevelSideBar";
+            this.Name = "frmNavigationBarDemo";
             this.Shown += new System.EventHandler(this.frmSingleLevelSideBar_Shown);
             this.pnContent.ResumeLayout(false);
             this.pnContent.PerformLayout();

@@ -59,6 +59,12 @@ namespace Mmosoft.Oops.Controls.Buttons
 
             if (this.Image != null)
                 e.Graphics.DrawImage(this.Image, _iconRect);
+
+            var brText = new SolidBrush(this.ForeColor);
+            e.Graphics.DrawString(this.Text, this.Font, brText, this.ClientRectangle, new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+            brText.Dispose();
+
+            e.Graphics.DrawRectangle(Pens.Black, this.ClientRectangle.ChangeSizeRelative(-1, -1));
         }
 
         protected override void Dispose(bool disposing)
