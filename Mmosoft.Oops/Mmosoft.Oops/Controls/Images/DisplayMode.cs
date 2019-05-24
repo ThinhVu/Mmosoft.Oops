@@ -15,11 +15,6 @@
         StretchImage = 1,
         //
         // Summary:
-        //     The viewport is sized equal to the size of the image that
-        //     it contains.
-        AutoSize = 2,
-        //
-        // Summary:
         //     The image is displayed in the center if the viewport is larger than the image.
         //     If the image is larger than the viewport,
         //     the picture is placed in the center of the viewport and

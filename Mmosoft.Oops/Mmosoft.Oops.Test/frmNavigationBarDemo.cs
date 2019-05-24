@@ -21,7 +21,6 @@ namespace Mmosoft.OopsTest
         private void frmSingleLevelSideBar_Shown(object sender, EventArgs e)
         {
             SetupImageGrid();
-            imageGrid1.AutoScrollToSelectedImage = true;
         }
         private void SetupTitleBar()
         {
@@ -121,16 +120,16 @@ namespace Mmosoft.OopsTest
         private void SetupImageGrid()
         {
             // setup layout
-            imageGrid1.Column = 5;
-            imageGrid1.Gutter = 2;
+            imageGrid1.GridLayout = new TableLayout(5, 1, 360, true, ImageGridDisplayMode.ScaleLossCenter);
 
             #region Load images
             var imgPath = @"..\..\assests\images";
             var images = new List<Image>();
             foreach (var item in Directory.EnumerateFiles(imgPath))
-                imageGrid1.Add(new Bitmap(item));
+                images.Add(new Bitmap(item));
             
             #endregion
+            imageGrid1.Add(images[0]);
 
             imageGrid1.OnItemClicked += (s, e) => { navBar.BackgroundImage = e.Image; /*Do stuff*/ };
         }

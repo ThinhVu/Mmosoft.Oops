@@ -78,9 +78,6 @@
             this.imageGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.imageGrid1.AutoScrollToSelectedImage = false;
-            this.imageGrid1.Column = 3;
-            this.imageGrid1.Gutter = 5;
             this.imageGrid1.Location = new System.Drawing.Point(13, 41);
             this.imageGrid1.Name = "imageGrid1";
             this.imageGrid1.SelectedIndex = 0;

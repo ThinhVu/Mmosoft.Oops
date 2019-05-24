@@ -17,6 +17,7 @@ namespace Mmosoft.Oops.Controls
         public ImageWrapper(Image img)
         {
             Image = img;
+            Boundary = new Rectangle { X = 0, Y = 0, Width = img.Width, Height = img.Height };
         }
     }
 }

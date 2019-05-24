@@ -68,7 +68,6 @@
             this.fbLoop.Name = "fbLoop";
             this.fbLoop.Size = new System.Drawing.Size(40, 40);
             this.fbLoop.TabIndex = 4;
-            this.fbLoop.Text = "flatButton5";
             // 
             // fbNext
             // 
@@ -79,7 +78,6 @@
             this.fbNext.Name = "fbNext";
             this.fbNext.Size = new System.Drawing.Size(40, 40);
             this.fbNext.TabIndex = 3;
-            this.fbNext.Text = "flatButton4";
             // 
             // fbPlayPause
             // 
@@ -90,7 +88,6 @@
             this.fbPlayPause.Name = "fbPlayPause";
             this.fbPlayPause.Size = new System.Drawing.Size(40, 40);
             this.fbPlayPause.TabIndex = 2;
-            this.fbPlayPause.Text = "flatButton3";
             // 
             // fbBack
             // 
@@ -101,7 +98,6 @@
             this.fbBack.Name = "fbBack";
             this.fbBack.Size = new System.Drawing.Size(40, 40);
             this.fbBack.TabIndex = 1;
-            this.fbBack.Text = "flatButton2";
             // 
             // fbShuffle
             // 
@@ -112,7 +108,6 @@
             this.fbShuffle.Name = "fbShuffle";
             this.fbShuffle.Size = new System.Drawing.Size(40, 40);
             this.fbShuffle.TabIndex = 0;
-            this.fbShuffle.Text = "flatButton1";
             // 
             // MediaController
             // 

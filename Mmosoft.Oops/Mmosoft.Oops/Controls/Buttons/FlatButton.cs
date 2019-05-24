@@ -37,6 +37,17 @@ namespace Mmosoft.Oops.Controls.Buttons
             Invalidate();
         }
 
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            base.OnEnabledChanged(e);
+            if (!this.Enabled)
+                _backBrush.Color = Color.FromArgb(80, this.BackColor);
+            else
+                _backBrush.Color = Color.FromArgb(255, this.BackColor);
+
+            Invalidate();
+        }
+
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
@@ -55,15 +66,18 @@ namespace Mmosoft.Oops.Controls.Buttons
         {
             base.OnPaint(e);           
 
+            // background
             e.Graphics.FillRectangle(_backBrush, this.ClientRectangle);
 
-            if (this.Image != null)
-                e.Graphics.DrawImage(this.Image, _iconRect);
+            // image
+            if (this.Image != null) e.Graphics.DrawImage(this.Image, _iconRect);
 
-            var brText = new SolidBrush(this.ForeColor);
+            // text
+            var brText = new SolidBrush( Enabled? this.ForeColor : Color.FromArgb(80, this.ForeColor));
             e.Graphics.DrawString(this.Text, this.Font, brText, this.ClientRectangle, new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             brText.Dispose();
 
+            // border
             e.Graphics.DrawRectangle(Pens.Black, this.ClientRectangle.ChangeSizeRelative(-1, -1));
         }
 
