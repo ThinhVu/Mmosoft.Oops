@@ -17,7 +17,9 @@ namespace Mmosoft.Oops.Controls
         private int _gutter;
         private int _column;
         private int _selectedIndex;
-        
+        private ImageGridDisplayMode _displayMode;
+        private ImageGridFlow _flow;
+
         [Browsable(true)]
         [Description("Pixel between each image")]
         public int Gutter
@@ -33,7 +35,25 @@ namespace Mmosoft.Oops.Controls
             get { return _column; }
             set { _column = value; ReDraw(); }
         }
-               
+
+        [Browsable(true)]
+        [Description("DisplayMode")]
+        public ImageGridDisplayMode DisplayMode
+        {
+            get
+            {
+                return _displayMode;
+            }
+            set
+            {
+                if (_displayMode != value)
+                {
+                    _displayMode = value;
+                    ReDraw();
+                }
+            }
+        }
+
         [Browsable(true)]
         [Description("Get or set index of selected image")]
         public int SelectedIndex
@@ -102,8 +122,23 @@ namespace Mmosoft.Oops.Controls
             _virtualHeight = 0;
             if (_imgWrappers == null || _imgWrappers.Count == 0)
                 return;
+            switch (_flow)
+            {
+                case ImageGridFlow.FillToTop:
+                    FillToTop();
+                    break;
+                case ImageGridFlow.RowByRow:
+                    RowByRow();
+                    break;
+            }
 
+            Invalidate();
+        }
+
+        private void FillToTop()
+        {
             var availableWidth = (int)((this.Width - 1 - (_column + 1) * _gutter * 1f) / _column);
+
             var columnTops = new int[_column];
             for (int i = 0; i < columnTops.Length; i++)
                 columnTops[i] = _gutter;
@@ -127,8 +162,40 @@ namespace Mmosoft.Oops.Controls
                 if (_virtualHeight < columnTops[colId])
                     _virtualHeight = columnTops[colId];
             }
+        }
 
-            Invalidate();
+        private void RowByRow()
+        {
+            var availableWidth = (int)((this.Width - 1 - (_column + 1) * _gutter * 1f) / _column);
+            var columnTops = new int[_column];
+            for (int i = 0; i < columnTops.Length; i++)
+                columnTops[i] = _gutter;
+            int left, top, colId;
+            for (int i = 0; i < _imgWrappers.Count; i++)
+            {
+                GetMinHeightAndColumnIndex(columnTops, out top, out colId);
+                left = _gutter * (1 + colId) + availableWidth * colId;
+
+                ImageWrapper iw = _imgWrappers[i];
+                int actualImageWidth = iw.Image.Width;
+                int actualImageHeight = iw.Image.Height;
+                int availableHeight = (int)((availableWidth * 1f / actualImageWidth) * actualImageHeight);
+                iw.Boundary = new Rectangle(left, top - _offsetY, availableWidth, availableHeight);
+
+                // next image in the same column will be drawned at "columnTops[colId] + availableHeight + MGutter" position
+                columnTops[colId] += availableHeight + _gutter;
+
+                // increase virtual height
+                if (_virtualHeight < columnTops[colId])
+                    _virtualHeight = columnTops[colId];
+            }
+            switch (DisplayMode)
+            {
+                case ImageGridDisplayMode.ScaleLossCenter:
+                    break;
+                case ImageGridDisplayMode.StretchImage:
+                    break;
+            }
         }
 
         //

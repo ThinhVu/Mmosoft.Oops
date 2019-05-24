@@ -71,12 +71,16 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Buttons\ToogleButtonColors.cs" />
-    <Compile Include="Controls\ImageGrid\ImageGrid.cs">
+    <Compile Include="Controls\Images\DisplayMode.cs" />
+    <Compile Include="Controls\Images\ImageGrid\ImageGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ImageGrid\ImageGridItemClickedEventArgs.cs" />
-    <Compile Include="Controls\ImageGrid\ImageGridItemClickedEventHandler.cs" />
-    <Compile Include="Controls\ImageGrid\ImageWrapper.cs" />
+    <Compile Include="Controls\Images\ImageDisplayModeHelper.cs" />
+    <Compile Include="Controls\Images\ImageGrid\ImageGridDisplayFlow.cs" />
+    <Compile Include="Controls\Images\ImageGrid\ImageGridDisplayMode.cs" />
+    <Compile Include="Controls\Images\ImageGrid\ImageGridItemClickedEventArgs.cs" />
+    <Compile Include="Controls\Images\ImageGrid\ImageGridItemClickedEventHandler.cs" />
+    <Compile Include="Controls\Images\ImageGrid\ImageWrapper.cs" />
     <Compile Include="Controls\MediaController.cs">
       <SubType>UserControl</SubType>
     </Compile>
