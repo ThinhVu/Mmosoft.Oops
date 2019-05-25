@@ -8,15 +8,23 @@ using Mmosoft.Oops.Animation;
 
 namespace Mmosoft.Oops.Controls
 {
+    // TODO: Separate layout engine with ImageGrid
     public class ImageGrid : Control
     {
-        private List<ImageWrapper> _imgWrappers;
-        private ImageGridLayoutBase _gridLayout;
-        private int _virtualHeight;
+        // -- private members
+        // data
+        private List<ImageWrapper> _items;
+        // layout
+        private LayoutSettingBase _layoutSetting;        
+        private int _virtualHeight;        
         private int _offsetY;
-        // private data member <which has corresponding public property>
+        // drag drop
+        private PickedItem _pickedItem;
+
+        // 
         private int _selectedIndex;
 
+        // -- properties
         [Browsable(true)]
         [Description("Get or set index of selected image")]
         public int SelectedIndex
@@ -27,7 +35,7 @@ namespace Mmosoft.Oops.Controls
             }
             set
             {
-                if (0 <= value && value < _imgWrappers.Count)
+                if (0 <= value && value < _items.Count)
                 {
                     _selectedIndex = value;
                     // perform click
@@ -36,7 +44,7 @@ namespace Mmosoft.Oops.Controls
                         OnItemClicked(this, new ImageGridItemClickedEventArgs()
                         {
                             Index = value,
-                            Image = _imgWrappers[value].Image
+                            Image = _items[value].Image
                         });
                     }
                 }
@@ -49,22 +57,23 @@ namespace Mmosoft.Oops.Controls
         { 
             get 
             { 
-                return _imgWrappers.Count; 
+                return _items.Count; 
             }
         }
 
         [Browsable(false)]
         [Description("Get or set grid layout")]
-        public ImageGridLayoutBase GridLayout 
+        public LayoutSettingBase LayoutSettings 
         { 
             get 
             { 
-                return _gridLayout; 
+                return _layoutSetting; 
             } 
             set 
             { 
-                _gridLayout = value;
-                ReDraw(); 
+                _layoutSetting = value;
+                _offsetY = 0;
+                ReDraw();
             } 
         }
 
@@ -74,114 +83,113 @@ namespace Mmosoft.Oops.Controls
         // methods
         public ImageGrid()
         {
-            _imgWrappers = new List<ImageWrapper>();
+            _items = new List<ImageWrapper>();            
             //
             DoubleBuffered = true;
         }
 
-        //
+        // public methods
         public void Clear()
         {
-            foreach (var imageWrapper in _imgWrappers)
+            foreach (var imageWrapper in _items)
                 imageWrapper.Image.Dispose();
-            _imgWrappers = new List<ImageWrapper>();
+            _items = new List<ImageWrapper>();
             _offsetY = 0;
             ReDraw();
         }
         public void Add(Image image)
         {
-            _imgWrappers.Add(new ImageWrapper(image));
+            _items.Add(new ImageWrapper(image));
             ReDraw();
         }
+
+        // calculate and drawing images
         public void ReDraw()
         {
             _virtualHeight = 0;
-            if (_imgWrappers == null || _imgWrappers.Count == 0)
+            if (_items == null || _items.Count == 0)
                 return;
 
-            if (_gridLayout is FillToTopLayout)
+            if (_layoutSetting is FillToTop)
             {
-                ApplyFillToTopLayout();
+                ApplyFillToTop();
             }
             else
             {
-                ApplyTableLayout();
+                ApplyFillToBlock();
             }
     
             Invalidate();
         }
 
-        private void ApplyFillToTopLayout()
+        // event handlers
+        protected override void OnMouseDown(MouseEventArgs e)
         {
-            var availableWidth = GetColumnWidth();
-
-            var columnTops = new int[_gridLayout.Column];
-            for (int i = 0; i < columnTops.Length; i++)
-                columnTops[i] = _gridLayout.Gutter;
-
-            int left, top;
-            List<int> colId;
-            for (int i = 0; i < _imgWrappers.Count; i++)
+            base.OnMouseDown(e);
+            int pickedIndex = GetHotItemIndex(e.Location);
+            if (pickedIndex > -1)
             {
-                GetMinTopAndColumnIndex(columnTops, out top, out colId);
-                left = _gridLayout.Gutter * (1 + colId[0]) + availableWidth * colId[0];
-
-                ImageWrapper iw = _imgWrappers[i];
-                int actualImageWidth = iw.Image.Width;
-                int actualImageHeight = iw.Image.Height;
-                int availableHeight = (int)((availableWidth * 1f / actualImageWidth) * actualImageHeight);
-                iw.Boundary = new Rectangle(left, top - _offsetY, availableWidth, availableHeight);
-
-                // next image in the same column will be drawned at "columnTops[colId] + availableHeight + MGutter" position
-                columnTops[colId[0]] += availableHeight + _gridLayout.Gutter;
-
-                // increase virtual height
-                if (_virtualHeight < columnTops[colId[0]])
-                    _virtualHeight = columnTops[colId[0]];
+                _pickedItem = new PickedItem(_items[pickedIndex], e.Location);
+                _pickedItem.Index = pickedIndex;
             }
         }
-
-        private void ApplyTableLayout()
+        protected override void OnMouseUp(MouseEventArgs e)
         {
-            var availableWidth = GetColumnWidth();
-            var layout = (TableLayout)_gridLayout;
-            var slotMgr = new SlotMgr(_gridLayout.Column);
-            var takenSlots = new List<Slot>();
-            for (int i = 0; i < _imgWrappers.Count; i++)
+            base.OnMouseUp(e);
+            if (e.Location != _pickedItem.PickedLocation) // dragging
             {
-                if (ImageDisplayModeHelper.IsPortrait(_imgWrappers[i].Boundary))
+                int droppedIndex = GetHotItemIndex(e.Location);
+                if (droppedIndex == -1 && this.Bounds.Contains(e.Location))
+                    droppedIndex = _items.Count - 1;
+                if (droppedIndex != -1)
                 {
-                    takenSlots.Add(slotMgr.FindAvailableSlot(1));
+                    // swap if picked != dropped
+                    if (droppedIndex != _pickedItem.Index)
+                    {
+                        _items[_pickedItem.Index] = _items[droppedIndex];
+                        _items[droppedIndex] = _pickedItem.ItemRef;
+                    }
                 }
-                else // square or landscape
+                ReDraw();
+            }
+            else // click
+            {
+                if (e.Button == System.Windows.Forms.MouseButtons.Left)
                 {
-                    // check if we need more slots for landspace image
-                    float imageRatio = 1f * _imgWrappers[i].Image.Width / _imgWrappers[i].Image.Height;
-                    int slotNeeded = layout.MergeColumn ? (int)Math.Round(imageRatio, MidpointRounding.AwayFromZero) : 1;
-                    takenSlots.Add(slotMgr.FindAvailableSlot(slotNeeded));
+                    this.SelectedIndex = GetHotItemIndex(e.Location);
                 }
             }
 
-            // converting slots to specific position in grid
-            for (int i = 0; i < takenSlots.Count; i++)
-            {
-                ImageWrapper iw = _imgWrappers[i];
-                Slot slot = takenSlots[i];
-                iw.Boundary = new Rectangle
-                {
-                    X = (slot.SlotIndex + 1) * layout.Gutter + slot.SlotIndex * availableWidth,
-                    Y = (slot.LaneIndex + 1) * layout.Gutter + slot.LaneIndex * layout.RowHeight - _offsetY,
-                    Width = (slot.SlotNeeded - 1) * layout.Gutter + slot.SlotNeeded * availableWidth,
-                    Height = layout.RowHeight
-                };
-            }
-
-            _virtualHeight = (slotMgr.LaneCount * layout.RowHeight) + (slotMgr.LaneCount - 1) * layout.Gutter;
+            _pickedItem = null;
         }
-
-        private int GetColumnWidth()
+        protected override void OnMouseMove(MouseEventArgs e)
         {
-            return (int)((this.Width - 1 - (_gridLayout.Column + 1) * _gridLayout.Gutter * 1f) / _gridLayout.Column);
+            base.OnMouseMove(e);
+            this.Cursor = GetHotItemIndex(e.Location) < 0 ? Cursors.Default : Cursors.Hand;
+            if (_pickedItem != null)
+            {
+                _pickedItem.Move(e.Location);
+                ReDraw();
+            }
+        }                
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            if (_virtualHeight < this.Height)
+                return;
+
+            var newOffsetY = _offsetY - e.Delta;
+            //
+            if (newOffsetY < 0)
+                newOffsetY = 0;
+
+            // 
+            if (newOffsetY > _virtualHeight - this.Height)
+                newOffsetY = _virtualHeight - this.Height;
+
+            _offsetY = newOffsetY;            
+            ReDraw();
         }
         //
         protected override void OnSizeChanged(EventArgs e)
@@ -189,33 +197,7 @@ namespace Mmosoft.Oops.Controls
             base.OnSizeChanged(e);
             ReDraw();
         }
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-            this.Cursor = GetHotItemIndex(e.Location) < 0 ? Cursors.Default : Cursors.Hand;
-        }
-        protected override void OnMouseClick(MouseEventArgs e)
-        {
-            base.OnMouseClick(e);
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
-            {
-                this.SelectedIndex = GetHotItemIndex(e.Location);
-            }
-        }
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            base.OnMouseWheel(e);
-            _offsetY -= e.Delta;
-            //
-            if (_offsetY < 0)
-                _offsetY = 0;
-
-            // 
-            if (_offsetY > _virtualHeight - this.Height)
-                _offsetY = _virtualHeight - this.Height;
-
-            ReDraw();
-        }
+        //
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
@@ -226,47 +208,68 @@ namespace Mmosoft.Oops.Controls
                 g.DrawString(this.Name + " control doesn't provide design time support", this.Font, Brushes.Black, new Point(0, 0));
             }
             else
-            {
-                if (_gridLayout is FillToTopLayout)
+            {                
+                if (_layoutSetting is FillToTop)
                 {
-                    foreach (ImageWrapper i in ImagesInView())
-                    {                    
-                        g.DrawImage(i.Image, i.Boundary);
-                    }                 
+                    foreach (ImageWrapper item in GetImagesInView())
+                    {
+                        if (_pickedItem == null || _pickedItem.ItemRef != item)
+                            g.DrawImage(item.Image, item.Boundary);
+                    }
+
+                    // draw floating picked item
+                    if (_pickedItem != null)
+                    {
+                        g.DrawImage(_pickedItem.Image, _pickedItem.Boundary);
+                    }
                 }
                 else
                 {
-                    var layout = (TableLayout) _gridLayout;
-                    var r = Rectangle.Empty;
-                    foreach (ImageWrapper i in ImagesInView())
+                    var layout = (FillToBlock) _layoutSetting;
+                    var pickedDrawRegion = Rectangle.Empty;
+                    var drawRegion = Rectangle.Empty;
+                    foreach (ImageWrapper item in GetImagesInView())
                     {
-                        switch (layout.DisplayMode)
+                        if (_pickedItem == null || _pickedItem.ItemRef != item)
                         {
-                            case ImageGridDisplayMode.StretchImage:
-                                r = ImageDisplayModeHelper.GetImageRect(
-                                       i.Boundary,
-                                       new Rectangle(0, 0, i.Image.Width, i.Image.Height),
-                                       DisplayMode.StretchImage);
-                                break;
-                            case ImageGridDisplayMode.ScaleLossCenter:
-                                r = ImageDisplayModeHelper.GetImageRect(
-                                        i.Boundary,
-                                        new Rectangle(0, 0, i.Image.Width, i.Image.Height),
-                                        DisplayMode.ScaleLossCenter);
-                                break;
-                        }
+                            // translate draw region
+                            switch (layout.DisplayMode)
+                            {
+                                case ImageGridDisplayMode.StretchImage:
+                                    drawRegion = ImageDisplayModeHelper.GetImageRect(item.Boundary, new Rectangle(0, 0, item.Image.Width, item.Image.Height), DisplayMode.StretchImage);
+                                    break;
+                                case ImageGridDisplayMode.ScaleLossCenter:
+                                    drawRegion = ImageDisplayModeHelper.GetImageRect(item.Boundary, new Rectangle(0, 0, item.Image.Width, item.Image.Height), DisplayMode.ScaleLossCenter);
+                                    break;
+                            }
 
-                        g.SetClip(i.Boundary);
-                        g.DrawImage(i.Image, r);
+                            // set clip to image boundary to clipped outside edges
+                            g.SetClip(item.Boundary);
+                            g.DrawImage(item.Image, drawRegion);
+                        }
                     }
 
-                    
+                    // draw floating picked item
+                    if (_pickedItem != null)
+                    {
+                        g.SetClip(this.ClientRectangle);
+                        g.DrawImage(_pickedItem.Image, _pickedItem.Boundary);
+                    }
                 }
             }
 
             br.Dispose();
         }
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            if (disposing)
+            {
+                Clear();
+            }
+        }
         
+        // --- private methods
         private void GetMinTopAndColumnIndex(int[] num, out int value, out List<int> indexes)
         {
             value = int.MaxValue;
@@ -289,119 +292,218 @@ namespace Mmosoft.Oops.Controls
         }
         private int GetHotItemIndex(Point location)
         {
-            for (int i = 0; i < _imgWrappers.Count; i++)
+            for (int i = 0; i < _items.Count; i++)
             {
-                if (_imgWrappers[i].Boundary.Contains(location))
+                if (_items[i].Boundary.Contains(location))
                     return i;
             }
             return -1;
         }
-        private IEnumerable<ImageWrapper> ImagesInView()
+        private IEnumerable<ImageWrapper> GetImagesInView()
         {
-            foreach (var iw in _imgWrappers)
+            foreach (var iw in _items)
             {
                 if (iw.Boundary.IntersectsWith(this.ClientRectangle))
                     yield return iw;
             }
         }
-    }
 
-    public class SlotMgr
-    {
-        private List<bool[]> _lanes;
-        private int _slotPerLane;
-
-        /// <summary>
-        /// Return number of lane
-        /// </summary>
-        public int LaneCount
-        { 
-            get 
-            { 
-                return _lanes.Count; 
-            } 
-        }
-
-        public SlotMgr(int slotPerLane)
+        // styling
+        private void ApplyFillToTop()
         {
-            _lanes = new List<bool[]>();
-            _slotPerLane = slotPerLane;
-        }
+            var availableWidth = GetColumnWidth();
 
-        public Slot FindAvailableSlot(int slotsNeeded)
-        {
-            // if column needed is large than available col
-            // then reduce column needed to _col
-            if (slotsNeeded > _slotPerLane)
-                slotsNeeded = _slotPerLane;
+            var columnTops = new int[_layoutSetting.Column];
+            for (int i = 0; i < columnTops.Length; i++)
+                columnTops[i] = _layoutSetting.Gutter;
 
-            // find in existed slots
-            for (int laneIndex = 0; laneIndex < _lanes.Count; laneIndex++)
+            int left, top;
+            List<int> colId;
+            for (int i = 0; i < _items.Count; i++)
             {
-                for (int slotIndex = 0; slotIndex < _slotPerLane; slotIndex++)
+                GetMinTopAndColumnIndex(columnTops, out top, out colId);
+                left = _layoutSetting.Gutter * (1 + colId[0]) + availableWidth * colId[0];
+
+                ImageWrapper iw = _items[i];
+                int actualImageWidth = iw.Image.Width;
+                int actualImageHeight = iw.Image.Height;
+                int availableHeight = (int)((availableWidth * 1f / actualImageWidth) * actualImageHeight);
+                iw.Boundary = new Rectangle(left, top - _offsetY, availableWidth, availableHeight);
+
+                // next image in the same column will be drawned at "columnTops[colId] + availableHeight + MGutter" position
+                columnTops[colId[0]] += availableHeight + _layoutSetting.Gutter;
+
+                // increase virtual height
+                if (_virtualHeight < columnTops[colId[0]])
+                    _virtualHeight = columnTops[colId[0]];
+            }
+        }
+        private void ApplyFillToBlock()
+        {
+            var availableWidth = GetColumnWidth();
+            var layout = (FillToBlock)_layoutSetting;
+            var slotMgr = new BlockMgr(_layoutSetting.Column);
+            var takenSlots = new List<Block>();
+            for (int i = 0; i < _items.Count; i++)
+            {
+                if (ImageDisplayModeHelper.IsPortrait(_items[i].Boundary))
                 {
-                    if (IsSlotAvailable(laneIndex, slotIndex, slotsNeeded))
-                    {
-                        TakeSlot(laneIndex, slotIndex, slotsNeeded);
-                        // then return taken slots
-                        return new Slot { LaneIndex = laneIndex, SlotIndex = slotIndex, SlotNeeded = slotsNeeded };
-                    }
+                    takenSlots.Add(slotMgr.FindAvailableSlot(1));
+                }
+                else // square or landscape
+                {
+                    // check if we need more slots for landspace image
+                    float imageRatio = 1f * _items[i].Image.Width / _items[i].Image.Height;
+                    int slotNeeded = layout.MergeColumn ? (int)Math.Round(imageRatio, MidpointRounding.AwayFromZero) : 1;
+                    takenSlots.Add(slotMgr.FindAvailableSlot(slotNeeded));
                 }
             }
 
-            // if there are no available slots
-            // add more row then find again
-            AddNewLane();
-            return FindAvailableSlot(slotsNeeded);
-        }
-
-        // Add new lane, each lane contains _col slots
-        private void AddNewLane()
-        {
-            _lanes.Add(new bool[_slotPerLane]);
-        }
-
-        private bool IsSlotAvailable(int laneIndex, int slotIndex, int slotsNeeded)
-        {
-            bool[] lane = _lanes[laneIndex];
-            int availColumn = 0;
-            for (int i = slotIndex; i < lane.Length && availColumn < slotsNeeded; i++)
+            // converting slots to specific position in grid
+            for (int i = 0; i < takenSlots.Count; i++)
             {
-                if (lane[i] == false)
-                    availColumn++;
-                else
-                    break;
-            }
-            return availColumn == slotsNeeded;
-        }
-
-        private void TakeSlot(int laneIndex, int slotIndex, int slotsNeeded)
-        {
-            bool[] lane = _lanes[laneIndex];
-            int slotTaken = 0;
-            for (int i = slotIndex; i < lane.Length && slotTaken < slotsNeeded; i++)
-            {
-                lane[i] = true;
-                slotTaken++;
-            }
-        }
-
-        public override string ToString()
-        {
-            List<string> matrix = new List<string>();
-            for (int i = 0; i < _lanes.Count; i++)
-            {
-                matrix.Add(string.Join(" ", _lanes[i].ToArray()));
+                ImageWrapper iw = _items[i];
+                Block slot = takenSlots[i];
+                iw.Boundary = new Rectangle
+                {
+                    X = (slot.SlotIndex + 1) * layout.Gutter + slot.SlotIndex * availableWidth,
+                    Y = (slot.LaneIndex + 1) * layout.Gutter + slot.LaneIndex * layout.RowHeight - _offsetY,
+                    Width = (slot.SlotNeeded - 1) * layout.Gutter + slot.SlotNeeded * availableWidth,
+                    Height = layout.RowHeight
+                };
             }
 
-            return string.Join(Environment.NewLine, matrix);
+            _virtualHeight = (slotMgr.LaneCount * layout.RowHeight) + (slotMgr.LaneCount - 1) * layout.Gutter;
         }
-    }
+        private int GetColumnWidth()
+        {
+            return (int)((this.Width - 1 - (_layoutSetting.Column + 1) * _layoutSetting.Gutter * 1f) / _layoutSetting.Column);
+        }
 
-    public class Slot
-    {
-        public int LaneIndex { get; set; }
-        public int SlotIndex { get; set; }
-        public int SlotNeeded { get; set; }
+        // Helper classes
+        class BlockMgr
+        {
+            private List<bool[]> _lanes;
+            private int _slotPerLane;
+
+            /// <summary>
+            /// Return number of lane
+            /// </summary>
+            public int LaneCount
+            {
+                get
+                {
+                    return _lanes.Count;
+                }
+            }
+
+            public BlockMgr(int slotPerLane)
+            {
+                _lanes = new List<bool[]>();
+                _slotPerLane = slotPerLane;
+            }
+
+            public Block FindAvailableSlot(int slotsNeeded)
+            {
+                // if column needed is large than available col
+                // then reduce column needed to _col
+                if (slotsNeeded > _slotPerLane)
+                    slotsNeeded = _slotPerLane;
+
+                // find in existed slots
+                for (int laneIndex = 0; laneIndex < _lanes.Count; laneIndex++)
+                {
+                    for (int slotIndex = 0; slotIndex < _slotPerLane; slotIndex++)
+                    {
+                        if (IsSlotAvailable(laneIndex, slotIndex, slotsNeeded))
+                        {
+                            TakeSlot(laneIndex, slotIndex, slotsNeeded);
+                            // then return taken slots
+                            return new Block { LaneIndex = laneIndex, SlotIndex = slotIndex, SlotNeeded = slotsNeeded };
+                        }
+                    }
+                }
+
+                // if there are no available slots
+                // add more row then find again
+                AddNewLane();
+                return FindAvailableSlot(slotsNeeded);
+            }
+
+            // Add new lane, each lane contains _col slots
+            private void AddNewLane()
+            {
+                _lanes.Add(new bool[_slotPerLane]);
+            }
+
+            private bool IsSlotAvailable(int laneIndex, int slotIndex, int slotsNeeded)
+            {
+                bool[] lane = _lanes[laneIndex];
+                int availColumn = 0;
+                for (int i = slotIndex; i < lane.Length && availColumn < slotsNeeded; i++)
+                {
+                    if (lane[i] == false)
+                        availColumn++;
+                    else
+                        break;
+                }
+                return availColumn == slotsNeeded;
+            }
+
+            private void TakeSlot(int laneIndex, int slotIndex, int slotsNeeded)
+            {
+                bool[] lane = _lanes[laneIndex];
+                int slotTaken = 0;
+                for (int i = slotIndex; i < lane.Length && slotTaken < slotsNeeded; i++)
+                {
+                    lane[i] = true;
+                    slotTaken++;
+                }
+            }
+
+            public override string ToString()
+            {
+                List<string> matrix = new List<string>();
+                for (int i = 0; i < _lanes.Count; i++)
+                {
+                    matrix.Add(string.Join(" ", _lanes[i].ToArray()));
+                }
+
+                return string.Join(Environment.NewLine, matrix);
+            }
+        }
+        class Block
+        {
+            public int LaneIndex { get; set; }
+            public int SlotIndex { get; set; }
+            public int SlotNeeded { get; set; }
+        }
+        class PickedItem
+        {
+            private Rectangle _originBoundary;
+            //
+            public Point PickedLocation;
+            public ImageWrapper ItemRef;
+            public Rectangle Boundary;
+            public Image Image;
+            public int Index;
+            
+            public PickedItem(ImageWrapper itemRef, Point pickedPosition)
+            {
+                ItemRef = itemRef;
+                Image = itemRef.Image;
+                Boundary = itemRef.Boundary;
+
+                //
+                PickedLocation = pickedPosition;
+                _originBoundary = itemRef.Boundary;
+            }
+
+            public void Move(Point p)
+            {
+                Boundary.X = _originBoundary.X + (p.X - PickedLocation.X);
+                Boundary.Y = _originBoundary.Y + (p.Y - PickedLocation.Y);
+            }
+        }
     }
 }

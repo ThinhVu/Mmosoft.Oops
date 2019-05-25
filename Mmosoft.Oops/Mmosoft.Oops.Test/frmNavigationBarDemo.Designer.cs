@@ -41,12 +41,12 @@
             this.nudRowHeight = new System.Windows.Forms.NumericUpDown();
             this.cbLayoutStyle = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.imageGrid1 = new Mmosoft.Oops.Controls.ImageGrid();
             this.label3 = new System.Windows.Forms.Label();
             this.nudColumn = new System.Windows.Forms.NumericUpDown();
             this.navBar = new Mmosoft.Oops.Controls.NavigationBar();
             this.titleBar1 = new Mmosoft.Oops.Controls.TitleBar.TitleBar();
             this.btnCollapse = new Mmosoft.Oops.Controls.Buttons.FlatButton();
+            this.imageGrid1 = new Mmosoft.Oops.Controls.ImageGrid();
             this.pnContent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGutter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRowHeight)).BeginInit();
@@ -92,6 +92,7 @@
             // 
             // btnApplyStyle
             // 
+            this.btnApplyStyle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnApplyStyle.Location = new System.Drawing.Point(409, 415);
             this.btnApplyStyle.Name = "btnApplyStyle";
             this.btnApplyStyle.Size = new System.Drawing.Size(75, 23);
@@ -102,6 +103,7 @@
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(9, 477);
             this.label2.Name = "label2";
@@ -111,6 +113,7 @@
             // 
             // label6
             // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(9, 450);
             this.label6.Name = "label6";
@@ -120,6 +123,7 @@
             // 
             // cbMergeColumn
             // 
+            this.cbMergeColumn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbMergeColumn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbMergeColumn.FormattingEnabled = true;
             this.cbMergeColumn.Items.AddRange(new object[] {
@@ -132,6 +136,7 @@
             // 
             // label7
             // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(264, 450);
             this.label7.Name = "label7";
@@ -141,6 +146,7 @@
             // 
             // cbDisplayMode
             // 
+            this.cbDisplayMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbDisplayMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbDisplayMode.FormattingEnabled = true;
             this.cbDisplayMode.Items.AddRange(new object[] {
@@ -153,6 +159,7 @@
             // 
             // nudGutter
             // 
+            this.nudGutter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.nudGutter.Location = new System.Drawing.Point(309, 446);
             this.nudGutter.Name = "nudGutter";
             this.nudGutter.Size = new System.Drawing.Size(62, 20);
@@ -165,6 +172,7 @@
             // 
             // label5
             // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(236, 479);
             this.label5.Name = "label5";
@@ -174,6 +182,7 @@
             // 
             // nudRowHeight
             // 
+            this.nudRowHeight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.nudRowHeight.Location = new System.Drawing.Point(309, 477);
             this.nudRowHeight.Maximum = new decimal(new int[] {
             100000,
@@ -196,6 +205,7 @@
             // 
             // cbLayoutStyle
             // 
+            this.cbLayoutStyle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbLayoutStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbLayoutStyle.FormattingEnabled = true;
             this.cbLayoutStyle.Items.AddRange(new object[] {
@@ -209,6 +219,7 @@
             // 
             // label4
             // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(11, 418);
             this.label4.Name = "label4";
@@ -216,21 +227,9 @@
             this.label4.TabIndex = 10;
             this.label4.Text = "Layout type:";
             // 
-            // imageGrid1
-            // 
-            this.imageGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.imageGrid1.GridLayout = null;
-            this.imageGrid1.Location = new System.Drawing.Point(13, 41);
-            this.imageGrid1.Name = "imageGrid1";
-            this.imageGrid1.SelectedIndex = 0;
-            this.imageGrid1.Size = new System.Drawing.Size(849, 352);
-            this.imageGrid1.TabIndex = 4;
-            this.imageGrid1.Text = "imageGrid1";
-            // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(255, 420);
             this.label3.Name = "label3";
@@ -240,6 +239,7 @@
             // 
             // nudColumn
             // 
+            this.nudColumn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.nudColumn.Location = new System.Drawing.Point(309, 418);
             this.nudColumn.Minimum = new decimal(new int[] {
             1,
@@ -290,6 +290,19 @@
             this.btnCollapse.Size = new System.Drawing.Size(75, 23);
             this.btnCollapse.TabIndex = 8;
             this.btnCollapse.Text = "flatButton1";
+            // 
+            // imageGrid1
+            // 
+            this.imageGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.imageGrid1.LayoutSettings = null;
+            this.imageGrid1.Location = new System.Drawing.Point(13, 41);
+            this.imageGrid1.Name = "imageGrid1";
+            this.imageGrid1.SelectedIndex = 0;
+            this.imageGrid1.Size = new System.Drawing.Size(849, 352);
+            this.imageGrid1.TabIndex = 4;
+            this.imageGrid1.Text = "imageGrid1";
             // 
             // frmNavigationBarDemo
             // 

@@ -72,7 +72,7 @@
     </Compile>
     <Compile Include="Controls\Buttons\ToogleButtonColors.cs" />
     <Compile Include="Controls\Images\DisplayMode.cs" />
-    <Compile Include="Controls\Images\ImageGrid\IImageGridLayout.cs" />
+    <Compile Include="Controls\Images\ImageGrid\LayoutSettingBase.cs" />
     <Compile Include="Controls\Images\ImageGrid\ImageGrid.cs">
       <SubType>Component</SubType>
     </Compile>

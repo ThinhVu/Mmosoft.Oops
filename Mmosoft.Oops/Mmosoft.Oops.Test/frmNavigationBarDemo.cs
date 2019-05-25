@@ -162,11 +162,11 @@ namespace Mmosoft.OopsTest
         {
             if (cbLayoutStyle.SelectedIndex == 0)
             {
-                imageGrid1.GridLayout = new Mmosoft.Oops.Controls.FillToTopLayout((int)nudColumn.Value, (int)nudGutter.Value);
+                imageGrid1.LayoutSettings = new Mmosoft.Oops.Controls.FillToTop((int)nudColumn.Value, (int)nudGutter.Value);
             }
             else
             {
-                imageGrid1.GridLayout = new Mmosoft.Oops.Controls.TableLayout(
+                imageGrid1.LayoutSettings = new Mmosoft.Oops.Controls.FillToBlock(
                     (int)nudColumn.Value,
                     (int)nudGutter.Value,
                     (int)nudRowHeight.Value,
