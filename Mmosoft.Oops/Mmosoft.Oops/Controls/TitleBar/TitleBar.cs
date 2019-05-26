@@ -136,7 +136,7 @@ namespace Mmosoft.Oops.Controls.TitleBar
                 {
                     _minimizeButton.Boundary = new Rectangle(this.Width - 1 - 2 * _controlButtonSize, 0, _controlButtonSize, _controlButtonSize);
                     _minimizeButton.ImageBoundary = new Rectangle(_minimizeButton.Boundary.Left + _controlImagePadding, _controlImagePadding, _controlImageSize, _controlImageSize);
-                }                
+                }
             }
             else
             {

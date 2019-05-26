@@ -49,6 +49,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmBeforeAfterImageDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBeforeAfterImageDemo.Designer.cs">
+      <DependentUpon>frmBeforeAfterImageDemo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmImageGridDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmImageGridDemo.Designer.cs">
+      <DependentUpon>frmImageGridDemo.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmNavigationBarDemo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +87,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmBeforeAfterImageDemo.resx">
+      <DependentUpon>frmBeforeAfterImageDemo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmImageGridDemo.resx">
+      <DependentUpon>frmImageGridDemo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmTableDemo.resx">
       <DependentUpon>frmTableDemo.cs</DependentUpon>
     </EmbeddedResource>

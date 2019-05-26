@@ -13,47 +13,15 @@ namespace Mmosoft.OopsTest
         public frmNavigationBarDemo()
         {
             InitializeComponent();
-            SetupNavBar();
-            SetupTitleBar();
-            btnCollapse.Image = SvgPath8x8Mgr.Get(SvgPathBx8Constants.ArrowThickLeft, 2, Brushes.Black);
         }
 
         private void frmSingleLevelSideBar_Shown(object sender, EventArgs e)
         {
-            InitImageGridStyle();
-            SetupImageGrid();
+            SetupNavBar();
         }
-
-        private void SetupTitleBar()
-        {
-            titleBar1.MinimizeEnable = true;
-            titleBar1.MaximizeEnable = true;
-            titleBar1.Text = "Demo sample";
-            titleBar1.OnMouseDragging += (s, e) =>
-            {
-                this.Left += e.OffsetX;
-                this.Top += e.OffsetY;
-            };
-            titleBar1.OnMinimizeClicked += (s, e) => this.WindowState = FormWindowState.Minimized;
-            titleBar1.OnMaximizeClicked += (s, e) =>
-            {
-                if (this.WindowState == FormWindowState.Normal)
-                    this.WindowState = FormWindowState.Maximized;
-                else if (this.WindowState == FormWindowState.Maximized)
-                    this.WindowState = FormWindowState.Normal;
-
-            };
-            titleBar1.OnCloseClicked += (s, e) => this.Close();
-        }
+        
         private void SetupNavBar()
         {
-            #region setup menu position
-            navBar.Top = 1;
-            navBar.Left = 1;
-            navBar.Width = 234;
-            navBar.Height = 553;
-            #endregion
-
             #region Setup menu item
             Func<string, EventHandler> itemClick = (msg) => (s, e) =>label1.Text = msg;
             var home = new NavBarItem()
@@ -62,7 +30,6 @@ namespace Mmosoft.OopsTest
                 Icon = SvgPath8x8Mgr.Get(SvgPathBx8Constants.Home, 4, Brushes.Black),
                 Clicked = itemClick("Home"),
             };
-
             var bg = new NavBarItem()
             {
                 Text = "Background",
@@ -115,64 +82,27 @@ namespace Mmosoft.OopsTest
             navBar.Initialize(home, bg, fonts, start, taskbar);
             #endregion
 
-            // nav effect
-            navBar.EnableHighlightReveal = true;
-            // navBar.EnableAcrylicStyle = true;
-        }
-        private void InitImageGridStyle()
-        {
-            // swich mode to Fill to top
-            cbLayoutStyle.SelectedIndex = 0;
-            cbDisplayMode.SelectedIndex = 0;
-            cbMergeColumn.SelectedIndex = 0;
-
-            btnApplyStyle.PerformClick();
-        }
-        private void SetupImageGrid()
-        {
-            #region Load images
-            var imgPath = @"..\..\assests\images";
-            var images = new List<Image>();
-            foreach (var item in Directory.EnumerateFiles(imgPath))
-                imageGrid1.Add(new Bitmap(item));
-            #endregion
-            imageGrid1.OnItemClicked += (s, e) => { navBar.BackgroundImage = e.Image; /*Do stuff*/ };
-        }
-        
-
-        private void cbLayoutStyle_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cbLayoutStyle.SelectedIndex == 0)
+            navBar.OnCollapseExpandStateChanged += (s, e) => 
             {
-                // fill to top
-                cbDisplayMode.Enabled = false;
-                cbMergeColumn.Enabled = false;
-                nudRowHeight.Enabled = false;
-            }
-            else
-            {
-                // table
-                cbDisplayMode.Enabled = true;
-                cbMergeColumn.Enabled = true;
-                nudRowHeight.Enabled = true;
-            }
+                int widthChanged = navBar.ExpanedWidth - navBar.CollapsedWidth;
+                if (!navBar.IsCollapsing)
+                    widthChanged = -widthChanged;
+
+                pnContent.Width += widthChanged;
+                pnContent.Left = navBar.Right;
+            };
         }
 
         private void btnApplyStyle_Click(object sender, EventArgs e)
         {
-            if (cbLayoutStyle.SelectedIndex == 0)
-            {
-                imageGrid1.LayoutSettings = new Mmosoft.Oops.Controls.FillToTop((int)nudColumn.Value, (int)nudGutter.Value);
-            }
-            else
-            {
-                imageGrid1.LayoutSettings = new Mmosoft.Oops.Controls.FillToBlock(
-                    (int)nudColumn.Value,
-                    (int)nudGutter.Value,
-                    (int)nudRowHeight.Value,
-                    cbMergeColumn.SelectedIndex == 0,
-                    cbDisplayMode.SelectedIndex == 0 ? ImageGridDisplayMode.StretchImage : ImageGridDisplayMode.ScaleLossCenter);
-            }
+            navBar.SuspendLayout();
+            navBar.ItemHeight = (int) nudItemHeight.Value;
+            navBar.ItemIconSize = (int)nudIconSize.Value;
+            navBar.IdentWidth = (int)nudIdentWidth.Value;
+            navBar.DropDownSize = (int)nudDropdownSize.Value;
+            navBar.CollapseExpandEnable = togCollapseExpandEnable.Checked;
+            navBar.EnableHighlightReveal = togHighlightRevealEnabled.Checked;
+            navBar.ResumeLayout();
         }
     }
 }

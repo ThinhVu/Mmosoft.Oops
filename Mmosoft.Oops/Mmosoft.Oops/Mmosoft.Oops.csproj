@@ -71,6 +71,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Buttons\ToogleButtonColors.cs" />
+    <Compile Include="Controls\Images\BeforeAfterImage\BeforeAfterImage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Images\DisplayMode.cs" />
     <Compile Include="Controls\Images\ImageGrid\LayoutSettingBase.cs" />
     <Compile Include="Controls\Images\ImageGrid\ImageGrid.cs">
@@ -87,8 +90,6 @@
     <Compile Include="Controls\MediaController.Designer.cs">
       <DependentUpon>MediaController.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\NavigationBar\HitTestAction.cs" />
-    <Compile Include="Controls\NavigationBar\HitTestItem.cs" />
     <Compile Include="Controls\NavigationBar\NavigationBar.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -1,8 +1,6 @@
-﻿using Mmosoft.Oops.Controls.Buttons;
-
-namespace Mmosoft.OopsTest
+﻿namespace Mmosoft.Oops.Test
 {
-    partial class frmTableDemo
+    partial class frmBeforeAfterImageDemo
     {
         /// <summary>
         /// Required designer variable.
@@ -37,33 +35,31 @@ namespace Mmosoft.OopsTest
             // 
             this.beforeAfterImage1.After = null;
             this.beforeAfterImage1.Before = null;
-            this.beforeAfterImage1.Location = new System.Drawing.Point(53, 37);
+            this.beforeAfterImage1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.beforeAfterImage1.Location = new System.Drawing.Point(0, 0);
             this.beforeAfterImage1.Name = "beforeAfterImage1";
-            this.beforeAfterImage1.Size = new System.Drawing.Size(434, 421);
+            this.beforeAfterImage1.Size = new System.Drawing.Size(880, 633);
             this.beforeAfterImage1.TabIndex = 0;
             this.beforeAfterImage1.Text = "beforeAfterImage1";
             // 
-            // frmTableDemo
+            // frmBeforeAfterImageDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(631, 518);
+            this.ClientSize = new System.Drawing.Size(880, 633);
             this.Controls.Add(this.beforeAfterImage1);
-            this.DoubleBuffered = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "frmTableDemo";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.frmTableDemo_Load);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.Name = "frmBeforeAfterImageDemo";
+            this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Before After Image Demo";
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private Oops.Controls.BeforeAfterImage beforeAfterImage1;
-
-
+        private Controls.BeforeAfterImage beforeAfterImage1;
     }
 }

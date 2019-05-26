@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -10,25 +11,88 @@ namespace Mmosoft.Oops.Controls
     [Serializable]
     public partial class NavigationBar : Control
     {
+        private List<NavBarItemWrapper> _navBarItems;
         private bool _enableHighlightReveal;
+        // UI Configuration
+        private int _itemHeight = 40;
+        private int _itemIconSize = 16;
+        private int _identWidth = 20;
+        private int _dropdownSize = 6;
+        
         [Browsable(true)]
-        [Description("Enable/disable highlight reveal effect")]
-        public bool EnableHighlightReveal
+        public int ItemHeight 
         {
-            get { return _enableHighlightReveal; }
-            set { _enableHighlightReveal = value; }
+            get
+            {
+                return _itemHeight;
+            }
+            set
+            {
+                if (value <= 0)
+                    return;
+                _itemHeight = value;
+                UpdatePosition();
+                Invalidate();
+            }
+        }
+        [Browsable(true)]
+        public int ItemIconSize 
+        {
+            get
+            {
+                return _itemIconSize;
+            }
+            set
+            {
+                if (value < 0 || value > _itemHeight)
+                    return;
+                _itemIconSize = value;
+                UpdatePosition();
+                Invalidate();
+            }
+        }
+        [Browsable(true)]
+        public int IdentWidth
+        {
+            get
+            {
+                return _identWidth;
+            }
+            set
+            {
+                if (value <= 0)
+                    return;
+                _identWidth = value;
+                UpdatePosition();
+                Invalidate();
+            }
+        }
+        [Browsable(true)]
+        public int DropDownSize
+        {
+            get
+            {
+                return _dropdownSize;
+            }
+            set
+            {
+                _dropdownSize = value;
+                UpdatePosition();
+                Invalidate();
+            }
         }
 
-        private List<NavBarItemWrapper> _navBarItems { get; set; }
-
-        // UI Configuration
-        private const int ITEM_HEIGHT = 30;
-        private const int ITEM_ICON_SIZE = 16;
-        private const int IDEN_WIDTH = 20;
-        private const int DROP_DOWN_SIZE = 6;
-
         // UI remember
-        private HitTestItem lastHitTestItem;
+        private NavBarItemWrapper _lastHitTestItem;
+
+        // 
+        private NavBarItemWrapper _collapseExpandItem;
+        private bool _collapseExpandEnable;
+        private bool _collapsing;
+        private int _expandedWidth;
+        private Bitmap _collapsingImage;
+        private Bitmap _expadingImage;
+
 
         // dragging stuff
         private Point _mouseLocation;
@@ -44,12 +108,66 @@ namespace Mmosoft.Oops.Controls
         private LinearGradientBrush _navLeftRevealHighlightBrush;
         private LinearGradientBrush _navRightRevealHighlightBrush;
 
+
+        //
+        [Browsable(true)]
+        public bool CollapseExpandEnable
+        {
+            get
+            {
+                return _collapseExpandEnable;
+            }
+            set
+            {
+                _collapseExpandEnable = value;
+                UpdatePosition();
+                Invalidate();
+            }
+        }
+        [Browsable(true)]
+        public bool EnableHighlightReveal
+        {
+            get { return _enableHighlightReveal; }
+            set { _enableHighlightReveal = value; }
+        }
+        [Browsable(false)]
+        public bool IsCollapsing { get { return _collapsing; } }
+        [Browsable(false)]
+        public int CollapsedWidth { get { return _itemHeight; } }
+        [Browsable(false)]
+        public int ExpanedWidth { get { return _expandedWidth; } }
+
+        //
+        public event EventHandler OnCollapseExpandStateChanged;
+
+        //
         public NavigationBar()
         {
             _enableHighlightReveal = false;
 
+            //
             _navBarItems = new List<NavBarItemWrapper>();
 
+            //
+            // add collapse button
+            _collapsingImage = SvgPath8x8Mgr.Get("M5 1v2h-5v2h5v2l3-3.03-3-2.97z" /*=>*/, 4, Brushes.Black, SmoothingMode.HighQuality);
+            _expadingImage = SvgPath8x8Mgr.Get("M3 1l-3 3.03 3 2.97v-2h5v-2h-5v-2z" /*<=*/, 4, Brushes.Black, SmoothingMode.HighQuality);
+            _collapseExpandItem = new NavBarItemWrapper(new NavBarItem
+            {
+                Icon = _expadingImage,
+                Clicked = (s, e) =>
+                {
+                    _collapsing = !_collapsing;
+                    _collapseExpandItem.Icon = _collapsing ? _collapsingImage : _expadingImage;
+                    this.Width = _collapsing ? _itemHeight : _expandedWidth;
+                    UpdatePosition();
+                    if (OnCollapseExpandStateChanged != null)
+                        OnCollapseExpandStateChanged(this, EventArgs.Empty);
+                }
+            });
+            _expandedWidth = 200;
+
+            //
             _navBackgroundBrush = BrushCreator.CreateSolidBrush();
             _navItemBackgroundBrush = BrushCreator.CreateSolidBrush();
             _navClickedItemBrush = BrushCreator.CreateSolidBrush();
@@ -59,54 +177,21 @@ namespace Mmosoft.Oops.Controls
             DoubleBuffered = true;
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);            
         }
-
-        public void Initialize(params NavBarItem[] sidebarItems)
+        //
+        public void Initialize(params NavBarItem[] navbarItems)
         {
             this._navBarItems = new List<NavBarItemWrapper>();
-            foreach (var item in sidebarItems)
+            // add sidebar items
+            foreach (var item in navbarItems)
                 this._navBarItems.Add(new NavBarItemWrapper(item));
-
             UpdatePosition();
         }
-                
+
+        //
         protected override void OnMouseClick(MouseEventArgs e)
         {
             base.OnMouseClick(e);
-            var hitTest = HitTest(this._navBarItems, e.Location);
-            if (hitTest != null)
-            {
-                if (hitTest.Action == HitTestAction.DropDownClicked)
-                {
-                    if (lastHitTestItem != null)
-                        lastHitTestItem.Item.IsClicked = false;
-                    hitTest.Item.IsClicked = true;
-                    hitTest.Item.IsExpanded = !hitTest.Item.IsExpanded;
-                    UpdatePosition();
-                    if (hitTest.Item.Clicked != null)
-                        hitTest.Item.Clicked(_navBarItems, e);
-                }
-                else
-                {
-                    if (lastHitTestItem != null)
-                    {
-                        lastHitTestItem.Item.IsClicked = false;
-                        // do click
-                        if (hitTest.Item != lastHitTestItem.Item)
-                            if (hitTest.Item.Clicked != null)
-                                hitTest.Item.Clicked(_navBarItems, e);
-                    }
-                    else
-                    {
-                        if (hitTest.Item.Clicked != null)
-                            hitTest.Item.Clicked(_navBarItems, e);
-                    }
-
-                    hitTest.Item.IsClicked = true;
-                }
-
-                lastHitTestItem = hitTest;
-            }
-            Invalidate();
+            HandleMouseClick(e);
         }
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -114,12 +199,11 @@ namespace Mmosoft.Oops.Controls
             _mouseLocation = e.Location;
             _isMouseIn = true;
 
-            Cursor = HitTest(this._navBarItems, e.Location) != null ? Cursors.Hand : Cursors.Default;
+            Cursor = GetClickedItem(this._navBarItems, e.Location) != null ? Cursors.Hand : Cursors.Default;
             UpdateHoverState(this._navBarItems, e.Location);
             
             Invalidate();
         }
-
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
@@ -133,15 +217,15 @@ namespace Mmosoft.Oops.Controls
             Invalidate();
         }
 
-        private void ClearHover(List<NavBarItemWrapper> items)
+        //
+        protected override void OnSizeChanged(EventArgs e)
         {
-            foreach (var item in items)
-            {
-                item.IsHovered = false;
-                if (ItemHasChild(item))
-                    ClearHover(item.Items);
-            }
+            base.OnSizeChanged(e);
+            if (!_collapsing)
+                _expandedWidth = this.Width;
         }
+
+        //
         protected override void OnPaintBackground(PaintEventArgs pevent)
         {
             var g = pevent.Graphics;
@@ -173,7 +257,43 @@ namespace Mmosoft.Oops.Controls
                     PaintItem(item, g);
             }
         }
+        
+        //
+        private void HandleMouseClick(MouseEventArgs e)
+        {
+            if (e.Button != System.Windows.Forms.MouseButtons.Left)
+                return;
+            var clickedItem = GetClickedItem(this._navBarItems, e.Location);
+            if (clickedItem != null)
+            {
+                if (clickedItem == _collapseExpandItem)
+                {
+                    _collapseExpandItem.Clicked(this, e);
+                }
+                else
+                {
+                    if (_lastHitTestItem != null)
+                        _lastHitTestItem.IsClicked = false;
 
+                    clickedItem.IsExpanded = ItemHasChild(clickedItem) && !clickedItem.IsExpanded;
+                    clickedItem.IsClicked = true;
+                    _lastHitTestItem = clickedItem;
+                    UpdatePosition();
+                    if (clickedItem.Clicked != null)
+                        clickedItem.Clicked(_navBarItems, e);
+                }
+            }
+            Invalidate();
+        }
+        private void ClearHover(List<NavBarItemWrapper> items)
+        {
+            foreach (var item in items)
+            {
+                item.IsHovered = false;
+                if (ItemHasChild(item))
+                    ClearHover(item.Items);
+            }
+        }
         private void UpdateHoverState(List<NavBarItemWrapper> items, Point location)
         {
             foreach (var item in items)
@@ -189,25 +309,21 @@ namespace Mmosoft.Oops.Controls
         {
             return item.Items != null && item.Items.Count > 0;
         }
-        private HitTestItem HitTest(List<NavBarItemWrapper> items, Point hit)
+        private NavBarItemWrapper GetClickedItem(List<NavBarItemWrapper> items, Point hit)
         {
-            HitTestItem hitTest = null;
+            NavBarItemWrapper hitTest = null;
 
             foreach (var item in items)
             {
                 if (item.Boundary.Contains(hit))
                 {
-                    hitTest = new HitTestItem
-                    {
-                        Item = item,
-                        Action = item.DropDownButtonBoundary.Contains(hit) /* ItemHasChild(item) &&  */ ? HitTestAction.DropDownClicked : HitTestAction.ItemClicked
-                    };
+                    hitTest = item;
                 }
                 else // check child
                 {
                     if (ItemHasChild(item))
                     {
-                        hitTest = HitTest(item.Items, hit);
+                        hitTest = GetClickedItem(item.Items, hit);
                     }
                 }
 
@@ -219,7 +335,7 @@ namespace Mmosoft.Oops.Controls
         }       
         private void PaintItem(NavBarItemWrapper item, Graphics g)
         {
-            if (item.IsHovered)
+            if (item != _collapseExpandItem && (item.IsHovered || item.IsClicked))
             {
                 _navItemBackgroundBrush.Color = ExColorTranslator.Get("128, 128, 128, 128");
                 _navItemBorderPen.Color = ExColorTranslator.Get("128, 93, 93, 93");
@@ -234,7 +350,7 @@ namespace Mmosoft.Oops.Controls
             }
 
             // Draw reveal highlight
-            if (item.IsHovered)
+            if (item.IsHovered && item != _collapseExpandItem)
             {
                 if (_enableHighlightReveal)
                 {
@@ -272,15 +388,16 @@ namespace Mmosoft.Oops.Controls
             if (item.Icon != null)
                 g.DrawImage(item.Icon, item.IconBoundary);
 
-            g.DrawString(item.Text, Font, _navItemTextBrush, item.TextPosition);
+            if (item != _collapseExpandItem)
+                g.DrawString(item.Text, Font, _navItemTextBrush, item.TextPosition);
             
             // draw arrow and child item if needed
-            if (item.Items != null)
+            if (item != _collapseExpandItem && item.Items != null)
             {
                 if (item.IsExpanded)
                 {
                     // Draw dropdown arrow only mouse enter nav bar
-                    if (_isMouseIn)
+                    if (_isMouseIn && !_collapsing)
                         g.DrawImage(SvgPath8x8Mgr.Get("M0,0H8L4,8z", 1, Brushes.Black), item.DropDownButtonBoundary);
                     foreach (var childItem in item.Items)
                         PaintItem(childItem, g);
@@ -288,30 +405,43 @@ namespace Mmosoft.Oops.Controls
                 else
                 {
                     // Draw dropdown arrow only mouse enter nav bar
-                    if (_isMouseIn)
+                    if (_isMouseIn && !_collapsing)
                         g.DrawImage(SvgPath8x8Mgr.Get("M0,8H8L4,0z", 1, Brushes.Black), item.DropDownButtonBoundary);
                 }
-            }                              
+            }
         }        
         private void UpdatePosition()
         {
-            int x = 0;
+            if (!_collapseExpandEnable)
+            {
+                if (_navBarItems != null
+                    && _navBarItems.Count > 0
+                    && _navBarItems[0] == _collapseExpandItem)
+                {
+                    _navBarItems.RemoveAt(0);
+                }
+            }
+            else
+            {
+                if (_navBarItems != null && _navBarItems[0] != _collapseExpandItem)
+                    _navBarItems.Insert(0, _collapseExpandItem);
+            }
+
             int y = 0;
             foreach (var item in this._navBarItems)
-            {
-                UpdatePosition(item, ref x, ref y);
-            }
+                UpdatePosition(item, ref y);
         }
-        private void UpdatePosition(NavBarItemWrapper item, ref int x, ref int y, int ident = 0)
+        private void UpdatePosition(NavBarItemWrapper item, ref int y, int ident = 0)
         {
-            int itemIconPadding = (ITEM_HEIGHT - ITEM_ICON_SIZE) / 2;
-            int dropdownPadding = (ITEM_HEIGHT - DROP_DOWN_SIZE) / 2;
-            item.IdentPixel = ident;
-            item.Boundary = new Rectangle(x, y, Width - x - 1, ITEM_HEIGHT);
-            item.DropDownButtonBoundary = new Rectangle(item.Boundary.Right - dropdownPadding - DROP_DOWN_SIZE, item.Boundary.Top + dropdownPadding, DROP_DOWN_SIZE, DROP_DOWN_SIZE);
-            item.IconBoundary = new Rectangle(x + itemIconPadding + ident, y + itemIconPadding, ITEM_ICON_SIZE, ITEM_ICON_SIZE);
-            item.TextPosition = new Point(x + itemIconPadding * 2 + ITEM_ICON_SIZE + ident, y + (ITEM_HEIGHT - TextRenderer.MeasureText(item.Text, Font).Height) / 2);
-            y += ITEM_HEIGHT;
+            int itemIconPadding = (_itemHeight - _itemIconSize) / 2;
+            int dropdownPadding = (_itemHeight - _dropdownSize) / 2;
+            int actualIdent = _collapsing ? 0 : ident;
+            item.IdentPixel = actualIdent;
+            item.Boundary = new Rectangle(0, y, Width - 1, _itemHeight);
+            item.DropDownButtonBoundary = new Rectangle(item.Boundary.Right - dropdownPadding - _dropdownSize, item.Boundary.Top + dropdownPadding, _dropdownSize, _dropdownSize);
+            item.IconBoundary = new Rectangle(itemIconPadding + actualIdent, y + itemIconPadding, _itemIconSize, _itemIconSize);
+            item.TextPosition = new Point(itemIconPadding * 2 + _itemIconSize + actualIdent, y + (_itemHeight - TextRenderer.MeasureText(item.Text, Font).Height) / 2);
+            y += _itemHeight;
 
             if (ItemHasChild(item))
             {
@@ -319,7 +449,7 @@ namespace Mmosoft.Oops.Controls
                 {
                     foreach (var childItem in item.Items)
                     {
-                        UpdatePosition(childItem, ref x, ref y, ident + IDEN_WIDTH);
+                        UpdatePosition(childItem, ref y, actualIdent + _identWidth);
                     }
                 }
                 else
