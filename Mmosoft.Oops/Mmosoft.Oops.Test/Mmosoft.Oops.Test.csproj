@@ -139,5 +139,17 @@
   <ItemGroup>
     <None Include="Resources\Walmart_logo.svg.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\hinh-nen-may-tinh-hd-la-phong-xanh-dep_024422517.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Latest-song-modern-music-HD-wallpaper.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1443299-night-sky-wallpaper-hd.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\525625bb4317fb9.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

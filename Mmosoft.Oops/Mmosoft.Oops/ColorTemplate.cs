@@ -52,20 +52,21 @@
     public static class TableColor
     {
         // Header
-        public static string HeaderText = "#F";
-        public static string HeaderBg = "#8A";
+        public static string HeaderText = "#0";
+        public static string HeaderBg = "#F";
         public static string SeparatedHeaderVerticalLine = "#F4";
         // Data
-        public static string DataText = "#F8";
-        public static string SeparatedDataLine = "#A";
+        public static string DataBg = "#AF";
+        public static string DataText = "#0";
         // Data Hover
-        public static string DataBgHover = "#9B";
-        public static string DataTextHover = "#F";
+        public static string DataBgHover = "#AF";
+        public static string DataTextHover = "#0";
         // Data Selected
-        public static string DataBgSelected = "#9B";
-        public static string DataTextSelected = "#F";
+        public static string DataBgSelected = "#DF";
+        public static string DataTextSelected = "#0";
         // Vertical scroll bar        
-        public static string VerticalScrollThumbBg = "#9B";
+        public static string VerticalScrollThumbBg = "#80";
+        public static string SeparatedDataLine = "#FA";
     }
 
     public static class ProgressBarColors

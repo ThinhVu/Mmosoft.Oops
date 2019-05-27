@@ -4,9 +4,13 @@ namespace Mmosoft.Oops.Controls.Table
 {
     class Cell
     {
-        public Rectangle CellBoundary { get; set; }
-        public Rectangle TextBoundary { get; set; }
-
+        public Rectangle Bounds { get; set; }
         public string Text { get; set; }
+
+        public Cell(string text, Rectangle bounds)
+        {
+            this.Text = text;
+            this.Bounds = bounds;
+        }
     }
 }
