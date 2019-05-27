@@ -30,40 +30,55 @@ namespace Mmosoft.OopsTest
         /// </summary>
         private void InitializeComponent()
         {
-            this.beforeAfterImage1 = new Mmosoft.Oops.Controls.BeforeAfterImage();
+            this.titleBar1 = new Mmosoft.Oops.Controls.TitleBar.TitleBar();
+            this.mediaController1 = new Mmosoft.Oops.Controls.MediaController();
             this.SuspendLayout();
             // 
-            // beforeAfterImage1
+            // titleBar1
             // 
-            this.beforeAfterImage1.After = null;
-            this.beforeAfterImage1.Before = null;
-            this.beforeAfterImage1.Location = new System.Drawing.Point(53, 37);
-            this.beforeAfterImage1.Name = "beforeAfterImage1";
-            this.beforeAfterImage1.Size = new System.Drawing.Size(434, 421);
-            this.beforeAfterImage1.TabIndex = 0;
-            this.beforeAfterImage1.Text = "beforeAfterImage1";
+            this.titleBar1.BackColor = System.Drawing.Color.White;
+            this.titleBar1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.titleBar1.Location = new System.Drawing.Point(1, 1);
+            this.titleBar1.MaximizeEnable = true;
+            this.titleBar1.MinimizeEnable = true;
+            this.titleBar1.Name = "titleBar1";
+            this.titleBar1.Size = new System.Drawing.Size(540, 40);
+            this.titleBar1.TabIndex = 1;
+            this.titleBar1.Text = "Jukebox";
+            // 
+            // mediaController1
+            // 
+            this.mediaController1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.mediaController1.BackColor = System.Drawing.Color.White;
+            this.mediaController1.Location = new System.Drawing.Point(1, 530);
+            this.mediaController1.Name = "mediaController1";
+            this.mediaController1.Size = new System.Drawing.Size(540, 85);
+            this.mediaController1.TabIndex = 0;
             // 
             // frmTableDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
+            this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(631, 518);
-            this.Controls.Add(this.beforeAfterImage1);
+            this.ClientSize = new System.Drawing.Size(542, 616);
+            this.Controls.Add(this.titleBar1);
+            this.Controls.Add(this.mediaController1);
             this.DoubleBuffered = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmTableDemo";
-            this.Text = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Jukebox";
             this.Load += new System.EventHandler(this.frmTableDemo_Load);
             this.ResumeLayout(false);
 
         }
 
+
         #endregion
 
-        private Oops.Controls.BeforeAfterImage beforeAfterImage1;
-
-
+        private Oops.Controls.MediaController mediaController1;
+        private Oops.Controls.TitleBar.TitleBar titleBar1;
     }
 }

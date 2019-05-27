@@ -16,24 +16,35 @@ namespace Mmosoft.OopsTest
 
         private void frmTableDemo_Load(object sender, EventArgs e)
         {
+            InitTitleBar();
             InitTable();
+        }
+
+        private void InitTitleBar()
+        {
+            titleBar1.MaximizeEnable = false;
+            titleBar1.OnCloseClicked += (s, e) => this.Close();
+            titleBar1.OnMinimizeClicked += (s, e) => this.WindowState = FormWindowState.Minimized;
+            titleBar1.OnMouseDragging += (s, e) => { this.Left += e.OffsetX; this.Top += e.OffsetY; };
         }
 
         private void InitTable()
         {
-            Mmosoft.Oops.Controls.Table.Table<Song> table1 = new Table<Song>();
+            Table<Song> table1 = new Table<Song>();
+            table1.Font = new Font("Segoe UI", 8f, FontStyle.Regular);
+            table1.HeaderFont = new Font("Segoe UI", 10f, FontStyle.Regular);
+            table1.BackgroundImage = Oops.Test.Properties.Resources._525625bb4317fb9;
             table1.BackColor = Color.Transparent;
-            table1.Size = new Size(this.Width, this.Height);
-
+            table1.Location = new Point(1, 40);
+            table1.Size = new Size(540, 490);
+            //
             table1.AddColumns(new List<Column>
             {
-                new Column() { Title = "Id", Width = 30, MappingProperty = "Id" },
-                new Column() { Title = "Song Title", Width = 300, MappingProperty = "Name" },
-                new Column() { Title = "Duration", Width = 100, MappingProperty = "Length" },
-                new Column() { Title = "Single", Width = 200, MappingProperty = "Singer" },
+                new Column() { Title = "Id", Width = 40, MappingProperty = "Id" },
+                new Column() { Title = "Song Title", Width = 200, MappingProperty = "Name" },
+                new Column() { Title = "Duration", Width = 150, MappingProperty = "Length" },
+                new Column() { Title = "Singer", Width = 150, MappingProperty = "Singer" },
             });
-
-            // data actual data
             table1.AddModels(new List<Song>
             {
                 new Song{ Id = 0, Name = "7 Rings", Length = 3.52f, Singer = "Ariana Grande" },
@@ -70,7 +81,7 @@ namespace Mmosoft.OopsTest
                 new Song{ Id = 29, Name = "Solo", Length = 3.52f, Singer = "Clean Bandit" },     
                 //
             });
-
+            //
             table1.RenderTable();
 
             this.Controls.Add(table1);

@@ -33,7 +33,7 @@ namespace Mmosoft.Oops.Controls.TitleBar
         public bool MinimizeEnable
         {
             get { return _minimizeEnable; }
-            set { _minimizeEnable = value; }
+            set { _minimizeEnable = value; CalculatePosition(); Invalidate(); }
         }
 
         private bool _maximizeEnable;
@@ -41,7 +41,7 @@ namespace Mmosoft.Oops.Controls.TitleBar
         public bool MaximizeEnable
         {
             get { return _maximizeEnable; }
-            set { _maximizeEnable = value; }
+            set { _maximizeEnable = value; CalculatePosition(); Invalidate(); }
         }
 
         // UI stuff
@@ -111,38 +111,8 @@ namespace Mmosoft.Oops.Controls.TitleBar
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            _closeButton.Boundary = new Rectangle(this.Width - 1 - _controlButtonSize, 0, _controlButtonSize, _controlButtonSize);
-            _closeButton.ImageBoundary = new Rectangle(_closeButton.Boundary.Left + _controlImagePadding, _controlImagePadding, _controlImageSize, _controlImageSize);
-
-            if (MaximizeEnable)
-            {
-                _maximizeButton.Boundary = new Rectangle(_closeButton.Boundary.Left - _controlButtonSize, 0, _controlButtonSize, _controlButtonSize);
-                _maximizeButton.ImageBoundary = new Rectangle(_maximizeButton.Boundary.Left + _controlImagePadding, _controlImagePadding, _controlImageSize, _controlImageSize);
-            }
-            else
-            {
-                _maximizeButton.Boundary = Rectangle.Empty;
-                _maximizeButton.ImageBoundary = Rectangle.Empty;
-            }
-
-            if (MinimizeEnable)
-            {
-                if (MaximizeEnable)
-                {
-                    _minimizeButton.Boundary = new Rectangle(_maximizeButton.Boundary.Left - _controlButtonSize, 0, _controlButtonSize, _controlButtonSize);
-                    _minimizeButton.ImageBoundary = new Rectangle(_minimizeButton.Boundary.Left + _controlImagePadding, _controlImagePadding, _controlImageSize, _controlImageSize);
-                }
-                else
-                {
-                    _minimizeButton.Boundary = new Rectangle(this.Width - 1 - 2 * _controlButtonSize, 0, _controlButtonSize, _controlButtonSize);
-                    _minimizeButton.ImageBoundary = new Rectangle(_minimizeButton.Boundary.Left + _controlImagePadding, _controlImagePadding, _controlImageSize, _controlImageSize);
-                }
-            }
-            else
-            {
-                _minimizeButton.Boundary = Rectangle.Empty;
-                _minimizeButton.ImageBoundary = Rectangle.Empty;
-            }
+            CalculatePosition();
+            Invalidate();
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -257,6 +227,42 @@ namespace Mmosoft.Oops.Controls.TitleBar
 
                 _normalImg.Dispose();
                 _maximizeImg.Dispose();
+            }
+        }
+
+        private void CalculatePosition()
+        {
+            _closeButton.Boundary = new Rectangle(this.Width - 1 - _controlButtonSize, 0, _controlButtonSize, _controlButtonSize);
+            _closeButton.ImageBoundary = new Rectangle(_closeButton.Boundary.Left + _controlImagePadding, _controlImagePadding, _controlImageSize, _controlImageSize);
+
+            if (MaximizeEnable)
+            {
+                _maximizeButton.Boundary = new Rectangle(_closeButton.Boundary.Left - _controlButtonSize, 0, _controlButtonSize, _controlButtonSize);
+                _maximizeButton.ImageBoundary = new Rectangle(_maximizeButton.Boundary.Left + _controlImagePadding, _controlImagePadding, _controlImageSize, _controlImageSize);
+            }
+            else
+            {
+                _maximizeButton.Boundary = Rectangle.Empty;
+                _maximizeButton.ImageBoundary = Rectangle.Empty;
+            }
+
+            if (MinimizeEnable)
+            {
+                if (MaximizeEnable)
+                {
+                    _minimizeButton.Boundary = new Rectangle(_maximizeButton.Boundary.Left - _controlButtonSize, 0, _controlButtonSize, _controlButtonSize);
+                    _minimizeButton.ImageBoundary = new Rectangle(_minimizeButton.Boundary.Left + _controlImagePadding, _controlImagePadding, _controlImageSize, _controlImageSize);
+                }
+                else
+                {
+                    _minimizeButton.Boundary = new Rectangle(this.Width - 1 - 2 * _controlButtonSize, 0, _controlButtonSize, _controlButtonSize);
+                    _minimizeButton.ImageBoundary = new Rectangle(_minimizeButton.Boundary.Left + _controlImagePadding, _controlImagePadding, _controlImageSize, _controlImageSize);
+                }
+            }
+            else
+            {
+                _minimizeButton.Boundary = Rectangle.Empty;
+                _minimizeButton.ImageBoundary = Rectangle.Empty;
             }
         }
     }

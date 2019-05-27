@@ -10,6 +10,7 @@ namespace Mmosoft.Oops.Controls.Table
         public string HeaderBg { get; set; }
         public string SeparatedHeaderVerticalLine { get; set; }
         // Data
+        public string DataBg { get; set; }
         public string DataText { get; set; }
         public string SeparatedDataLine { get; set; }
         // Data Hover
@@ -26,6 +27,7 @@ namespace Mmosoft.Oops.Controls.Table
             HeaderText = TableColor.HeaderText;
             HeaderBg = TableColor.HeaderBg;
             SeparatedHeaderVerticalLine = TableColor.SeparatedHeaderVerticalLine;
+            DataBg = TableColor.DataBg;
             DataText = TableColor.DataText;
             SeparatedDataLine = TableColor.SeparatedDataLine;
             DataBgHover = TableColor.DataBgHover;
