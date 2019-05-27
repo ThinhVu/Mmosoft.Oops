@@ -108,6 +108,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ProgressBars\ProgressBarColors.cs" />
+    <Compile Include="Controls\ProgressBars\ProgressRing.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Table\Cell.cs" />
     <Compile Include="Controls\Table\Column.cs" />
     <Compile Include="Controls\Table\Table.cs">
