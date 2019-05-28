@@ -102,9 +102,10 @@
     <Compile Include="Controls\Lines\VerticalLine.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\Notifications\NotifyMgr.cs" />
     <Compile Include="Controls\Notifications\NotifyType.cs" />
-    <Compile Include="Controls\Notifications\SmallNofiticationColors.cs" />
-    <Compile Include="Controls\Notifications\SmallNotification.cs">
+    <Compile Include="Controls\Notifications\NofiticationColors.cs" />
+    <Compile Include="Controls\Notifications\Notification.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ProgressBars\ProgressBarColors.cs" />

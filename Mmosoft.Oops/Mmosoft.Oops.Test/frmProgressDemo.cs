@@ -14,7 +14,6 @@ namespace Mmosoft.Oops.Test
         public frmProgressDemo()
         {
             InitializeComponent();
-            progressRing1.RingColor = Color.GreenYellow;
         }
     }
 }

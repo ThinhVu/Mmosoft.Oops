@@ -67,6 +67,12 @@
     <Compile Include="frmNavigationBarDemo.Designer.cs">
       <DependentUpon>frmNavigationBarDemo.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmNotifyDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmNotifyDemo.Designer.cs">
+      <DependentUpon>frmNotifyDemo.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmProgressDemo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -98,6 +104,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmImageGridDemo.resx">
       <DependentUpon>frmImageGridDemo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNotifyDemo.resx">
+      <DependentUpon>frmNotifyDemo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmProgressDemo.resx">
       <DependentUpon>frmProgressDemo.cs</DependentUpon>

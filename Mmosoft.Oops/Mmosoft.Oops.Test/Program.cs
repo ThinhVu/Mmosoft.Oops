@@ -18,7 +18,7 @@ namespace Mmosoft.OopsTest
             //ScaleLossLess();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmTableDemo());
+            Application.Run(new frmNotifyDemo());
         }
 
         static void ScaleLoss()
