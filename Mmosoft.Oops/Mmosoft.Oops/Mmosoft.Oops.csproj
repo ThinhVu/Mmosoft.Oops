@@ -103,6 +103,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Notifications\NotifyMgr.cs" />
+    <Compile Include="Controls\Notifications\NotifyOut.cs" />
     <Compile Include="Controls\Notifications\NotifyType.cs" />
     <Compile Include="Controls\Notifications\NofiticationColors.cs" />
     <Compile Include="Controls\Notifications\Notification.cs">

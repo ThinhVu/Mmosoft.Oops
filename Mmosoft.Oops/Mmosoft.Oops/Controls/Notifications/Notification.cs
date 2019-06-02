@@ -4,10 +4,11 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Mmosoft.Oops.Colors;
+using Mmosoft.Oops.Controls.Notifications;
 
 namespace Mmosoft.Oops
 {
-    public partial class SmallNotification : Control
+    public partial class Notification : Control
     {
         private const int PADDING = 10;
         private const int ICONSIZE = 25;
@@ -19,10 +20,11 @@ namespace Mmosoft.Oops
         };
 
         private NotifyType _notifyType;
-        private Animation.Animator _animator;
+        private Animation.Animator _animateIn;
+        private Animation.Animator _animateOut;
+        private NotifyOut _outType;
 
         //
-        private StringFormat _aligment;
         private Rectangle _titleBounds;
         private Rectangle _textBounds;
         private Rectangle _iconBounds;
@@ -32,28 +34,33 @@ namespace Mmosoft.Oops
         private Font _titleFont;
         public Action OnCompeleted;
 
-        public SmallNotification(NotifyType notifyType)
+        //
+        internal Notification(NotifyType notifyType, NotifyOut notifyOutType, int initialWidth)
         {
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             DoubleBuffered = true;
-            InitAnimation();
+            
 
-            this.Width = 300;
+            this.Width = initialWidth;
             //
             _notifyType = notifyType;
-            _aligment = new StringFormat(StringFormat.GenericTypographic)
-            {
-                LineAlignment = StringAlignment.Center
-            };
+            _outType = notifyOutType;
+
+            InitAnimation();
         }
 
+        //
         private void InitAnimation()
         {
-            _animator = new Animation.Animator();
+            _animateIn = new Animation.Animator();
             // 
-            _animator.OnCompleted = () => { if (this.OnCompeleted != null) this.OnCompeleted(); };
+            _animateIn.OnCompleted = () => 
+            { 
+                if (_outType == NotifyOut.Automatically) 
+                    _animateOut.Start();
+            };
             // 
-            _animator.Add(new Animation.Step
+            _animateIn.Add(new Animation.Step
             {
                 TotalStep = 11,
                 Interval = 20,
@@ -62,49 +69,53 @@ namespace Mmosoft.Oops
             for (int i = 0, shakeTime = 3; i < shakeTime; i++)
             {
                 var ii = i;
-                _animator.Add(new Animation.Step
+                _animateIn.Add(new Animation.Step
                 {
                     TotalStep = 1,
                     Interval = 20,
                     AnimAction = (e) => this.Left += (shakeTime - ii) * 2
                 });
-                _animator.Add(new Animation.Step
+                _animateIn.Add(new Animation.Step
                 {
                     TotalStep = 1,
                     Interval = 20,
                     AnimAction = (e) => this.Left -= (shakeTime - ii) * 2
                 });
             }
-            _animator.Wait(2000);
-            _animator.Add(new Animation.Step()
+            _animateIn.Wait(2000);
+
+            // out
+            _animateOut = new Animation.Animator();
+            _animateOut.Add(new Animation.Step()
             {
                 TotalStep = 10,
                 Interval = 20,
                 AnimAction = (i) => this.Left += (int)Math.Round(this.Width / 10d)
             });
+            _animateOut.OnCompleted = () =>
+            { 
+                if (this.OnCompeleted != null)
+                    this.OnCompeleted();
+            };
         }
-
-        public void Start()
-        {
-            CalculateBounds();
-            _animator.Start();
-        }
-        
         private void CalculateBounds()
         {
             Graphics g = this.CreateGraphics();
 
             _titleFont = new Font(this.Font, FontStyle.Bold);
             _iconBounds = new Rectangle(PADDING, PADDING, ICONSIZE, ICONSIZE);
-            SizeF titleSize = g.MeasureString(this.Title, _titleFont);
-            SizeF txtSize = g.MeasureString(this.Text, this.Font);
-            int availableTextWidth = this.Width - ICONSIZE + PADDING * 3;
+
+            SizeF titleSize = TextRenderer.MeasureText(this.Title, _titleFont);
+
+            int availableTextWidth = this.Width - ICONSIZE - PADDING * 3;
+            SizeF txtSize = TextRenderer.MeasureText(this.Text, this.Font, new Size(availableTextWidth, 30), TextFormatFlags.WordBreak | TextFormatFlags.NoPadding);
+            
             float textWidth = txtSize.Width;
             float lineHeight = txtSize.Height;
-            while(textWidth > availableTextWidth)
+            while (textWidth > availableTextWidth)
             {
                 txtSize.Height += lineHeight;
-                textWidth -= txtSize.Width;
+                textWidth -= availableTextWidth;
             }
             this.Height = (int)(PADDING + titleSize.Height + txtSize.Height + PADDING);
             _titleBounds = new Rectangle(
@@ -120,6 +131,25 @@ namespace Mmosoft.Oops
 
         }
 
+        //
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+            if (_outType == NotifyOut.Manually)
+                _animateOut.Start();
+        }
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            if (_outType == NotifyOut.Manually)
+                this.Cursor = Cursors.Hand;
+        }
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            if (_outType == NotifyOut.Manually)
+                this.Cursor = Cursors.Default;
+        }
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -155,8 +185,15 @@ namespace Mmosoft.Oops
                 new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width - 1, ClientRectangle.Height - 1));
             // content
             g.DrawImage(notifyImages[_notifyType], _iconBounds);
-            g.DrawString(this.Title, _titleFont, BrushCreator.CreateSolidBrush(textColor), _titleBounds, _aligment);
-            TextRenderer.DrawText(e.Graphics, this.Text, this.Font, _textBounds, ExColorTranslator.Get(textColor), TextFormatFlags.WordBreak | TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+            TextRenderer.DrawText(e.Graphics, this.Title, _titleFont, _titleBounds, ExColorTranslator.Get(textColor), TextFormatFlags.NoPadding);
+            TextRenderer.DrawText(e.Graphics, this.Text, this.Font, _textBounds, ExColorTranslator.Get(textColor), TextFormatFlags.WordBreak | TextFormatFlags.NoPadding);
+        }
+
+        //
+        public void Start()
+        {
+            CalculateBounds();
+            _animateIn.Start();
         }
     }
 }

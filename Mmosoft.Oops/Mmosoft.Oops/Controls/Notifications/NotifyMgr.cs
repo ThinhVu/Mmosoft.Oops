@@ -8,17 +8,15 @@ namespace Mmosoft.Oops.Controls.Notifications
 {
     public class NotifyMgr
     {
-        private static List<SmallNotification> _notifies = new List<SmallNotification>();
-        private static int _notifiesShowing;
+        private static List<Notification> _notifies = new List<Notification>();
 
-        public static void Notify(string title, string message, NotifyType notifyType, Form host)
+        public static void Notify(Form host, string title, string message, NotifyType notifyType, NotifyOut outType = NotifyOut.Automatically, int initialWidth = 300)
         {
-            _notifiesShowing++;
-            var notify = new SmallNotification(notifyType)
+            var notify = new Notification(notifyType, outType, initialWidth)
             {
                 Title = title,
                 Text = message,
-                Top = _notifiesShowing * 10,
+                Top = 10,
                 Left = host.Width
             };
             host.Controls.Add(notify);
@@ -26,7 +24,6 @@ namespace Mmosoft.Oops.Controls.Notifications
             notify.OnCompeleted = () =>
             {
                 host.Controls.Remove(notify);
-                _notifiesShowing--;
             };
             notify.Start();
         }
