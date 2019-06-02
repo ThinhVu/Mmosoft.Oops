@@ -32,8 +32,8 @@ namespace Mmosoft.Oops.Controls
 
             _progress = new Pen(Color.Black);
             _progress.Alignment = System.Drawing.Drawing2D.PenAlignment.Center;
-            _progress.StartCap = System.Drawing.Drawing2D.LineCap.Round;
-            _progress.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+            //_progress.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+            //_progress.EndCap = System.Drawing.Drawing2D.LineCap.Round;
             _progress.Width = LineWidth;
 
             _timer = new Timer() { Interval = 1000 / 25 };
@@ -42,11 +42,12 @@ namespace Mmosoft.Oops.Controls
                 _startAngle+= 1;
                 _sweepAngle+= 5;
 
-                if (_startAngle > 360)
-                    _startAngle = 1;
-                if (_sweepAngle > 360)
+                if (_startAngle >= 360)
+                    _startAngle = 0;
+
+                if (_sweepAngle >= 360)
                 {
-                    _sweepAngle = -_sweepAngle;                    
+                    _sweepAngle = -355;
                 }
 
                 Invalidate();
@@ -63,13 +64,16 @@ namespace Mmosoft.Oops.Controls
             base.OnPaint(e);            
             var g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            var ringRect = new Rectangle()
-            {
-                X = 2,
-                Y = 2,
-                Width = this.Width - 5,
-                Height = this.Height - 5
-            };
+            var ringRect = new Rectangle() { X = 2, Y = 2, Width = this.Width - 5, Height = this.Height - 5 };
+
+
+            //g.DrawArc(_progress, ringRect.MoveXY(5, 5).ChangeSizeRelative(-10, -10), _startAngle - 60, _sweepAngle);
+            g.DrawArc(_progress, ringRect.MoveXY(10, 10).ChangeSizeRelative(-20, -20), _startAngle - 120, _sweepAngle);
+            //g.DrawArc(_progress, ringRect.MoveXY(15, 15).ChangeSizeRelative(-30, -30), _startAngle - 180, _sweepAngle);
+            g.DrawArc(_progress, ringRect.MoveXY(20, 20).ChangeSizeRelative(-40, -40), _startAngle - 240, _sweepAngle);
+            //g.DrawArc(_progress, ringRect.MoveXY(25, 25).ChangeSizeRelative(-50, -50), _startAngle - 300, _sweepAngle);
+
+            // main
             g.DrawArc(_progress, ringRect, _startAngle, _sweepAngle);
         }
 
