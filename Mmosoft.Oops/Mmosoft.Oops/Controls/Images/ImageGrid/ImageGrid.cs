@@ -19,7 +19,7 @@ namespace Mmosoft.Oops.Controls
         private int _virtualHeight;        
         private int _offsetY;
         // drag drop
-        private PickedItem _pickedItem;
+        private DraggingItem _draggingItem;
 
         // 
         private int _selectedIndex;
@@ -126,28 +126,28 @@ namespace Mmosoft.Oops.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            int pickedIndex = GetHotItemIndex(e.Location);
+            int pickedIndex = GetItemIndex(e.Location);
             if (pickedIndex > -1)
             {
-                _pickedItem = new PickedItem(_items[pickedIndex], e.Location);
-                _pickedItem.Index = pickedIndex;
+                _draggingItem = new DraggingItem(_items[pickedIndex], e.Location);
+                _draggingItem.Index = pickedIndex;
             }
         }
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            if (e.Location != _pickedItem.PickedLocation) // dragging
+            if (e.Location != _draggingItem.PickedLocation) // dragging
             {
-                int droppedIndex = GetHotItemIndex(e.Location);
+                int droppedIndex = GetItemIndex(e.Location);
                 if (droppedIndex == -1 && this.Bounds.Contains(e.Location))
                     droppedIndex = _items.Count - 1;
                 if (droppedIndex != -1)
                 {
                     // swap if picked != dropped
-                    if (droppedIndex != _pickedItem.Index)
+                    if (droppedIndex != _draggingItem.Index)
                     {
-                        _items[_pickedItem.Index] = _items[droppedIndex];
-                        _items[droppedIndex] = _pickedItem.ItemRef;
+                        _items[_draggingItem.Index] = _items[droppedIndex];
+                        _items[droppedIndex] = _draggingItem.ItemRef;
                     }
                 }
                 ReDraw();
@@ -156,19 +156,19 @@ namespace Mmosoft.Oops.Controls
             {
                 if (e.Button == System.Windows.Forms.MouseButtons.Left)
                 {
-                    this.SelectedIndex = GetHotItemIndex(e.Location);
+                    this.SelectedIndex = GetItemIndex(e.Location);
                 }
             }
 
-            _pickedItem = null;
+            _draggingItem = null;
         }
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            this.Cursor = GetHotItemIndex(e.Location) < 0 ? Cursors.Default : Cursors.Hand;
-            if (_pickedItem != null)
+            this.Cursor = GetItemIndex(e.Location) < 0 ? Cursors.Default : Cursors.Hand;
+            if (_draggingItem != null)
             {
-                _pickedItem.Move(e.Location);
+                _draggingItem.Move(e.Location);
                 ReDraw();
             }
         }                
@@ -188,8 +188,14 @@ namespace Mmosoft.Oops.Controls
             if (newOffsetY > _virtualHeight - this.Height)
                 newOffsetY = _virtualHeight - this.Height;
 
-            _offsetY = newOffsetY;            
-            ReDraw();
+            int changed = newOffsetY - _offsetY;
+            _offsetY = newOffsetY;
+
+            foreach (ImageWrapper iw in _items)
+            {
+                iw.Boundary = iw.Boundary.MoveY(-changed);
+            }
+            Invalidate();
         }
         //
         protected override void OnSizeChanged(EventArgs e)
@@ -214,14 +220,14 @@ namespace Mmosoft.Oops.Controls
                 {
                     foreach (ImageWrapper item in GetImagesInView())
                     {
-                        if (_pickedItem == null || _pickedItem.ItemRef != item)
+                        if (_draggingItem == null || _draggingItem.ItemRef != item)
                             g.DrawImage(item.Image, item.Boundary);
                     }
 
                     // draw floating picked item
-                    if (_pickedItem != null)
+                    if (_draggingItem != null)
                     {
-                        g.DrawImage(_pickedItem.Image, _pickedItem.Boundary);
+                        g.DrawImage(_draggingItem.Image, _draggingItem.Boundary);
                     }
                 }
                 else
@@ -231,7 +237,7 @@ namespace Mmosoft.Oops.Controls
                     var drawRegion = Rectangle.Empty;
                     foreach (ImageWrapper item in GetImagesInView())
                     {
-                        if (_pickedItem == null || _pickedItem.ItemRef != item)
+                        if (_draggingItem == null || _draggingItem.ItemRef != item)
                         {
                             // translate draw region
                             switch (layout.DisplayMode)
@@ -251,10 +257,20 @@ namespace Mmosoft.Oops.Controls
                     }
 
                     // draw floating picked item
-                    if (_pickedItem != null)
+                    if (_draggingItem != null)
                     {
-                        g.SetClip(this.ClientRectangle);
-                        g.DrawImage(_pickedItem.Image, _pickedItem.Boundary);
+                        switch (layout.DisplayMode)
+                        {
+                            case ImageGridDisplayMode.StretchImage:
+                                drawRegion = ImageDisplayModeHelper.GetImageRect(_draggingItem.Boundary, new Rectangle(0, 0, _draggingItem.Image.Width, _draggingItem.Image.Height), DisplayMode.StretchImage);
+                                break;
+                            case ImageGridDisplayMode.ScaleLossCenter:
+                                drawRegion = ImageDisplayModeHelper.GetImageRect(_draggingItem.Boundary, new Rectangle(0, 0, _draggingItem.Image.Width, _draggingItem.Image.Height), DisplayMode.ScaleLossCenter);
+                                break;
+                        }
+
+                        g.SetClip(_draggingItem.Boundary);
+                        g.DrawImage(_draggingItem.Image, drawRegion);
                     }
                 }
             }
@@ -291,7 +307,7 @@ namespace Mmosoft.Oops.Controls
                 }
             }
         }
-        private int GetHotItemIndex(Point location)
+        private int GetItemIndex(Point location)
         {
             for (int i = 0; i < _items.Count; i++)
             {
@@ -479,7 +495,7 @@ namespace Mmosoft.Oops.Controls
             public int SlotIndex { get; set; }
             public int SlotNeeded { get; set; }
         }
-        class PickedItem
+        class DraggingItem
         {
             private Rectangle _originBoundary;
             //
@@ -489,7 +505,7 @@ namespace Mmosoft.Oops.Controls
             public Image Image;
             public int Index;
             
-            public PickedItem(ImageWrapper itemRef, Point pickedPosition)
+            public DraggingItem(ImageWrapper itemRef, Point pickedPosition)
             {
                 ItemRef = itemRef;
                 Image = itemRef.Image;

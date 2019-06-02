@@ -31,7 +31,6 @@ namespace Mmosoft.Oops.Test
             foreach (var item in Directory.EnumerateFiles(imgPath))
                 imageGrid1.Add(new Bitmap(item));
             #endregion
-            imageGrid1.OnItemClicked += (s, e) => { picSelectedImage.Image = e.Image;};
         }
 
 

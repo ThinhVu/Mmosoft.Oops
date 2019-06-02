@@ -41,12 +41,10 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.nudColumn = new System.Windows.Forms.NumericUpDown();
-            this.picSelectedImage = new System.Windows.Forms.PictureBox();
             this.imageGrid1 = new Mmosoft.Oops.Controls.ImageGrid();
             ((System.ComponentModel.ISupportInitialize)(this.nudGutter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRowHeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudColumn)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picSelectedImage)).BeginInit();
             this.SuspendLayout();
             // 
             // btnApplyStyle
@@ -214,14 +212,6 @@
             0,
             0});
             // 
-            // picSelectedImage
-            // 
-            this.picSelectedImage.Location = new System.Drawing.Point(390, 370);
-            this.picSelectedImage.Name = "picSelectedImage";
-            this.picSelectedImage.Size = new System.Drawing.Size(337, 123);
-            this.picSelectedImage.TabIndex = 31;
-            this.picSelectedImage.TabStop = false;
-            // 
             // imageGrid1
             // 
             this.imageGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -240,7 +230,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(738, 505);
-            this.Controls.Add(this.picSelectedImage);
             this.Controls.Add(this.btnApplyStyle);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label6);
@@ -261,7 +250,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudGutter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRowHeight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudColumn)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picSelectedImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -283,6 +271,5 @@
         private Controls.ImageGrid imageGrid1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown nudColumn;
-        private System.Windows.Forms.PictureBox picSelectedImage;
     }
 }
