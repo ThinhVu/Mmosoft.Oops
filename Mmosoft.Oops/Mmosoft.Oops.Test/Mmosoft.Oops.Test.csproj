@@ -61,6 +61,12 @@
     <Compile Include="frmImageGridDemo.Designer.cs">
       <DependentUpon>frmImageGridDemo.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmIosAppStoreItemDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmIosAppStoreItemDemo.Designer.cs">
+      <DependentUpon>frmIosAppStoreItemDemo.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmNavigationBarDemo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +110,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmImageGridDemo.resx">
       <DependentUpon>frmImageGridDemo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmIosAppStoreItemDemo.resx">
+      <DependentUpon>frmIosAppStoreItemDemo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmNotifyDemo.resx">
       <DependentUpon>frmNotifyDemo.cs</DependentUpon>

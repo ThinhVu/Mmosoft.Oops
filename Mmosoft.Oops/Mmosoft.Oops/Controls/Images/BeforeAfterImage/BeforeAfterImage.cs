@@ -100,7 +100,7 @@ namespace Mmosoft.Oops.Controls
                     // g.FillRectangle(Brushes.White, _separateButton);
                     // g.DrawRectangle(Pens.Black, _separateButton);
                     g.DrawEllipse(Pens.Black, _separateButton);
-                    g.DrawImage(_moveIcon, _separateButton.ChangeSizeRelative(-10, -10).MoveXY(5, 5));
+                    g.DrawImage(_moveIcon, _separateButton.DecreaseSizeFromCenter(10, 10));
                 }
             }
         }

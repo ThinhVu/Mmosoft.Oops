@@ -84,6 +84,9 @@
     <Compile Include="Controls\Images\ImageGrid\ImageGridItemClickedEventArgs.cs" />
     <Compile Include="Controls\Images\ImageGrid\ImageGridItemClickedEventHandler.cs" />
     <Compile Include="Controls\Images\ImageGrid\ImageWrapper.cs" />
+    <Compile Include="Controls\iosAppStoreItem\iosAppStoreItemControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\MediaController.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -125,20 +128,20 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\TitleBar\TitleBarControlButton.cs" />
-    <Compile Include="Layers\LayerControl.cs">
+    <Compile Include="Controls\Layers\LayerControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Layers\GrayScaleDrawer.cs" />
-    <Compile Include="Layers\BlurDrawer.cs" />
-    <Compile Include="Layers\BorderDrawer.cs" />
-    <Compile Include="Layers\FillBackgroundRectDrawer.cs" />
-    <Compile Include="Layers\BaseDrawer.cs" />
+    <Compile Include="Controls\Layers\GrayScaleDrawer.cs" />
+    <Compile Include="Controls\Layers\BlurDrawer.cs" />
+    <Compile Include="Controls\Layers\BorderDrawer.cs" />
+    <Compile Include="Controls\Layers\FillBackgroundRectDrawer.cs" />
+    <Compile Include="Controls\Layers\BaseDrawer.cs" />
     <Compile Include="Controls\Buttons\Button.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ExColorTranslator.cs" />
     <Compile Include="BrushCreator.cs" />
-    <Compile Include="Layers\SketchDrawer.cs" />
+    <Compile Include="Controls\Layers\SketchDrawer.cs" />
     <Compile Include="PenCreator.cs" />
     <Compile Include="Controls\ProgressBars\ProgressBar.cs">
       <SubType>Component</SubType>
@@ -157,7 +160,7 @@
     <Compile Include="Controls\TrackBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="RectangleHelper.cs" />
+    <Compile Include="ExRectangle.cs" />
     <Compile Include="SvgPathCreator.cs" />
     <EmbeddedResource Include="Controls\MediaController.resx">
       <DependentUpon>MediaController.cs</DependentUpon>
@@ -181,9 +184,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controls\Images\PictureBox\" />
