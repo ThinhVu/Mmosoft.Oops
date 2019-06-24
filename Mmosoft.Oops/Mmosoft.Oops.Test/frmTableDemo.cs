@@ -33,7 +33,6 @@ namespace Mmosoft.OopsTest
             Table<Song> table1 = new Table<Song>();
             table1.Font = new Font("Segoe UI", 8f, FontStyle.Regular);
             table1.HeaderFont = new Font("Segoe UI", 10f, FontStyle.Regular);
-            table1.BackgroundImage = Oops.Test.Properties.Resources._525625bb4317fb9;
             table1.BackColor = Color.Transparent;
             table1.Location = new Point(1, 40);
             table1.Size = new Size(540, 490);

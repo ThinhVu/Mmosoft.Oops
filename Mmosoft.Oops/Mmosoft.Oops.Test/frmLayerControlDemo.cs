@@ -7,8 +7,6 @@ namespace Mmosoft.OopsTest
     {
         Mmosoft.Oops.Layers.SketchDrawer skecth;
         Mmosoft.Oops.Layers.BorderDrawer border;
-        Mmosoft.Oops.Layers.BlurDrawer blur;
-        Mmosoft.Oops.Layers.GrayScaleDrawer gray;
 
         public frmLayerControlDemo()
         {
@@ -19,8 +17,6 @@ namespace Mmosoft.OopsTest
 
             skecth = new Mmosoft.Oops.Layers.SketchDrawer(btnLayered) { StepX = 5, StepY = 5, Mirror = false };
             border = new Mmosoft.Oops.Layers.BorderDrawer(btnLayered);
-            blur = new Mmosoft.Oops.Layers.BlurDrawer(btnLayered);
-            gray = new Mmosoft.Oops.Layers.GrayScaleDrawer(btnLayered);
         }
 
         private void BtnLayered_MouseLeave(object sender, EventArgs e)
@@ -38,10 +34,6 @@ namespace Mmosoft.OopsTest
 
             if (togBorder.Checked)
                 btnLayered.PostLayers.Add(border);
-            if (togBlur.Checked)
-                btnLayered.PreLayers.Add(blur);
-            if (togBitonal.Checked)
-                btnLayered.PreLayers.Add(gray);
             if (togSketch.Checked)
                 btnLayered.PostLayers.Add(skecth);
 

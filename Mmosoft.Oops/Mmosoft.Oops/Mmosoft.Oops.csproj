@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,18 +33,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IP.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Mmosoft.ImageProcessing\IP.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="IP.Shared, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Mmosoft.ImageProcessing\IP.Shared.dll</HintPath>
+    <Reference Include="Mmosoft.ImageProcessing">
+      <HintPath>..\lib\Mmosoft.ImageProcessing\Mmosoft.ImageProcessing.dll</HintPath>
     </Reference>
     <Reference Include="SVGPath, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -75,6 +72,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Images\DisplayMode.cs" />
+    <Compile Include="Controls\Images\ImageFrame.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Images\ImageGrid\LayoutSettingBase.cs" />
     <Compile Include="Controls\Images\ImageGrid\ImageGrid.cs">
       <SubType>Component</SubType>
@@ -131,8 +131,6 @@
     <Compile Include="Controls\Layers\LayerControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Layers\GrayScaleDrawer.cs" />
-    <Compile Include="Controls\Layers\BlurDrawer.cs" />
     <Compile Include="Controls\Layers\BorderDrawer.cs" />
     <Compile Include="Controls\Layers\FillBackgroundRectDrawer.cs" />
     <Compile Include="Controls\Layers\BaseDrawer.cs" />
@@ -142,6 +140,7 @@
     <Compile Include="ExColorTranslator.cs" />
     <Compile Include="BrushCreator.cs" />
     <Compile Include="Controls\Layers\SketchDrawer.cs" />
+    <Compile Include="Extensions\Syntax\NotAllowNull.cs" />
     <Compile Include="PenCreator.cs" />
     <Compile Include="Controls\ProgressBars\ProgressBar.cs">
       <SubType>Component</SubType>
@@ -185,8 +184,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\Images\PictureBox\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -18,7 +18,7 @@ namespace Mmosoft.OopsTest
             //ScaleLossLess();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmIosAppStoreItemDemo());
+            Application.Run(new frmImageFrameDemo());
         }
 
         static void ScaleLoss()

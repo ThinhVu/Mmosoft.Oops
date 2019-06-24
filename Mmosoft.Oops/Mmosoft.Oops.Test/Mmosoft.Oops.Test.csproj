@@ -55,6 +55,12 @@
     <Compile Include="frmBeforeAfterImageDemo.Designer.cs">
       <DependentUpon>frmBeforeAfterImageDemo.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmImageFrameDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmImageFrameDemo.Designer.cs">
+      <DependentUpon>frmImageFrameDemo.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmImageGridDemo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +113,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmBeforeAfterImageDemo.resx">
       <DependentUpon>frmBeforeAfterImageDemo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmImageFrameDemo.resx">
+      <DependentUpon>frmImageFrameDemo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmImageGridDemo.resx">
       <DependentUpon>frmImageGridDemo.cs</DependentUpon>
@@ -177,6 +186,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\525625bb4317fb9.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\model.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
