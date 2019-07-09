@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,13 +13,18 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\libStore\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,7 +34,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\libStore\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -39,7 +44,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mmosoft.ImageProcessing">
+    <Reference Include="Mmosoft.ImageProcessing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Mmosoft.ImageProcessing\Mmosoft.ImageProcessing.dll</HintPath>
     </Reference>
     <Reference Include="SVGPath, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -60,60 +66,118 @@
     <Compile Include="Animation\Animator.cs" />
     <Compile Include="ColorTemplate.cs" />
     <Compile Include="Controls\Buttons\ButtonColors.cs" />
-    <Compile Include="Controls\Buttons\FlatButton.cs" />
+    <Compile Include="Controls\Buttons\FlatButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Buttons\ToogleButtonColors.cs" />
-    <Compile Include="Controls\Images\BeforeAfterImage\BeforeAfterImage.cs" />
+    <Compile Include="Controls\Images\BeforeAfterImage\BeforeAfterImage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Images\DisplayMode.cs" />
-    <Compile Include="Controls\Images\ImageFrame.cs" />
-    <Compile Include="Controls\Images\ImageGrid\LayoutSettingBase.cs" />
-    <Compile Include="Controls\Images\ImageGrid\ImageGrid.cs" />
+    <Compile Include="Controls\Images\ImageGrid\ImageGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Images\ImageDisplayModeHelper.cs" />
     <Compile Include="Controls\Images\ImageGrid\ImageGridDisplayMode.cs" />
     <Compile Include="Controls\Images\ImageGrid\ImageGridItemClickedEventArgs.cs" />
     <Compile Include="Controls\Images\ImageGrid\ImageGridItemClickedEventHandler.cs" />
     <Compile Include="Controls\Images\ImageGrid\ImageWrapper.cs" />
-    <Compile Include="Controls\iosAppStoreItem\iosAppStoreItemControl.cs" />
-    <Compile Include="Controls\NavigationBar\NavigationBar.cs" />
+    <Compile Include="Controls\Images\ImageGrid\StackImageGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Images\ImageGrid\TableImageGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\iosAppStoreItem\iosAppStoreItemControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\MediaController.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MediaController.Designer.cs">
+      <DependentUpon>MediaController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NavigationBar\NavigationBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\NavigationBar\NavBarItem.cs" />
     <Compile Include="Controls\NavigationBar\NavBarItemWrapper.cs" />
-    <Compile Include="Controls\Lines\HorizontalLine.cs" />
+    <Compile Include="Controls\Lines\HorizontalLine.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Lines\LineColors.cs" />
-    <Compile Include="Controls\Lines\VerticalLine.cs" />
+    <Compile Include="Controls\Lines\VerticalLine.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Notifications\NotifyMgr.cs" />
     <Compile Include="Controls\Notifications\NotifyOut.cs" />
     <Compile Include="Controls\Notifications\NotifyType.cs" />
     <Compile Include="Controls\Notifications\NofiticationColors.cs" />
-    <Compile Include="Controls\Notifications\Notification.cs" />
+    <Compile Include="Controls\Notifications\Notification.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ProgressBars\ProgressBarColors.cs" />
-    <Compile Include="Controls\ProgressBars\ProgressRing.cs" />
+    <Compile Include="Controls\ProgressBars\ProgressRing.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Table\Cell.cs" />
     <Compile Include="Controls\Table\Column.cs" />
-    <Compile Include="Controls\Table\Table.cs" />
+    <Compile Include="Controls\Table\Table.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Table\PropertyDataReader.cs" />
     <Compile Include="Controls\Table\TableColors.cs" />
     <Compile Include="Controls\Table\TableDataRow.cs" />
-    <Compile Include="Controls\TitleBar\TitleBar.cs" />
+    <Compile Include="Controls\TitleBar\TitleBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\TitleBar\TitleBarControlButton.cs" />
-    <Compile Include="Controls\Layers\LayerControl.cs" />
+    <Compile Include="Controls\Layers\LayerControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Layers\BorderDrawer.cs" />
     <Compile Include="Controls\Layers\FillBackgroundRectDrawer.cs" />
     <Compile Include="Controls\Layers\BaseDrawer.cs" />
-    <Compile Include="Controls\Buttons\Button.cs" />
+    <Compile Include="Controls\Buttons\Button.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ExColorTranslator.cs" />
     <Compile Include="BrushCreator.cs" />
     <Compile Include="Controls\Layers\SketchDrawer.cs" />
-    <Compile Include="Extensions\Syntax\NotAllowNull.cs" />
+    <Compile Include="BitmapHelper.cs" />
     <Compile Include="PenCreator.cs" />
-    <Compile Include="Controls\ProgressBars\ProgressBar.cs" />
-    <Compile Include="Controls\ProgressBars\ProgressDots.cs" />
+    <Compile Include="Controls\ProgressBars\ProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ProgressBars\ProgressDots.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PointHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controls\RangeBar.cs" />
-    <Compile Include="Controls\Buttons\ToogleButton.cs" />
-    <Compile Include="Controls\TrackBar.cs" />
+    <Compile Include="Controls\RangeBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Buttons\ToogleButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TrackBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ExRectangle.cs" />
     <Compile Include="SvgPathCreator.cs" />
-    <None Include="postbuild.bat" />
+    <EmbeddedResource Include="Controls\MediaController.resx">
+      <DependentUpon>MediaController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -127,6 +191,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(ProjectDir)postbuild.bat $(TargetDir) $(SolutionDir)il_merge_excludes.txt</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

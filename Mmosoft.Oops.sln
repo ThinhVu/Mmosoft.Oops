@@ -1,6 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows Desktop
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mmosoft.Oops", "Mmosoft.Oops\Mmosoft.Oops.csproj", "{21702BE6-05AF-49CF-96F0-1139F9C44761}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mmosoft.Oops.Test", "Mmosoft.Oops.Test\Mmosoft.Oops.Test.csproj", "{4FD74E8C-E6B2-445C-8FA9-2975B4E09098}"

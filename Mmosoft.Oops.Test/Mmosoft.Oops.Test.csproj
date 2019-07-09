@@ -49,23 +49,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmTableImageGridDemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTableImageGridDemo.Designer.cs">
+      <DependentUpon>frmTableImageGridDemo.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmBeforeAfterImageDemo.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmBeforeAfterImageDemo.Designer.cs">
       <DependentUpon>frmBeforeAfterImageDemo.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmImageFrameDemo.cs">
+    <Compile Include="frmStackImageGridDemo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmImageFrameDemo.Designer.cs">
-      <DependentUpon>frmImageFrameDemo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmImageGridDemo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmImageGridDemo.Designer.cs">
-      <DependentUpon>frmImageGridDemo.cs</DependentUpon>
+    <Compile Include="frmStackImageGridDemo.Designer.cs">
+      <DependentUpon>frmStackImageGridDemo.cs</DependentUpon>
     </Compile>
     <Compile Include="frmIosAppStoreItemDemo.cs">
       <SubType>Form</SubType>
@@ -111,14 +111,14 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmTableImageGridDemo.resx">
+      <DependentUpon>frmTableImageGridDemo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmBeforeAfterImageDemo.resx">
       <DependentUpon>frmBeforeAfterImageDemo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmImageFrameDemo.resx">
-      <DependentUpon>frmImageFrameDemo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmImageGridDemo.resx">
-      <DependentUpon>frmImageGridDemo.cs</DependentUpon>
+    <EmbeddedResource Include="frmStackImageGridDemo.resx">
+      <DependentUpon>frmStackImageGridDemo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmIosAppStoreItemDemo.resx">
       <DependentUpon>frmIosAppStoreItemDemo.cs</DependentUpon>
