@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Mmosoft.Oops.Controls
 {
     public abstract class ImageGrid : Control
     {
+        private Timer _refreshTimer;
+        private bool _backgroundRepaintRequired;
         // -- private members
         protected List<ImageWrapper> _imageWrappers;
         // layout
@@ -27,6 +27,8 @@ namespace Mmosoft.Oops.Controls
         protected int _hoverIndex;
         // 
         protected int _selectedIndex;
+        private object _backgroundBrushObj = new object();
+        private SolidBrush _backgroundBrush;
 
         // -- properties
         [Browsable(true)]
@@ -109,28 +111,77 @@ namespace Mmosoft.Oops.Controls
         // methods
         public ImageGrid()
         {
-            DoubleBuffered = true;
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            
             //
             _column = 3;
             _gutter = 0;
-            _overlayBrush = new SolidBrush(Color.FromArgb(40, Color.Black)); 
+            _overlayBrush = new SolidBrush(Color.FromArgb(40, Color.Black));
+
+            _imageWrappers = new List<ImageWrapper>();
+
+            //
+            _refreshTimer = new Timer();
+            _refreshTimer.Interval = 40; // 1000/25
+            _refreshTimer.Tick += _refreshTimer_Tick;
+
+            _refreshTimer.Start();
+        }
+
+        private bool _isBusy;
+        void _refreshTimer_Tick(object sender, EventArgs e)
+        {
+            
+            // multi thread
+            // adjust the drawing region
+            foreach (var img in _imageWrappers)
+            {
+                int diffY = img.ClippingRegion.Y - img.DrawingRegion.Y;
+                int adjustY = Math.Min(4, Math.Abs(diffY)) * Math.Sign(diffY);
+                img.DrawingRegion = img.DrawingRegion.AdjustY(adjustY);
+            }
+            //
+
+            if (!DesignMode)
+            {
+                // double buffered
+                if (_isBusy) return;
+                _isBusy = true;
+                using(var buffer = new Bitmap(this.Width, this.Height))
+                {
+                    
+                    // foreground
+                    using (var g = Graphics.FromImage(buffer))
+                    {
+                        // background
+                        if (_backgroundRepaintRequired)
+                        {
+                            _backgroundRepaintRequired = false;
+                            g.FillRectangle(_backgroundBrush, this.ClientRectangle);
+                        }
+
+                        PaintImages(g, GetImagesInView());
+                    }
+                    Draw(graphic => graphic.DrawImage(buffer, this.ClientRectangle));
+                }
+                _isBusy = false;
+            }
+        }
+
+        private void Draw(Action<Graphics> drawAction)
+        {
+            using (var g = this.CreateGraphics())
+            {
+                drawAction(g);
+            }
         }
 
         // public methods
         public void Clear()
         {
-            if (_imageWrappers != null && _imageWrappers.Count > 0)
-            {
-                foreach (var imageWrapper in _imageWrappers)
-                    imageWrapper.Dispose();
-            }
+            DisposeImages();
             _imageWrappers = new List<ImageWrapper>();
             _offsetY = 0;
 
-            // clear paint
-            ReDraw();
+            _backgroundRepaintRequired = true;
         }
         public void Add(Image image)
         {
@@ -142,7 +193,7 @@ namespace Mmosoft.Oops.Controls
             //
             int availableHeight = (int)((_columnWidth * 1f / actualImageWidth) * actualImageHeight);
             //
-            _imageWrappers.Add(new ImageWrapper(image){ ResizedImage = BitmapHelper.ResizeImage(image, actualImageWidth, availableHeight) });
+            _imageWrappers.Add(new ImageWrapper(image) { ResizedImage = BitmapHelper.ResizeImage(image, _columnWidth, availableHeight) });
             // each time an image added, we calculate entire image position => waste, slowdown performance
             ReDraw();
         }
@@ -153,7 +204,6 @@ namespace Mmosoft.Oops.Controls
             _virtualHeight = 0;
             if (_imageWrappers != null && _imageWrappers.Count != 0)
                 ComputePosition();
-            Invalidate();
         }
 
         // event handlers
@@ -269,11 +319,13 @@ namespace Mmosoft.Oops.Controls
             int changed = newOffsetY - _offsetY;
             _offsetY = newOffsetY;
 
+            // if scrolled then reset the background
+            if (changed != 0)
+                _backgroundRepaintRequired = true;
+            // because clipping region changed, then image will be re-drawn
+            // so reset the background doesn't replace the image region
             foreach (ImageWrapper iw in _imageWrappers)
-            {
-                iw.Boundary = iw.Boundary.MoveY(-changed);
-            }
-            Invalidate();
+                iw.ClippingRegion = iw.ClippingRegion.AdjustY(-changed);
         }
         //
         protected override void OnSizeChanged(EventArgs e)
@@ -282,32 +334,37 @@ namespace Mmosoft.Oops.Controls
             UpdateColumnWidth();
             ReDraw();
         }
-        //
-        protected override void OnPaint(PaintEventArgs e)
+
+        protected override void OnBackColorChanged(EventArgs e)
         {
-            base.OnPaint(e);
-
-            var g = e.Graphics;
-            if (DesignMode)
+            base.OnBackColorChanged(e);
+            lock (_backgroundBrushObj)
             {
-                g.DrawString(
-                    this.Name + " control doesn't provide design time support", 
-                    this.Font, 
-                    Brushes.Black, new Point(0, 0));
-
-                g.DrawRectangle(Pens.Black, this.ClientRectangle.DecreaseSize(1, 1));
-            }
-            else
-            {
-                PaintImages(g, GetImagesInView());
+                if (_backgroundBrush != null)
+                    _backgroundBrush.Dispose();
+                _backgroundBrush = new SolidBrush(this.BackColor);
             }
         }
+
+        private void DisposeImages()
+        {
+            if (_imageWrappers != null && _imageWrappers.Count > 0)
+            {
+                foreach (var imageWrapper in _imageWrappers)
+                    imageWrapper.Dispose();
+            }
+        }
+        //
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
             if (disposing)
             {
+                DisposeImages();
+                _backgroundBrush.Dispose();
                 _overlayBrush.Dispose();
+                _refreshTimer.Stop();
+                _refreshTimer.Dispose();
                 Clear();
             }
         }
@@ -327,7 +384,7 @@ namespace Mmosoft.Oops.Controls
             if (_imageWrappers == null) return -1;
             for (int i = 0; i < _imageWrappers.Count; i++)
             {
-                if (_imageWrappers[i].Boundary.Contains(location))
+                if (_imageWrappers[i].ClippingRegion.Contains(location))
                     return i;
             }
             return -1;
@@ -336,7 +393,7 @@ namespace Mmosoft.Oops.Controls
         {
             foreach (var iw in _imageWrappers)
             {
-                if (iw.Boundary.IntersectsWith(this.ClientRectangle))
+                if (iw.RedrawRequired && iw.ClippingRegion.IntersectsWith(this.ClientRectangle))
                     yield return iw;
             }
         }
@@ -354,12 +411,12 @@ namespace Mmosoft.Oops.Controls
             public DraggingItem(ImageWrapper itemRef, Point pickedPosition)
             {
                 ItemRef = itemRef;
-                Image = itemRef.OriginalImage;
-                Boundary = itemRef.Boundary;
+                Image = itemRef.ResizedImage;
+                Boundary = itemRef.ClippingRegion;
 
                 //
                 PickedLocation = pickedPosition;
-                _originBoundary = itemRef.Boundary;
+                _originBoundary = itemRef.ClippingRegion;
             }
 
             public void Move(Point p)

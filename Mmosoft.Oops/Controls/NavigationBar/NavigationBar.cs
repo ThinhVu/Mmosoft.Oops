@@ -248,7 +248,7 @@ namespace Mmosoft.Oops.Controls
 
             if (DesignMode)
             {
-                g.DrawRectangle(Pens.Black, this.ClientRectangle.IncreaseSize(-1, -1));
+                g.DrawRectangle(Pens.Black, this.ClientRectangle.AdjustSize(-1, -1));
                 g.DrawString(this.Name + " control doesn't provide design time support", this.Font, Brushes.Black, new PointF(0, 0));
             }
             else

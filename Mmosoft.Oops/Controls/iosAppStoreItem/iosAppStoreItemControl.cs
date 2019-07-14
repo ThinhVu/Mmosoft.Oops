@@ -81,7 +81,7 @@ namespace Mmosoft.Oops.Controls.iosAppStoreItem
                 TotalStep = 5,
                 AnimAction = (stepI) =>
                 {
-                    _imageBoundary = _imageBoundary.DecreaseSizeFromCenter(2, 2);
+                    _imageBoundary = _imageBoundary.AdjustSizeFromCenter(2, 2);
                     Invalidate();
                 }
             });
@@ -94,7 +94,7 @@ namespace Mmosoft.Oops.Controls.iosAppStoreItem
                 AnimAction = (stepI) =>
                 {
                     _borderRadius -= 2;
-                    _imageBoundary = _imageBoundary.IncreaseSizeFromCenter(2, 2);
+                    _imageBoundary = _imageBoundary.AdjustSizeFromCenter(2, 2);
                     Invalidate();
                 }
             });
@@ -116,7 +116,7 @@ namespace Mmosoft.Oops.Controls.iosAppStoreItem
                 AnimAction = (stepI) =>
                 {
                     _borderRadius += 2;
-                    _imageBoundary = _imageBoundary.DecreaseSizeFromCenter(2, 2);
+                    _imageBoundary = _imageBoundary.AdjustSizeFromCenter(2, 2);
                     Invalidate();
                 }
             });
@@ -128,7 +128,7 @@ namespace Mmosoft.Oops.Controls.iosAppStoreItem
                 TotalStep = 5,
                 AnimAction = (stepI) =>
                 {
-                    _imageBoundary = _imageBoundary.IncreaseSizeFromCenter(2, 2);
+                    _imageBoundary = _imageBoundary.AdjustSizeFromCenter(2, 2);
                     Invalidate();
                 }
             });
@@ -255,7 +255,7 @@ namespace Mmosoft.Oops.Controls.iosAppStoreItem
             if (_isOpenning)
             {
                 g.FillEllipse(Brushes.Gray, _closeIconBoundary);
-                g.DrawImage(SvgPath8x8Mgr.Get(SvgPathBx8Constants.XThin, 10, Brushes.White), _closeIconBoundary.IncreaseSize(-8, -8).MoveXY(4, 4));
+                g.DrawImage(SvgPath8x8Mgr.Get(SvgPathBx8Constants.XThin, 10, Brushes.White), _closeIconBoundary.AdjustSize(-8, -8).AdjustXY(4, 4));
 
                 if (this.Content != null)
                 {

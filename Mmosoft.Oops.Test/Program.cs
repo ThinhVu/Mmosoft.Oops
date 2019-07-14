@@ -16,10 +16,25 @@ namespace Mmosoft.OopsTest
         {
             //ScaleLoss();
             //ScaleLossLess();
+
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Application.ThreadException += Application_ThreadException;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new frmTableImageGridDemo());
         }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            
+        }
+
+        static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            
+        }
+
+
 
         static void ScaleLoss()
         {

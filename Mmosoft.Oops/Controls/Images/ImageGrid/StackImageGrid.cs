@@ -25,7 +25,7 @@ namespace Mmosoft.Oops.Controls
                 int actualImageWidth = iw.OriginalImage.Width;
                 int actualImageHeight = iw.OriginalImage.Height;
                 int availableHeight = (int)((_columnWidth * 1f / actualImageWidth) * actualImageHeight);
-                iw.Boundary = new Rectangle(left, top - _offsetY, _columnWidth, availableHeight);
+                iw.ClippingRegion = new Rectangle(left, top - _offsetY, _columnWidth, availableHeight);
 
                 // next image in the same column will be drawned at "columnTops[colId] + availableHeight + MGutter" position
                 stackTops[colId[0]] += availableHeight + Gutter;
@@ -41,14 +41,16 @@ namespace Mmosoft.Oops.Controls
             {
                 if (_dragItem == null || _dragItem.ItemRef != image)
                 {
-                    g.DrawImage(image.OriginalImage, image.Boundary);
+                    g.SetClip(image.ClippingRegion);
+                    g.DrawImage(image.OriginalImage, image.DrawingRegion);
                 }
 
                 if (_hoverItem != image)
-                    g.FillRectangle(_overlayBrush, image.Boundary);
+                    g.FillRectangle(_overlayBrush, image.DrawingRegion);
             }
 
             // draw floating picked item
+            g.SetClip(this.ClientRectangle);
             if (_dragItem != null)
             {
                 g.DrawImage(_dragItem.Image, _dragItem.Boundary);

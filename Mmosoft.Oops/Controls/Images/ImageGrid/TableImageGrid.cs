@@ -82,7 +82,7 @@ namespace Mmosoft.Oops.Controls
             var takenSlots = new List<Block>();
             for (int i = 0; i < _imageWrappers.Count; i++)
             {
-                if (ImageDisplayModeHelper.IsPortrait(_imageWrappers[i].Boundary))
+                if (ImageDisplayModeHelper.IsPortrait(_imageWrappers[i].ClippingRegion))
                 {
                     takenSlots.Add(slotMgr.FindAvailableSlot(1));
                 }
@@ -100,7 +100,7 @@ namespace Mmosoft.Oops.Controls
             {
                 ImageWrapper iw = _imageWrappers[i];
                 Block slot = takenSlots[i];
-                iw.Boundary = new Rectangle
+                iw.ClippingRegion = new Rectangle
                 {
                     X = (slot.SlotIndex + 1) * _gutter + slot.SlotIndex * availableWidth,
                     Y = (slot.LaneIndex + 1) * _gutter + slot.LaneIndex * RowHeight - _offsetY,
@@ -124,21 +124,21 @@ namespace Mmosoft.Oops.Controls
                     {
                         case ImageGridDisplayMode.StretchImage:
                             drawRegion = ImageDisplayModeHelper.GetImageRect(
-                                image.Boundary,
+                                image.DrawingRegion,
                                 new Rectangle(0, 0, image.OriginalImage.Width, image.OriginalImage.Height),
                                 Mmosoft.Oops.Controls.DisplayMode.StretchImage);
                             break;
                         case ImageGridDisplayMode.ScaleLossCenter:
                             drawRegion = ImageDisplayModeHelper.GetImageRect(
-                                image.Boundary,
+                                image.DrawingRegion,
                                 new Rectangle(0, 0, image.OriginalImage.Width, image.OriginalImage.Height),
                                 Mmosoft.Oops.Controls.DisplayMode.ScaleLossCenter);
                             break;
                     }
 
                     // set clip to image boundary to clipped outside edges
-                    g.SetClip(image.Boundary);
-                    g.DrawImage(image.OriginalImage, drawRegion);
+                    g.SetClip(image.ClippingRegion);
+                    g.DrawImage(image.ResizedImage, drawRegion);
                     if (_hoverItem != image)
                         g.FillRectangle(_overlayBrush, drawRegion);
                 }

@@ -93,7 +93,7 @@ namespace Mmosoft.Oops.Controls.Buttons
             
             // border
             if (ShowBorder)
-                e.Graphics.DrawRectangle(_borderPen, this.ClientRectangle.IncreaseSize(-1, -1));
+                e.Graphics.DrawRectangle(_borderPen, this.ClientRectangle.AdjustSize(-1, -1));
         }
 
         protected override void Dispose(bool disposing)

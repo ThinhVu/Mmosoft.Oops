@@ -68,9 +68,9 @@ namespace Mmosoft.Oops.Controls
 
 
             //g.DrawArc(_progress, ringRect.MoveXY(5, 5).ChangeSizeRelative(-10, -10), _startAngle - 60, _sweepAngle);
-            g.DrawArc(_progress, ringRect.DecreaseSizeFromCenter(20, 20), _startAngle - 120, _sweepAngle);
+            g.DrawArc(_progress, ringRect.AdjustSizeFromCenter(20, 20), _startAngle - 120, _sweepAngle);
             //g.DrawArc(_progress, ringRect.MoveXY(15, 15).ChangeSizeRelative(-30, -30), _startAngle - 180, _sweepAngle);
-            g.DrawArc(_progress, ringRect.DecreaseSizeFromCenter(40, 40), _startAngle - 240, _sweepAngle);
+            g.DrawArc(_progress, ringRect.AdjustSizeFromCenter(40, 40), _startAngle - 240, _sweepAngle);
             //g.DrawArc(_progress, ringRect.MoveXY(25, 25).ChangeSizeRelative(-50, -50), _startAngle - 300, _sweepAngle);
 
             // main
