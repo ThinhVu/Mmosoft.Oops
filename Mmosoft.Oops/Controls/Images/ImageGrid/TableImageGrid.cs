@@ -77,19 +77,19 @@ namespace Mmosoft.Oops.Controls
         //
         protected override void ComputePosition()
         {
-            var availableWidth = _columnWidth;
+            var availableWidth = _colWidth;
             var slotMgr = new BlockMgr(_column);
             var takenSlots = new List<Block>();
-            for (int i = 0; i < _imageWrappers.Count; i++)
+            for (int i = 0; i < _imgs.Count; i++)
             {
-                if (ImageDisplayModeHelper.IsPortrait(_imageWrappers[i].ClippingRegion))
+                if (ImageDisplayModeHelper.IsPortrait(_imgs[i].ClippingRegion))
                 {
                     takenSlots.Add(slotMgr.FindAvailableSlot(1));
                 }
                 else // square or landscape
                 {
                     // check if we need more slots for landspace image
-                    float imageRatio = 1f * _imageWrappers[i].OriginalImage.Width / _imageWrappers[i].OriginalImage.Height;
+                    float imageRatio = 1f * _imgs[i].Original.Width / _imgs[i].Original.Height;
                     int slotNeeded = MergeColumn ? (int)Math.Round(imageRatio, MidpointRounding.AwayFromZero) : 1;
                     takenSlots.Add(slotMgr.FindAvailableSlot(slotNeeded));
                 }
@@ -98,7 +98,7 @@ namespace Mmosoft.Oops.Controls
             // converting slots to specific position in grid
             for (int i = 0; i < takenSlots.Count; i++)
             {
-                ImageWrapper iw = _imageWrappers[i];
+                Img iw = _imgs[i];
                 Block slot = takenSlots[i];
                 iw.ClippingRegion = new Rectangle
                 {
@@ -111,11 +111,11 @@ namespace Mmosoft.Oops.Controls
 
             _virtualHeight = (slotMgr.LaneCount * _rowHeight) + (slotMgr.LaneCount - 1) * _gutter;
         }
-        protected override void PaintImages(Graphics g, IEnumerable<ImageWrapper> images)
+        protected override void PaintImages(Graphics g, IEnumerable<Img> images)
         {
             var pickedDrawRegion = Rectangle.Empty;
             var drawRegion = Rectangle.Empty;
-            foreach (ImageWrapper image in images)
+            foreach (Img image in images)
             {
                 if (_dragItem == null || _dragItem.ItemRef != image)
                 {
@@ -125,22 +125,20 @@ namespace Mmosoft.Oops.Controls
                         case ImageGridDisplayMode.StretchImage:
                             drawRegion = ImageDisplayModeHelper.GetImageRect(
                                 image.DrawingRegion,
-                                new Rectangle(0, 0, image.OriginalImage.Width, image.OriginalImage.Height),
+                                new Rectangle(0, 0, image.Original.Width, image.Original.Height),
                                 Mmosoft.Oops.Controls.DisplayMode.StretchImage);
                             break;
                         case ImageGridDisplayMode.ScaleLossCenter:
                             drawRegion = ImageDisplayModeHelper.GetImageRect(
                                 image.DrawingRegion,
-                                new Rectangle(0, 0, image.OriginalImage.Width, image.OriginalImage.Height),
+                                new Rectangle(0, 0, image.Original.Width, image.Original.Height),
                                 Mmosoft.Oops.Controls.DisplayMode.ScaleLossCenter);
                             break;
                     }
 
                     // set clip to image boundary to clipped outside edges
                     g.SetClip(image.ClippingRegion);
-                    g.DrawImage(image.ResizedImage, drawRegion);
-                    if (_hoverItem != image)
-                        g.FillRectangle(_overlayBrush, drawRegion);
+                    g.DrawImage(image.Resized, drawRegion);
                 }
             }
 

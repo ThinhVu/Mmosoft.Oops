@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Mmosoft.Oops.Test
@@ -28,7 +29,9 @@ namespace Mmosoft.Oops.Test
             var imgPath = @"..\..\assests\images\imagegrid\";
             var images = new List<Image>();
             foreach (var item in Directory.EnumerateFiles(imgPath))
+            {
                 imageGrid1.Add(new Bitmap(item));
+            }
             #endregion
         }
 

@@ -1,32 +1,29 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Drawing;
 
 namespace Mmosoft.Oops.Controls
 {
-    public class ImageWrapper
+    public class Img
     {
         public bool RedrawRequired;
-        // 
-        private Image _orgImage;
-        private Image _resizedImage;
+        private Image _original;
+        private Image _resized;
         private Rectangle _clippingRegion;
         private Rectangle _drawingRegion;
 
         /// <summary>
         /// Original image src
         /// </summary>
-        public Image OriginalImage
+        public Image Original
         {
             get
             {
-                return _orgImage;
+                return _original;
             }
             set
             {
-                if (_orgImage != value)
+                if (_original != value)
                 {
-                    _orgImage = value;
+                    _original = value;
                     RedrawRequired = true;
                 }
             }
@@ -34,17 +31,17 @@ namespace Mmosoft.Oops.Controls
         /// <summary>
         /// Image which has been resized to increase performance of painting
         /// </summary>
-        public Image ResizedImage
+        public Image Resized
         {
             get
             {
-                return _resizedImage;
+                return _resized;
             }
             set
             {
-                if (_resizedImage != value)
+                if (_resized != value)
                 {
-                    _resizedImage = value;
+                    _resized = value;
                     RedrawRequired = true;
                 }
             }
@@ -65,7 +62,7 @@ namespace Mmosoft.Oops.Controls
                     _clippingRegion = value;
 
                     if (_drawingRegion == Rectangle.Empty)
-                        _drawingRegion = _clippingRegion.AdjustY(-16);
+                        _drawingRegion = _clippingRegion.AdjustSizeFromCenter(16, 16);
                     else
                         _drawingRegion = _clippingRegion;
                 }
@@ -91,19 +88,21 @@ namespace Mmosoft.Oops.Controls
                 }
             }
         }
-
-        public ImageWrapper(Image img)
+        public Img(Image original)
         {
-            OriginalImage = img;
+            Original = original;
         }
-
+        public Img(Image original, Image resized)
+        {
+            Original = original;
+            Resized = resized;
+        }
         public void Dispose()
         {
-            if (OriginalImage != null)
-                OriginalImage.Dispose();
-
-            if (ResizedImage != null)
-                ResizedImage.Dispose();
+            if (Original != null)
+                Original.Dispose();
+            if (Resized != null)
+                Resized.Dispose();
         }
     }
 }

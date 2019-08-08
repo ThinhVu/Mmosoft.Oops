@@ -81,11 +81,14 @@
     <Compile Include="Controls\Images\ImageGrid\ImageGridDisplayMode.cs" />
     <Compile Include="Controls\Images\ImageGrid\ImageGridItemClickedEventArgs.cs" />
     <Compile Include="Controls\Images\ImageGrid\ImageGridItemClickedEventHandler.cs" />
-    <Compile Include="Controls\Images\ImageGrid\ImageWrapper.cs" />
+    <Compile Include="Controls\Images\ImageGrid\Img.cs" />
     <Compile Include="Controls\Images\ImageGrid\StackImageGrid.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Images\ImageGrid\TableImageGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Images\ImageSlide\ImageSlide.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\iosAppStoreItem\iosAppStoreItemControl.cs">

@@ -16,16 +16,16 @@ namespace Mmosoft.Oops.Controls
 
             int left, top;
             List<int> colId;
-            for (int i = 0; i < _imageWrappers.Count; i++)
+            for (int i = 0; i < _imgs.Count; i++)
             {
                 GetMinStackHeightAndIndex(stackTops, out top, out colId);
-                left = Gutter * (1 + colId[0]) + _columnWidth  * colId[0];
+                left = Gutter * (1 + colId[0]) + _colWidth  * colId[0];
 
-                ImageWrapper iw = _imageWrappers[i];
-                int actualImageWidth = iw.OriginalImage.Width;
-                int actualImageHeight = iw.OriginalImage.Height;
-                int availableHeight = (int)((_columnWidth * 1f / actualImageWidth) * actualImageHeight);
-                iw.ClippingRegion = new Rectangle(left, top - _offsetY, _columnWidth, availableHeight);
+                Img iw = _imgs[i];
+                int actualImageWidth = iw.Original.Width;
+                int actualImageHeight = iw.Original.Height;
+                int availableHeight = (int)((_colWidth * 1f / actualImageWidth) * actualImageHeight);
+                iw.ClippingRegion = new Rectangle(left, top - _offsetY, _colWidth, availableHeight);
 
                 // next image in the same column will be drawned at "columnTops[colId] + availableHeight + MGutter" position
                 stackTops[colId[0]] += availableHeight + Gutter;
@@ -35,18 +35,15 @@ namespace Mmosoft.Oops.Controls
                     _virtualHeight = stackTops[colId[0]];
             }
         }
-        protected override void PaintImages(Graphics g, IEnumerable<ImageWrapper> images)
+        protected override void PaintImages(Graphics g, IEnumerable<Img> images)
         {
-            foreach (ImageWrapper image in images)
+            foreach (Img image in images)
             {
                 if (_dragItem == null || _dragItem.ItemRef != image)
                 {
                     g.SetClip(image.ClippingRegion);
-                    g.DrawImage(image.OriginalImage, image.DrawingRegion);
+                    g.DrawImage(image.Original, image.DrawingRegion);
                 }
-
-                if (_hoverItem != image)
-                    g.FillRectangle(_overlayBrush, image.DrawingRegion);
             }
 
             // draw floating picked item

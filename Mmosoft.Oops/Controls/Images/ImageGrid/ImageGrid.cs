@@ -9,26 +9,22 @@ namespace Mmosoft.Oops.Controls
 {
     public abstract class ImageGrid : Control
     {
-        private Timer _refreshTimer;
-        private bool _backgroundRepaintRequired;
+        private Timer _repaintTimer;
+        private bool _bgRepaint;
+        private bool _painting;
         // -- private members
-        protected List<ImageWrapper> _imageWrappers;
+        protected List<Img> _imgs;
         // layout
         protected int _column;
         protected int _gutter;
-        protected int _columnWidth;
+        protected int _colWidth;
         protected int _virtualHeight;
         protected int _offsetY;
-        // drag drop
         protected DraggingItem _dragItem;
-        // focus on hovering image
-        protected ImageWrapper _hoverItem;
-        protected SolidBrush _overlayBrush;
-        protected int _hoverIndex;
-        // 
+        
         protected int _selectedIndex;
-        private object _backgroundBrushObj = new object();
-        private SolidBrush _backgroundBrush;
+        private object _bgBrushObj = new object();
+        private SolidBrush _bgBrush;
 
         // -- properties
         [Browsable(true)]
@@ -41,7 +37,7 @@ namespace Mmosoft.Oops.Controls
             }
             private set
             {
-                if (0 <= value && value < _imageWrappers.Count)
+                if (0 <= value && value < _imgs.Count)
                 {
                     _selectedIndex = value;
                 }
@@ -54,7 +50,7 @@ namespace Mmosoft.Oops.Controls
         { 
             get 
             { 
-                return _imageWrappers.Count; 
+                return _imgs.Count; 
             }
         }
 
@@ -114,87 +110,69 @@ namespace Mmosoft.Oops.Controls
             //
             _column = 3;
             _gutter = 0;
-            _overlayBrush = new SolidBrush(Color.FromArgb(40, Color.Black));
-
-            _imageWrappers = new List<ImageWrapper>();
-
+            _imgs = new List<Img>();
+            _bgBrush = new SolidBrush(this.BackColor);
             //
-            _refreshTimer = new Timer();
-            _refreshTimer.Interval = 40; // 1000/25
-            _refreshTimer.Tick += _refreshTimer_Tick;
+            _repaintTimer = new Timer();
+            _repaintTimer.Interval = 24;
+            _repaintTimer.Tick += _refreshTimer_Tick;
 
-            _refreshTimer.Start();
+            _repaintTimer.Start();
         }
 
-        private bool _isBusy;
+
         void _refreshTimer_Tick(object sender, EventArgs e)
         {
-            
+            if (DesignMode) return;
+
             // multi thread
             // adjust the drawing region
-            foreach (var img in _imageWrappers)
+            foreach (var img in _imgs)
             {
-                int diffY = img.ClippingRegion.Y - img.DrawingRegion.Y;
-                int adjustY = Math.Min(4, Math.Abs(diffY)) * Math.Sign(diffY);
-                img.DrawingRegion = img.DrawingRegion.AdjustY(adjustY);
+                int diffY = img.DrawingRegion.Y - img.ClippingRegion.Y;
+                int adjustY = Math.Min(4, Math.Abs(diffY));
+                int delta = diffY  - adjustY;
+                img.DrawingRegion = img.DrawingRegion.AdjustSize(-adjustY, -adjustY);
+                img.DrawingRegion = img.ClippingRegion.AdjustSizeFromCenter(delta, delta);
             }
-            //
-
-            if (!DesignMode)
+            if (_painting) return;
+            _painting = true;
+            using (var buffer = new Bitmap(this.Width, this.Height))
             {
-                // double buffered
-                if (_isBusy) return;
-                _isBusy = true;
-                using(var buffer = new Bitmap(this.Width, this.Height))
+                using (var g = Graphics.FromImage(buffer))
                 {
-                    
-                    // foreground
-                    using (var g = Graphics.FromImage(buffer))
+                    if (_bgRepaint)
                     {
-                        // background
-                        if (_backgroundRepaintRequired)
-                        {
-                            _backgroundRepaintRequired = false;
-                            g.FillRectangle(_backgroundBrush, this.ClientRectangle);
-                        }
-
-                        PaintImages(g, GetImagesInView());
+                        _bgRepaint = false;
+                        g.FillRectangle(_bgBrush, this.ClientRectangle);
                     }
-                    Draw(graphic => graphic.DrawImage(buffer, this.ClientRectangle));
+                    PaintImages(g, GetImagesInView());
                 }
-                _isBusy = false;
+                Draw(graphic => graphic.DrawImage(buffer, this.ClientRectangle));
             }
+            _painting = false;
         }
 
         private void Draw(Action<Graphics> drawAction)
         {
             using (var g = this.CreateGraphics())
-            {
                 drawAction(g);
-            }
         }
 
         // public methods
         public void Clear()
         {
             DisposeImages();
-            _imageWrappers = new List<ImageWrapper>();
+            _imgs = new List<Img>();
             _offsetY = 0;
-
-            _backgroundRepaintRequired = true;
+            _bgRepaint = true;
         }
         public void Add(Image image)
         {
-            if (_imageWrappers == null)
-                _imageWrappers = new List<ImageWrapper>();
-            // make a copy of original image
-            int actualImageWidth = image.Width;
-            int actualImageHeight = image.Height;
-            //
-            int availableHeight = (int)((_columnWidth * 1f / actualImageWidth) * actualImageHeight);
-            //
-            _imageWrappers.Add(new ImageWrapper(image) { ResizedImage = BitmapHelper.ResizeImage(image, _columnWidth, availableHeight) });
-            // each time an image added, we calculate entire image position => waste, slowdown performance
+            if (_imgs == null) _imgs = new List<Img>();
+            int availableHeight = (int)((_colWidth * 1f / image.Width) * image.Height);
+            Image resized = BitmapHelper.ResizeImage(image, _colWidth, availableHeight);
+            _imgs.Add(new Img(image, resized));
             ReDraw();
         }
 
@@ -202,7 +180,7 @@ namespace Mmosoft.Oops.Controls
         public void ReDraw()
         {
             _virtualHeight = 0;
-            if (_imageWrappers != null && _imageWrappers.Count != 0)
+            if (_imgs != null && _imgs.Count != 0)
                 ComputePosition();
         }
 
@@ -224,7 +202,7 @@ namespace Mmosoft.Oops.Controls
                 // check with -1 to ignore when the user clicking to blank zone
                 if (pickedImageIndex > -1)
                 {
-                    _dragItem = new DraggingItem(_imageWrappers[pickedImageIndex], e.Location);
+                    _dragItem = new DraggingItem(_imgs[pickedImageIndex], e.Location);
                     _dragItem.Index = pickedImageIndex;
                 }
             }
@@ -239,7 +217,7 @@ namespace Mmosoft.Oops.Controls
                 // check if the user drag an image then drop into blank zone in grid view
                 // then move the dragged item into the end of image list
                 if (droppedIndex == -1 && this.Bounds.Contains(e.Location))
-                    droppedIndex = _imageWrappers.Count - 1;
+                    droppedIndex = _imgs.Count - 1;
 
                 // and only swap if the user doesn't click to another non-client rectangle
                 if (droppedIndex != -1)
@@ -247,13 +225,9 @@ namespace Mmosoft.Oops.Controls
                     // swap if picked != dropped
                     if (droppedIndex != _dragItem.Index)
                     {
-                        _imageWrappers[_dragItem.Index] = _imageWrappers[droppedIndex];
-                        _imageWrappers[droppedIndex] = _dragItem.ItemRef;
+                        _imgs[_dragItem.Index] = _imgs[droppedIndex];
+                        _imgs[droppedIndex] = _dragItem.ItemRef;
                     }
-
-                    // update hovering items
-                    _hoverIndex = droppedIndex;
-                    _hoverItem = _imageWrappers[droppedIndex];
                 }
                 
                 ReDraw();
@@ -270,7 +244,7 @@ namespace Mmosoft.Oops.Controls
                         OnImageClicked(this, new ImageGridItemClickedEventArgs()
                         {
                             Index = this.SelectedIndex,
-                            Image = _imageWrappers[this.SelectedIndex].OriginalImage
+                            Image = _imgs[this.SelectedIndex].Original
                         });
                     }
                 }
@@ -282,52 +256,29 @@ namespace Mmosoft.Oops.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-
-            int hoveringIndex = GetImageIndex(e.Location);
-            bool hoverChanged = (hoveringIndex > -1 && _hoverIndex != hoveringIndex);
-            this.Cursor = hoveringIndex < 0 ? Cursors.Default : Cursors.Hand;
-
-            bool shouldReDrawn = _dragItem != null || hoverChanged;
-            
-            if (_dragItem != null) 
+            this.Cursor = GetImageIndex(e.Location) < 0 ? Cursors.Default : Cursors.Hand;
+            if (_dragItem != null)
                 _dragItem.Move(e.Location);
-
-            if (hoverChanged) 
-            { 
-                _hoverIndex = hoveringIndex; 
-                _hoverItem = _imageWrappers[hoveringIndex]; 
-            }
-            
-            if (shouldReDrawn) ReDraw();
         }                
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-
-            if (_virtualHeight < this.Height)
-                return;
-
-            var newOffsetY = _offsetY - e.Delta;
-            //
-            if (newOffsetY < 0)
-                newOffsetY = 0;
-
-            // 
+            if (_virtualHeight < this.Height) return;
+            int newOffsetY = _offsetY - e.Delta;
+            if (newOffsetY < 0) newOffsetY = 0;
             if (newOffsetY > _virtualHeight - this.Height)
                 newOffsetY = _virtualHeight - this.Height;
-
             int changed = newOffsetY - _offsetY;
             _offsetY = newOffsetY;
-
             // if scrolled then reset the background
             if (changed != 0)
-                _backgroundRepaintRequired = true;
+                _bgRepaint = true;
             // because clipping region changed, then image will be re-drawn
             // so reset the background doesn't replace the image region
-            foreach (ImageWrapper iw in _imageWrappers)
+            foreach (Img iw in _imgs)
                 iw.ClippingRegion = iw.ClippingRegion.AdjustY(-changed);
         }
-        //
+        
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
@@ -338,19 +289,19 @@ namespace Mmosoft.Oops.Controls
         protected override void OnBackColorChanged(EventArgs e)
         {
             base.OnBackColorChanged(e);
-            lock (_backgroundBrushObj)
+            lock (_bgBrushObj)
             {
-                if (_backgroundBrush != null)
-                    _backgroundBrush.Dispose();
-                _backgroundBrush = new SolidBrush(this.BackColor);
+                if (_bgBrush != null)
+                    _bgBrush.Dispose();
+                _bgBrush = new SolidBrush(this.BackColor);
             }
         }
 
         private void DisposeImages()
         {
-            if (_imageWrappers != null && _imageWrappers.Count > 0)
+            if (_imgs != null && _imgs.Count > 0)
             {
-                foreach (var imageWrapper in _imageWrappers)
+                foreach (var imageWrapper in _imgs)
                     imageWrapper.Dispose();
             }
         }
@@ -361,37 +312,36 @@ namespace Mmosoft.Oops.Controls
             if (disposing)
             {
                 DisposeImages();
-                _backgroundBrush.Dispose();
-                _overlayBrush.Dispose();
-                _refreshTimer.Stop();
-                _refreshTimer.Dispose();
+                _bgBrush.Dispose();
+                _repaintTimer.Stop();
+                _repaintTimer.Dispose();
                 Clear();
             }
         }
         //
         protected abstract void ComputePosition();
-        protected abstract void PaintImages(Graphics g, IEnumerable<ImageWrapper> imageWrappers);
+        protected abstract void PaintImages(Graphics g, IEnumerable<Img> imageWrappers);
 
         // --- private methods
         private void UpdateColumnWidth()
         {
-            _columnWidth = (int)((this.Width - 1 - (_column + 1) * _gutter * 1f) / _column);
+            _colWidth = (int)((this.Width - 1 - (_column + 1) * _gutter * 1f) / _column);
             if (_column < 0)
                 throw new Exception("Column width is <= 0, please check your setting again.");
         }
         private int GetImageIndex(Point location)
         {
-            if (_imageWrappers == null) return -1;
-            for (int i = 0; i < _imageWrappers.Count; i++)
+            if (_imgs == null) return -1;
+            for (int i = 0; i < _imgs.Count; i++)
             {
-                if (_imageWrappers[i].ClippingRegion.Contains(location))
+                if (_imgs[i].ClippingRegion.Contains(location))
                     return i;
             }
             return -1;
         }
-        private IEnumerable<ImageWrapper> GetImagesInView()
+        private IEnumerable<Img> GetImagesInView()
         {
-            foreach (var iw in _imageWrappers)
+            foreach (var iw in _imgs)
             {
                 if (iw.RedrawRequired && iw.ClippingRegion.IntersectsWith(this.ClientRectangle))
                     yield return iw;
@@ -403,15 +353,15 @@ namespace Mmosoft.Oops.Controls
             private Rectangle _originBoundary;
             //
             public Point PickedLocation;
-            public ImageWrapper ItemRef;
+            public Img ItemRef;
             public Rectangle Boundary;
             public Image Image;
             public int Index;
             
-            public DraggingItem(ImageWrapper itemRef, Point pickedPosition)
+            public DraggingItem(Img itemRef, Point pickedPosition)
             {
                 ItemRef = itemRef;
-                Image = itemRef.ResizedImage;
+                Image = itemRef.Resized;
                 Boundary = itemRef.ClippingRegion;
 
                 //

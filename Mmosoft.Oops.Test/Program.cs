@@ -21,7 +21,7 @@ namespace Mmosoft.OopsTest
             Application.ThreadException += Application_ThreadException;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmTableImageGridDemo());
+            Application.Run(new frmImageSlide());
         }
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

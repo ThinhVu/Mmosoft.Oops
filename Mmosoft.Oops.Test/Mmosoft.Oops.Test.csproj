@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmImageSlide.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmImageSlide.Designer.cs">
+      <DependentUpon>frmImageSlide.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmTableImageGridDemo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +117,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmImageSlide.resx">
+      <DependentUpon>frmImageSlide.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmTableImageGridDemo.resx">
       <DependentUpon>frmTableImageGridDemo.cs</DependentUpon>
     </EmbeddedResource>
