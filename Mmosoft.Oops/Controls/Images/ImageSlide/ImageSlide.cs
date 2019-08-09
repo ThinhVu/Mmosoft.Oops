@@ -10,6 +10,13 @@ namespace Mmosoft.Oops.Controls.Images
 {
     public class ImageSlide : Control
     {
+        /// <summary>
+        /// Set LazyMode to true if you're lazy
+        /// In this mode, instead of click to navigation button to move between images
+        /// you just need click Mouse Left to go to prev image, and mouse right to move to next image
+        /// </summary>
+        public bool LazyMode = false;
+
         // flyout
         private Animator flyinAnim;
         private Animator flyoutAnim;
@@ -136,6 +143,22 @@ namespace Mmosoft.Oops.Controls.Images
             }
         }
 
+        public void Clear()
+        {
+            flyinAnim.Stop();
+            flyoutAnim.Stop();
+
+            foreach (var img in imgs)
+            {
+                img.Dispose();
+            }
+
+            imgs = new List<Image>();
+            currentIndex = -1;
+            newIndex = -1;
+            Invalidate();
+        }
+
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
@@ -161,7 +184,7 @@ namespace Mmosoft.Oops.Controls.Images
         {
             base.OnMouseClick(e);
             newIndex = currentIndex;
-            if (drawPrev && prevNavRect.Contains(e.Location))
+            if (drawPrev && prevNavRect.Contains(e.Location) || (LazyMode && e.Button == System.Windows.Forms.MouseButtons.Left))
             {
                 newIndex--;
                 if (newIndex < 0)
@@ -169,8 +192,7 @@ namespace Mmosoft.Oops.Controls.Images
                 if (currentIndex != newIndex)
                     FlyOut();
             }
-            
-            if (drawNext && nextNavRect.Contains(e.Location))
+            else if (drawNext && nextNavRect.Contains(e.Location) || (LazyMode && e.Button == System.Windows.Forms.MouseButtons.Right))
             {
                 newIndex++;
                 if (newIndex == imgs.Count)
@@ -226,8 +248,8 @@ namespace Mmosoft.Oops.Controls.Images
                 }
             }
 
-            if (drawPrev) g.DrawImage(prevNavImage, prevNavRect);
-            if (drawNext) g.DrawImage(nextNavImage, nextNavRect);
+            if (!LazyMode && drawPrev) g.DrawImage(prevNavImage, prevNavRect);
+            if (!LazyMode && drawNext) g.DrawImage(nextNavImage, nextNavRect);
         }
 
         private void FlyIn()
