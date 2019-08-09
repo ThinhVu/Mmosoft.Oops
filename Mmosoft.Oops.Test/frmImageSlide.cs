@@ -19,10 +19,16 @@ namespace Mmosoft.Oops.Test
 
         private void frmImageSlide_Load(object sender, EventArgs e)
         {
-            var imgPath = @"..\..\assests\images\imagegrid\";
+            var imgPath = @"D:\Apps\XiurenViewer\saved\[MFStar] Vol.177 诱惑大胸小太妹徐cake火红热辣制服魅力养眼私拍 30P\img";  // @"..\..\assests\images\imagegrid\"; 
             var images = new List<Image>();
             foreach (var item in Directory.EnumerateFiles(imgPath))
                 imageSlide1.AddImage(new Bitmap(item));
+            // imageSlide1.AddImage(images);
         }
     }
 }
+
+
+
+
+// @"D:\Apps\XiurenViewer\saved\[MFStar] Vol.177 诱惑大胸小太妹徐cake火红热辣制服魅力养眼私拍 30P\img"; 
