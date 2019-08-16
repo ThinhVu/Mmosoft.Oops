@@ -8,7 +8,7 @@ namespace Mmosoft.Oops.Controls
 {
     public class StackImageGrid : ImageGrid
     {
-        protected override void ComputePosition()
+        protected override void ComputePosition(int currentReDrawRequestId)
         {
             var stackTops = new int[Column];
             for (int i = 0; i < stackTops.Length; i++)
@@ -18,6 +18,10 @@ namespace Mmosoft.Oops.Controls
             List<int> colId;
             for (int i = 0; i < _imgs.Count; i++)
             {
+                // new redraw request has been called, skip current redraw
+                if (currentReDrawRequestId < _redrawRequestId)
+                    return;
+
                 GetMinStackHeightAndIndex(stackTops, out top, out colId);
                 left = Gutter * (1 + colId[0]) + _colWidth  * colId[0];
 

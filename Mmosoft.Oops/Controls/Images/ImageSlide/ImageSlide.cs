@@ -24,7 +24,7 @@ namespace Mmosoft.Oops.Controls.Images
         private int vCurrentHor;
         private float vNewHor;
         private float vNewVer;
-        private int step = 20; // 20 step
+        private int step = 10;
         private int direction = -1;
 
         private SolidBrush opacityBrush;
@@ -60,6 +60,7 @@ namespace Mmosoft.Oops.Controls.Images
             imgs = new List<Image>();
 
             currentIndex = -1;
+            newIndex = -1;
             prevNavRect = new Rectangle(20, 0, NAV_SIZE, NAV_SIZE);
             prevNavImage = SvgPath8x8Mgr.Get(SvgPathBx8Constants.ArrowCircleLeft, 10, Brushes.White);
 
@@ -135,9 +136,9 @@ namespace Mmosoft.Oops.Controls.Images
         public void AddImage(Image image)
         {
             imgs.Add(image);
-            if (currentIndex == -1)
+            // animation when the first image added into control
+            if (currentIndex == -1 && newIndex == -1)
             {
-                // animation with next index
                 newIndex = 0;
                 FlyIn();
             }
@@ -281,6 +282,7 @@ namespace Mmosoft.Oops.Controls.Images
 
         private void FlyOut()
         {
+            
             // setup to reduce size of new image
             currentImgRect = ImageDisplayModeHelper.GetImageRect(
                         this.ClientRectangle,

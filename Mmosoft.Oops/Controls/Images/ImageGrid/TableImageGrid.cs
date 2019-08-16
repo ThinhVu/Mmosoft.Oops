@@ -10,6 +10,7 @@ namespace Mmosoft.Oops.Controls
     {
         private int _rowHeight;
         private bool _mergeColumn;
+        private bool _squareSized;
         private ImageGridDisplayMode _displayMode;
 
         //
@@ -49,6 +50,22 @@ namespace Mmosoft.Oops.Controls
             }
         }
 
+        public bool SquareSized
+        {
+            get
+            {
+                return _squareSized;
+            }
+            set
+            {
+                if (_squareSized != value)
+                {
+                    _squareSized = value;
+                    base.ReDraw();
+                }
+            }
+        }
+
         [Browsable(true)]
         public ImageGridDisplayMode DisplayMode
         {
@@ -75,13 +92,17 @@ namespace Mmosoft.Oops.Controls
         }
 
         //
-        protected override void ComputePosition()
+        protected override void ComputePosition(int currentReDrawRequestId)
         {
             var availableWidth = _colWidth;
+            var rowHeight = _squareSized ? availableWidth: _rowHeight;
             var slotMgr = new BlockMgr(_column);
             var takenSlots = new List<Block>();
             for (int i = 0; i < _imgs.Count; i++)
             {
+                if (currentReDrawRequestId < _redrawRequestId)
+                    return;
+
                 if (ImageDisplayModeHelper.IsPortrait(_imgs[i].ClippingRegion))
                 {
                     takenSlots.Add(slotMgr.FindAvailableSlot(1));
@@ -98,18 +119,21 @@ namespace Mmosoft.Oops.Controls
             // converting slots to specific position in grid
             for (int i = 0; i < takenSlots.Count; i++)
             {
+                if (currentReDrawRequestId < _redrawRequestId)
+                    return;
+
                 Img iw = _imgs[i];
                 Block slot = takenSlots[i];
                 iw.ClippingRegion = new Rectangle
                 {
                     X = (slot.SlotIndex + 1) * _gutter + slot.SlotIndex * availableWidth,
-                    Y = (slot.LaneIndex + 1) * _gutter + slot.LaneIndex * RowHeight - _offsetY,
+                    Y = (slot.LaneIndex + 1) * _gutter + slot.LaneIndex * rowHeight - _offsetY,
                     Width = (slot.SlotNeeded - 1) * _gutter + slot.SlotNeeded * availableWidth,
-                    Height = _rowHeight
+                    Height = rowHeight
                 };
             }
 
-            _virtualHeight = (slotMgr.LaneCount * _rowHeight) + (slotMgr.LaneCount - 1) * _gutter;
+            _virtualHeight = (slotMgr.LaneCount * rowHeight) + (slotMgr.LaneCount - 1) * _gutter;
         }
         protected override void PaintImages(Graphics g, IEnumerable<Img> images)
         {

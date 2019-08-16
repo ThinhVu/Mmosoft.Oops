@@ -12,6 +12,7 @@ namespace Mmosoft.Oops.Controls
         private Timer _repaintTimer;
         private bool _bgRepaint;
         private bool _painting;
+        protected int _redrawRequestId;
         // -- private members
         protected List<Img> _imgs;
         // layout
@@ -68,6 +69,7 @@ namespace Mmosoft.Oops.Controls
                 if (_column != value)
                 {
                     _column = value;
+                    _bgRepaint = true;
                     UpdateColumnWidth();
                     ReDraw();
                 }
@@ -88,6 +90,7 @@ namespace Mmosoft.Oops.Controls
                 if (_gutter != value)
                 {
                     _gutter = value;
+                    _bgRepaint = true;
                     UpdateColumnWidth();
                     ReDraw();
                 }
@@ -131,26 +134,34 @@ namespace Mmosoft.Oops.Controls
             {
                 int diffY = img.DrawingRegion.Y - img.ClippingRegion.Y;
                 int adjustY = Math.Min(4, Math.Abs(diffY));
-                int delta = diffY  - adjustY;
-                img.DrawingRegion = img.DrawingRegion.AdjustSize(-adjustY, -adjustY);
+                int delta = diffY - adjustY;
                 img.DrawingRegion = img.ClippingRegion.AdjustSizeFromCenter(delta, delta);
             }
-            if (_painting) return;
-            _painting = true;
-            using (var buffer = new Bitmap(this.Width, this.Height))
+
+            if (_painting)
             {
-                using (var g = Graphics.FromImage(buffer))
-                {
-                    if (_bgRepaint)
-                    {
-                        _bgRepaint = false;
-                        g.FillRectangle(_bgBrush, this.ClientRectangle);
-                    }
-                    PaintImages(g, GetImagesInView());
-                }
-                Draw(graphic => graphic.DrawImage(buffer, this.ClientRectangle));
+                return;
             }
-            _painting = false;
+            else
+            {
+                _painting = true;
+                // double buffer
+                using (var buffer = new Bitmap(this.Width, this.Height))
+                {
+                    using (var g = Graphics.FromImage(buffer))
+                    {
+                        if (_bgRepaint)
+                        {
+                            _bgRepaint = false;
+                            g.FillRectangle(_bgBrush, this.ClientRectangle);
+                        }
+                        PaintImages(g, GetImagesInView());
+                    }
+
+                    Draw(graphic => graphic.DrawImage(buffer, this.ClientRectangle));
+                }
+                _painting = false;
+            }
         }
 
         private void Draw(Action<Graphics> drawAction)
@@ -167,21 +178,32 @@ namespace Mmosoft.Oops.Controls
             _offsetY = 0;
             _bgRepaint = true;
         }
+
+        // multi-threaded
         public void Add(Image image)
         {
             if (_imgs == null) _imgs = new List<Img>();
             int availableHeight = (int)((_colWidth * 1f / image.Width) * image.Height);
             Image resized = BitmapHelper.ResizeImage(image, _colWidth, availableHeight);
             _imgs.Add(new Img(image, resized));
+
+            // TODO: When new image added into the list
+            // ReDraw method will be invoked
+            // => multiple redraw run at the same time.
             ReDraw();
         }
 
         // calculate and drawing images
         public void ReDraw()
         {
+            
+            _redrawRequestId++;
+            if (_redrawRequestId == int.MaxValue)
+                _redrawRequestId = 0;
+
             _virtualHeight = 0;
             if (_imgs != null && _imgs.Count != 0)
-                ComputePosition();
+                ComputePosition(_redrawRequestId);
         }
 
         // event handlers
@@ -282,6 +304,7 @@ namespace Mmosoft.Oops.Controls
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
+            _bgRepaint = true;
             UpdateColumnWidth();
             ReDraw();
         }
@@ -319,7 +342,7 @@ namespace Mmosoft.Oops.Controls
             }
         }
         //
-        protected abstract void ComputePosition();
+        protected abstract void ComputePosition(int currentRedrawRequestId);
         protected abstract void PaintImages(Graphics g, IEnumerable<Img> imageWrappers);
 
         // --- private methods
