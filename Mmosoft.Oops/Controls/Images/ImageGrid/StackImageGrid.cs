@@ -8,7 +8,7 @@ namespace Mmosoft.Oops.Controls
 {
     public class StackImageGrid : ImageGrid
     {
-        protected override void ComputePosition(int currentReDrawRequestId)
+        protected override void ComputePosition()
         {
             var stackTops = new int[Column];
             for (int i = 0; i < stackTops.Length; i++)
@@ -16,45 +16,31 @@ namespace Mmosoft.Oops.Controls
 
             int left, top;
             List<int> colId;
-            for (int i = 0; i < _imgs.Count; i++)
+            for (int i = 0; i < imgs.Count; i++)
             {
-                // new redraw request has been called, skip current redraw
-                if (currentReDrawRequestId < _redrawRequestId)
-                    return;
-
                 GetMinStackHeightAndIndex(stackTops, out top, out colId);
-                left = Gutter * (1 + colId[0]) + _colWidth  * colId[0];
+                left = Gutter * (1 + colId[0]) + colWidth  * colId[0];
 
-                Img iw = _imgs[i];
+                Img iw = imgs[i];
                 int actualImageWidth = iw.Original.Width;
                 int actualImageHeight = iw.Original.Height;
-                int availableHeight = (int)((_colWidth * 1f / actualImageWidth) * actualImageHeight);
-                iw.ClippingRegion = new Rectangle(left, top - _offsetY, _colWidth, availableHeight);
+                int availableHeight = (int)((colWidth * 1f / actualImageWidth) * actualImageHeight);
+                iw.ClippingRegion = new Rectangle(left, top - offsetY, colWidth, availableHeight);
 
                 // next image in the same column will be drawned at "columnTops[colId] + availableHeight + MGutter" position
                 stackTops[colId[0]] += availableHeight + Gutter;
 
                 // increase virtual height
-                if (_virtualHeight < stackTops[colId[0]])
-                    _virtualHeight = stackTops[colId[0]];
+                if (virtualHeight < stackTops[colId[0]])
+                    virtualHeight = stackTops[colId[0]];
             }
         }
         protected override void PaintImages(Graphics g, IEnumerable<Img> images)
         {
             foreach (Img image in images)
             {
-                if (_dragItem == null || _dragItem.ItemRef != image)
-                {
-                    g.SetClip(image.ClippingRegion);
-                    g.DrawImage(image.Original, image.DrawingRegion);
-                }
-            }
-
-            // draw floating picked item
-            g.SetClip(this.ClientRectangle);
-            if (_dragItem != null)
-            {
-                g.DrawImage(_dragItem.Image, _dragItem.Boundary);
+                g.SetClip(image.ClippingRegion);
+                g.DrawImage(image.Original, image.ClippingRegion);
             }
         }
         // 

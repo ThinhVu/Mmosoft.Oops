@@ -17,19 +17,7 @@ namespace Mmosoft.Oops.Controls.Images
         /// </summary>
         public bool LazyMode = false;
 
-        // flyout
-        private Animator flyinAnim;
-        private Animator flyoutAnim;
-        private int s;
-        private int vCurrentHor;
-        private float vNewHor;
-        private float vNewVer;
-        private int step = 10;
-        private int direction = -1;
-
-        private SolidBrush opacityBrush;
-        private int opacityStep = 255 / 20; // step
-
+        #region NAV
         private int NAV_SIZE = 50;
 
         // Prev button
@@ -41,139 +29,80 @@ namespace Mmosoft.Oops.Controls.Images
         private bool drawNext;
         private Rectangle nextNavRect;
         private Image nextNavImage;
+        #endregion
+
+        //
+        // Navigation
+        public Action OnEscape;
+        public Keys Escape = Keys.Escape;
+        public Keys Prev = Keys.Left;
+        public Keys Next = Keys.Right;
 
         // Image list
         private List<Image> imgs;
 
         // 
-        private RectangleF currentImgRect;
-        private int currentIndex;
-
-        // 
-        private RectangleF newImgRect;
-        private int newIndex;
+        private RectangleF imgRect;
+        private int index;
 
         public ImageSlide()
         {
             DoubleBuffered = true;
 
             imgs = new List<Image>();
-
-            currentIndex = -1;
-            newIndex = -1;
+            index = -1;
             prevNavRect = new Rectangle(20, 0, NAV_SIZE, NAV_SIZE);
             prevNavImage = SvgPath8x8Mgr.Get(SvgPathBx8Constants.ArrowCircleLeft, 10, Brushes.White);
 
             nextNavRect = new Rectangle(0, 0, NAV_SIZE, NAV_SIZE);
             nextNavImage = SvgPath8x8Mgr.Get(SvgPathBx8Constants.ArrowCircleRight, 10, Brushes.White);
-
-            opacityBrush = new SolidBrush(Color.Black);
-
-            SetupFlyinAnim();
-            SetupFlyoutAnim();
         }
-
-        
-        private void SetupFlyinAnim()
-        {
-            flyinAnim = new Animator()
-            {
-                OnCompleted = () =>
-                {
-                    currentIndex = newIndex;
-                    drawPrev = imgs.Count > 0 && currentIndex > 0;
-                    drawNext = currentIndex < imgs.Count - 1;
-                    opacityBrush.Color = Color.FromArgb(0, Color.Black);
-                    RecalcImageRect();
-                }
-            };
-            flyinAnim.Add(new Step
-            {
-                Interval = 20, // ms
-                TotalStep = step,
-                AnimAction = (stepI) =>
-                {
-                    // current
-                    currentImgRect = currentImgRect.AdjustXF(direction * vCurrentHor);
-                    opacityBrush.Color = Color.FromArgb(255 - stepI * opacityStep, Color.Black);
-                    // next
-                    newImgRect = newImgRect.AdjustSizeFromCenter(vNewHor, vNewVer);
-                    Invalidate();
-                }
-            });
-        }
-
-        private void SetupFlyoutAnim()
-        {
-            flyoutAnim = new Animator()
-            {
-                OnCompleted = () =>
-                {
-                    currentIndex = newIndex;
-                    drawPrev = imgs.Count > 0 && currentIndex > 0;
-                    drawNext = currentIndex < imgs.Count - 1;
-                    opacityBrush.Color = Color.FromArgb(0, Color.Black);
-                    RecalcImageRect();
-                }
-            };
-            flyoutAnim.Add(new Step
-            {
-                Interval = 20, // ms
-                TotalStep = step,
-                AnimAction = (stepI) =>
-                {
-                    // current
-                    currentImgRect = currentImgRect.AdjustSizeFromCenter(vNewHor, vNewVer);
-                    opacityBrush.Color = Color.FromArgb(stepI * opacityStep, Color.Black);
-                    // next
-                    newImgRect = newImgRect.AdjustXF(direction * vCurrentHor);
-                    Invalidate();
-                }
-            });
-        }
-
 
         public void AddImage(Image image)
         {
             imgs.Add(image);
             // animation when the first image added into control
-            if (currentIndex == -1 && newIndex == -1)
+            if (index == -1)
             {
-                newIndex = 0;
-                FlyIn();
+                index = 0;
+                ReDraw();
             }
         }
 
         public void Clear()
         {
-            flyinAnim.Stop();
-            flyoutAnim.Stop();
-
             foreach (var img in imgs)
             {
                 img.Dispose();
             }
 
             imgs = new List<Image>();
-            currentIndex = -1;
-            newIndex = -1;
+            index = -1;
             Invalidate();
         }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            this.Focus();
+            ReDraw();
+        } 
 
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
 
-            if (imgs.Count > 0)
-                RecalcImageRect();
-
+            
             int navTop = (this.Height - prevNavRect.Height) / 2;
             int navNextLeft = this.Width - nextNavRect.Width - 20; // padding
 
             prevNavRect = new Rectangle(20, navTop, NAV_SIZE, NAV_SIZE);
             nextNavRect = new Rectangle(navNextLeft, navTop, NAV_SIZE, NAV_SIZE);
 
-            Invalidate();
+            if (imgs.Count > 0)
+            {
+                ReDraw();
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -184,128 +113,85 @@ namespace Mmosoft.Oops.Controls.Images
         protected override void OnMouseClick(MouseEventArgs e)
         {
             base.OnMouseClick(e);
-            newIndex = currentIndex;
             if (drawPrev && prevNavRect.Contains(e.Location) || (LazyMode && e.Button == System.Windows.Forms.MouseButtons.Left))
             {
-                newIndex--;
-                if (newIndex < 0)
-                    newIndex = 0;
-                if (currentIndex != newIndex)
-                    FlyOut();
+                if (index > 0)
+                {
+                    index--;
+                    ReDraw();
+                }
             }
             else if (drawNext && nextNavRect.Contains(e.Location) || (LazyMode && e.Button == System.Windows.Forms.MouseButtons.Right))
             {
-                newIndex++;
-                if (newIndex == imgs.Count)
-                    newIndex = imgs.Count - 1;
-                if (currentIndex != newIndex)
-                    FlyIn();
+                if (index < imgs.Count - 1)
+                {
+                    index++;
+                    ReDraw();
+                }
+            }
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            if (e.KeyCode == this.Prev)
+            {
+                if (index > 0)
+                {
+                    index--;
+                    ReDraw();
+                }
+            }
+            else if (e.KeyCode == this.Next)
+            {
+                if (index < imgs.Count - 1)
+                {
+                    index++;
+                    ReDraw();
+                }
+            }
+            else if (e.KeyCode == this.Escape)
+            {
+                if (OnEscape != null)
+                    OnEscape();
             }
         }
 
         private void RecalcImageRect()
         {
-            currentImgRect = ImageDisplayModeHelper.GetImageRect(
-                this.ClientRectangle, 
-                new Rectangle(Point.Empty, imgs[currentIndex].Size), 
-                DisplayMode.ScaleLossLessCenter);
-            newImgRect = Rectangle.Empty;
+            if (-1 < index && index < imgs.Count)
+            {
+                imgRect = ImageDisplayModeHelper.GetImageRect(
+                    this.ClientRectangle,
+                    new Rectangle(Point.Empty, imgs[index].Size),
+                    DisplayMode.ScaleLossLessCenter);
+            }
+        }
+
+        private void ReDraw()
+        {
+            RecalcImageRect();
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            if (imgs == null || imgs.Count == 0) return;
+            
+            if (imgs == null || imgs.Count == 0) 
+                return;
+
             var g = e.Graphics;
-
-            // show right image
-            if (direction == -1)
+            if (index > -1 && index < imgs.Count)
             {
-                // draw new image
-                if (newIndex > -1 && newIndex < imgs.Count)
-                {
-                    g.DrawImage(imgs[newIndex], newImgRect);
-                    g.FillRectangle(opacityBrush, newImgRect);
-                }
-
-                // draw current image
-                if (currentIndex > -1 && currentIndex < imgs.Count)
-                    g.DrawImage(imgs[currentIndex], currentImgRect);
-            }
-            // show left image
-            else
-            {
-                // draw current image
-                if (currentIndex > -1 && currentIndex < imgs.Count)
-                {
-                    g.DrawImage(imgs[currentIndex], currentImgRect);
-                    g.FillRectangle(opacityBrush, currentImgRect);
-                }
-
-                // draw new image
-                if (newIndex > -1 && newIndex < imgs.Count)
-                {
-                    g.DrawImage(imgs[newIndex], newImgRect);
-                }
+                
+                g.DrawImage(imgs[index], imgRect);
             }
 
-            if (!LazyMode && drawPrev) g.DrawImage(prevNavImage, prevNavRect);
-            if (!LazyMode && drawNext) g.DrawImage(nextNavImage, nextNavRect);
-        }
+            if (!LazyMode && drawPrev)
+                g.DrawImage(prevNavImage, prevNavRect);
 
-        private void FlyIn()
-        {
-            if (currentIndex > -1)
-            {
-                currentImgRect = ImageDisplayModeHelper.GetImageRect(
-                this.ClientRectangle,
-                new Rectangle(Point.Empty, imgs[currentIndex].Size),
-                DisplayMode.ScaleLossLessCenter);
-                direction = -1;
-                s = (int)(0.5 * (this.Width + currentImgRect.Width));
-                vCurrentHor = s / step + ((s % step == 0) ? 0 : 1);
-            }
-            
-            //
-            newImgRect = ImageDisplayModeHelper.GetImageRect(
-                        this.ClientRectangle,
-                        new Rectangle(Point.Empty, imgs[newIndex].Size),
-                        DisplayMode.ScaleLossLessCenter);
-            
-            int offsetSizeHor = 40;
-            int offsetSizeVer = (int)(offsetSizeHor * 1f * newImgRect.Height / newImgRect.Width); 
-            vNewHor = 1f * offsetSizeHor / step;
-            vNewVer = 1f * offsetSizeVer / step;
-            newImgRect = newImgRect.AdjustSizeFromCenter(-offsetSizeHor, -offsetSizeVer);
-            flyinAnim.Start();  
-        }
-
-        private void FlyOut()
-        {
-            
-            // setup to reduce size of new image
-            currentImgRect = ImageDisplayModeHelper.GetImageRect(
-                        this.ClientRectangle,
-                        new Rectangle(Point.Empty, imgs[currentIndex].Size),
-                        DisplayMode.ScaleLossLessCenter);
-            int offsetSizeHor = 40;
-            int offsetSizeVer = (int)(offsetSizeHor * 1f * currentImgRect.Height / currentImgRect.Width);
-            vNewHor = -1f * offsetSizeHor / step;
-            vNewVer = -1f * offsetSizeVer / step;
-
-            //
-            newImgRect = ImageDisplayModeHelper.GetImageRect(
-                        this.ClientRectangle,
-                        new Rectangle(Point.Empty, imgs[newIndex].Size),
-                        DisplayMode.ScaleLossLessCenter);
-            // setup prev image on the left
-            newImgRect = newImgRect.AdjustXF(-newImgRect.Right);
-            // and move direction is to the right
-            direction = 1;
-            s = (int)(0.5 * (this.Width + newImgRect.Width));
-            vCurrentHor = s / step;
-
-            flyoutAnim.Start();
+            if (!LazyMode && drawNext)
+                g.DrawImage(nextNavImage, nextNavRect);
         }
     }
 }
